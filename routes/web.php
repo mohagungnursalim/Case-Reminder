@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProyekController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,16 +30,9 @@ Route::get('/', function () {
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth']);
 
-Route::resource('/dashboard/anggota', AnggotaController::class)->middleware(['auth']);
-Route::get('/dashboard/anggota/{id}/cetak-kartu', [AnggotaController::class, 'cetakKartu'])->name('anggota.cetak-kartu');
-
-Route::resource('/dashboard/kategori', KategoriController::class)->middleware(['auth']);
-
-Route::resource('/dashboard/buku', BukuController::class)->middleware(['auth']);
-
-Route::resource('/dashboard/proyek', ProyekController::class)->middleware(['auth']);
-
 Route::resource('/dashboard/user', UserController::class)->middleware(['auth','is_admin']);
+
+Route::resource('/dashboard/agenda', ReminderController::class)->middleware(['auth','is_admin']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard/profile', [ProfileController::class, 'index']);

@@ -1,73 +1,26 @@
 @extends('dashboard.layouts.main')
 @section('judul-halaman')
-Kelola User
+Agenda
 @endsection
 
 @section('konten')
 
 <head>
-    <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js"
-        integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
-
-
-<div class="card card-frame">
-    <div class="card-body">
-        <div class="container">
-            <div class="card-body">
-                <div class="alert alert-secondary text-white text-nowrap" style="width: 18rem;" role="alert">
-                    <i class="fas fa-fw fa-info-circle"></i> Password bawaan: 12345678
-                </div>
-    
-                <form class="form-inline" action="{{ route('user.store') }}" method="post">
-                    @csrf
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group mb-2 input-group input-group-outline">
-                                <label for="staticEmail2" class="sr-only">Email</label>
-                                <input type="text" name="email" class="form-control" id="staticEmail2" placeholder="email@example.com">
-                            </div>
-                            @error('email')
-                                <p class="text-danger small-text">{{$message}}</p>
-                            @enderror
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group mb-2 input-group input-group-outline">
-                                <label for="" class="sr-only">Nama</label>
-                                <input type="text"  class="form-control" name="name" id="inputNama2" placeholder="Nama">
-                            </div>
-                            @error('name')
-                            <p class="text-danger small-text">{{$message}}</p>
-                            @enderror
-                        </div>
-                            <div class="col-md-4">
-                                <input type="hidden" name="is_admin" value="0">
-                                <button type="submit" class="btn btn-outline-primary mb-2">Buat</button>
-                            </div>
-                           
-                    </div>
-                </form>
-                
-            </div>
-        </div>
-    </div>
-</div>
-
-    
 
 {{-- Card Table --}}
 <div class="card shadow mt-4">
     <div class="card-body">
-
+        
         <div class="container">
-
-            <form action="{{ route('user.index') }}" method="GET">
+            <form action="{{ route('agenda.index') }}" method="GET">
                 <div class="container">
                   <div class="row justify-content-end">
                       <div class="col-lg-4">
                           <div class="input-group input-group-outline my-3">
 
-                                  <input type="text" name="search" value="{{request('search')}}" placeholder="Cari User.." class="form-control">
+                                  <input type="text" name="search" value="{{request('search')}}" placeholder="Cari Agenda.." class="form-control">
                                   <button type="submit">Search</button>
 
                           </div>
@@ -91,42 +44,42 @@ Kelola User
               </div>
               @endif
 
+              {{-- Tombol ke halaman form --}}
+              <a href="/dashboard/agenda/create" class="btn btn-info">Tambah Agenda+</a>
             <div class="overflow-auto">
                 <table id="myTable" class="table text-dark">
                     <tr>
                         <th>No</th>
-                        <th>Email</th>
-                        <th>Nama User</th>
-                        <th>Role</th>
+                        <th>Nama Jaksa</th>
+                        <th>No WA</th>
+                        <th>Nama Kasus</th>
+                        <th>Nama Saksi</th>
+                        <th>Keterangan</th>
+                        <th>Tanggal & Waktu Pelaksanaan</th>
                         <th>Dibuat</th>
                         <th>Aksi</th>
 
                     </tr>
 
-                    @if ($users->count())
-                    @foreach ($users as $user )
+                    @if ($reminders->count())
+                    @foreach ($reminders as $reminder )
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->name }}</td>
-                        <td>
-                            @if ($user->is_admin == false)
-                            <kbd class="bg-success">Operator</kbd>
-                            @else
-                            <kbd class="bg-primary">Admin</kbd>
-                            @endif
-                            
-                        </td>
-                    
-                        <td>{{ ($user->created_at)->format('d-m-Y') }}</td>
+                        <td class="text-wrap">{{ $loop->iteration }}</td>
+                        <td class="text-wrap">{{ $reminder->prosecutor_name }}</td>
+                        <td class="text-wrap">{{ $reminder->phone_number}}</td>
+                        <td class="text-wrap">{{ $reminder->case_name }}</td>
+                        <td class="text-wrap">{{ $reminder->witnesses }}</td>
+                        <td class="text-wrap">{{ $reminder->message }}</td>
+                        <td class="text-wrap">{{ $reminder->scheduled_time }}</td>
+                        <td class="text-wrap">{{ ($reminder->created_at)->format('d-m-Y') }}</td>
 
                         <td>
-                            <button type="button" class="btn bg-info" data-bs-toggle="modal" data-bs-target="#resetModal{{ $user->id }}">
+                            <button type="button" class="btn bg-info" data-bs-toggle="modal" data-bs-target="#resetModal{{ $reminder->id }}">
                                 <span class="material-symbols-outlined text-white">
                                     restart_alt
                                 </span>
                             </button>
-                            <button type="button" class="btn bg-danger" data-bs-toggle="modal" data-bs-target="#editModal{{ $user->id }}">
+                            <button type="button" class="btn bg-danger" data-bs-toggle="modal" data-bs-target="#editModal{{ $reminder->id }}">
                                 <span class="material-symbols-outlined text-white">
                                     delete
                                     </span>
@@ -137,7 +90,7 @@ Kelola User
                     @else
                         <tr>
                             <td colspan="7" class="text-center">
-                                Tidak ada user 
+                                Tidak ada agenda
                                 @if (request('search'))
                                 <kbd>{{ request('search') }}</kbd>                
                                 @endif
@@ -147,7 +100,7 @@ Kelola User
                 </table>
             </div>
             <div class="d-flex justify-content-center">
-                {{ $users->links() }}
+                {{ $reminders->links() }}
             </div>
 
 
@@ -161,8 +114,7 @@ Kelola User
 
 </div>
 
-@foreach ($users as $user )
-<!-- Modal Delete-->
+{{-- @foreach ($users as $user )
 <div class="modal fade" id="editModal{{ $user->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -189,10 +141,9 @@ Kelola User
     </div>
   </div>
 
-@endforeach
+@endforeach --}}
 
-@foreach ($users as $user )
-<!-- Modal Edit-->
+{{-- @foreach ($users as $user )
 <div class="modal fade" id="resetModal{{ $user->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -224,14 +175,14 @@ Kelola User
     </div>
   </div>
 
-@endforeach
+@endforeach --}}
 
 
 
 @endsection
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 
 {{-- Menghilangkan alert --}}
 <script>

@@ -7,6 +7,7 @@
                         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a>
                         </li>
                         <li class="breadcrumb-item text-sm text-dark active" aria-current="page">@yield('judul-halaman')</li>
+                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">@yield('create-halaman')</li>
                     </ol>
                     <h6 class="font-weight-bolder mb-0">@yield('sub-halaman')</h6>
 

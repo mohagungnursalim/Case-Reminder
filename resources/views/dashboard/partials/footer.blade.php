@@ -7,7 +7,7 @@
                         document.write(new Date().getFullYear())
 
                     </script>
-                    SIMAPRO v1.
+                    Case Reminder.
                 </div>
             </div>
         </div>
