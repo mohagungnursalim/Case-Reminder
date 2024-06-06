@@ -7,7 +7,7 @@
             aria-hidden="true" id="iconSidenav"></i>
         <a class="navbar-brand m-0" href="/dashboard">
             {{-- <img src="" class="navbar-brand-img h-100" alt="main_logo"> --}}
-            <span class="ms-1 font-weight-bold text-white">SIMAPRO v1</span>
+            <span class="ms-1 font-weight-bold text-white">Case Reminder App</span>
         </a>
     </div>
 
@@ -32,67 +32,19 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link text-white {{ Request::is('dashboard/proyek') ? 'active' : '' }}" href="/dashboard/proyek">
+                <a class="nav-link text-white {{Request::is('dashboard/agenda*') ? 'active' : ''}} "
+                    href="/dashboard/agenda">
 
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         {{-- icon --}}
                         <span class="material-symbols-outlined">
-                            checklist_rtl
+                            gavel
                         </span>
                     </div>
 
-                    <span class="nav-link-text ms-1">Proyek</span>
+                    <span class="nav-link-text ms-1">Agenda</span>
                 </a>
             </li>
-
-            <li class="nav-item">
-                <a class="nav-link text-white {{ Request::is('dashboard/anggota') ? 'active' : '' }} "
-                    href="/dashboard/anggota">
-
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        {{-- icon --}}
-
-                        <span class="material-symbols-outlined">
-                            group
-                        </span>
-                    </div>
-
-                    <span class="nav-link-text ms-1">Anggota</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link text-white {{Request::is('dashboard/buku') ? 'active' : ''}} "
-                    href="/dashboard/buku">
-
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        {{-- icon --}}
-
-                        <span class="material-symbols-outlined">
-                            library_books
-                        </span>
-                    </div>
-
-                    <span class="nav-link-text ms-1">Buku</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link text-white {{ Request::is('dashboard/kategori') ? 'active' : '' }}"
-                    href="/dashboard/kategori">
-
-                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                        {{-- icon --}}
-
-                        <span class="material-symbols-outlined">
-                            list
-                        </span>
-                    </div>
-
-                    <span class="nav-link-text ms-1">Kategori</span>
-                </a>
-            </li>
-
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">
                     ----------------Akun-------------------
@@ -122,7 +74,7 @@
                             account_circle
                         </span>
                     </div>
-                    <span class="nav-link-text ms-1">Profile Saya</span>
+                    <span class="nav-link-text ms-1">Profil Saya</span>
                 </a>
             </li>
 
