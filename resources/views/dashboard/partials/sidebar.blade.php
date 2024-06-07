@@ -45,6 +45,21 @@
                     <span class="nav-link-text ms-1">Agenda</span>
                 </a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link text-white {{Request::is('dashboard/jaksa*') ? 'active' : ''}} "
+                    href="/dashboard/jaksa">
+
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        {{-- icon --}}
+                        <span class="material-symbols-outlined">
+                            group
+                        </span>
+                    </div>
+
+                    <span class="nav-link-text ms-1">Jaksa</span>
+                </a>
+            </li>
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs text-white font-weight-bolder opacity-8">
                     ----------------Akun-------------------

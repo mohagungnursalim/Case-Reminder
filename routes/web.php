@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnggotaController;
 use App\Http\Controllers\BukuController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\JaksaController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProyekController;
 use App\Http\Controllers\ProfileController;
@@ -33,6 +34,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['au
 Route::resource('/dashboard/user', UserController::class)->middleware(['auth','is_admin']);
 
 Route::resource('/dashboard/agenda', ReminderController::class)->middleware(['auth','is_admin']);
+
+Route::resource('/dashboard/jaksa', JaksaController::class)->middleware('auth');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard/profile', [ProfileController::class, 'index']);
