@@ -8,6 +8,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProyekController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReminderController;
+use App\Http\Controllers\SaksiController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,9 @@ Route::resource('/dashboard/user', UserController::class)->middleware(['auth','i
 Route::resource('/dashboard/agenda', ReminderController::class)->middleware(['auth','is_admin']);
 
 Route::resource('/dashboard/jaksa', JaksaController::class)->middleware('auth');
+
+Route::resource('/dashboard/saksi', SaksiController::class)->middleware('auth');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard/profile', [ProfileController::class, 'index']);

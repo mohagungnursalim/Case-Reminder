@@ -21,9 +21,9 @@ class JaksaController extends Controller
                             ->orWhere('alamat', 'LIKE', "%{$search}%")
                             ->orWhere('nomor_wa', 'LIKE', "%{$search}%")
                             ->orWhere('jabatan', 'LIKE', "%{$search}%")
-                            ->paginate(10);
+                            ->latest()->paginate(10);
         } else {
-            $jaksas = Jaksa::paginate(10);
+            $jaksas = Jaksa::latest()->paginate(10);
         }
     
 
