@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('reminders', function (Blueprint $table) {
             $table->id();
-            $table->string('phone_number');
-            $table->string('prosecutor_name');
-            $table->string('case_name');
-            $table->string('witnesses');
-            $table->text('message');
-            $table->dateTime('scheduled_time');
-            $table->boolean('is_sent')->default(false);
+            $table->string('nama_kasus');
+            $table->text('pesan');
+            $table->json('nama_jaksa');
+            $table->json('nomor_jaksa');
+            $table->json('nama_saksi');
+            $table->dateTime('tanggal_waktu');
             $table->timestamps();
         });
     }

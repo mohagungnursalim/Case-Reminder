@@ -9,4 +9,7 @@ class Reminder extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
+    protected $casts = [
+        'tanggal_waktu' => 'datetime',
+    ];
 }
