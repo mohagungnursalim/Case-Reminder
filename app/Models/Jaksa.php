@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Jaksa extends Model
 {
     use HasFactory;
+
+    protected $table = 'jaksa'; // Nama tabel sesuai dengan yang Anda definisikan
+    protected $guarded = ['id']; // Menjaga kolom 'id' agar tidak diisi secara massal
 }
