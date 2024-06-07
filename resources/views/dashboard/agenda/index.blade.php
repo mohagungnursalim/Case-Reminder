@@ -6,7 +6,7 @@ Agenda
 @section('konten')
 
 <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
 </head>
 
 {{-- Card Table --}}
@@ -49,37 +49,64 @@ Agenda
             <div class="overflow-auto">
                 <table id="myTable" class="table text-dark">
                     <tr>
-                        <th>No</th>
-                        <th>Nama Jaksa</th>
-                        <th>No WA</th>
-                        <th>Nama Kasus</th>
-                        <th>Nama Saksi</th>
-                        <th>Keterangan</th>
-                        <th>Tanggal & Waktu Pelaksanaan</th>
-                        <th>Dibuat</th>
-                        <th>Aksi</th>
+                        <th class="text-wrap small">No</th>
+                        <th class="text-wrap small">Nama Jaksa</th>
+                        <th class="text-wrap small">No WA</th>
+                        <th class="text-wrap small">Nama Kasus</th>
+                        <th class="text-wrap small">Nama Saksi</th>
+                        <th class="text-wrap small">Pesan</th>
+                        <th class="text-wrap small">Tanggal & Waktu Pelaksanaan</th>
+                        <th class="text-wrap small">Dibuat</th>
+                        <th class="text-wrap small">Aksi</th>
 
                     </tr>
 
                     @if ($reminders->count())
                     @foreach ($reminders as $reminder )
                     <tr>
-                        <td class="text-wrap">{{ $loop->iteration }}</td>
-                        <td class="text-wrap">{{ $reminder->prosecutor_name }}</td>
-                        <td class="text-wrap">{{ $reminder->phone_number}}</td>
-                        <td class="text-wrap">{{ $reminder->case_name }}</td>
-                        <td class="text-wrap">{{ $reminder->witnesses }}</td>
-                        <td class="text-wrap">{{ $reminder->message }}</td>
-                        <td class="text-wrap">{{ $reminder->scheduled_time }}</td>
-                        <td class="text-wrap">{{ ($reminder->created_at)->format('d-m-Y') }}</td>
+                        <td class="text-wrap small">{{ $loop->iteration }}</td>
+                        <td class="text-wrap small">
+                            @foreach(json_decode($reminder->nama_jaksa) as $nama_jaksa)
+                                <button type="button" class="badge bg-secondary mt-1" style="border:none">
+                                    {{ $nama_jaksa }}
+                                </button>
+                            @endforeach
+                        </td>
+                        <td class="text-wrap small">
+                            @foreach(json_decode($reminder->nomor_jaksa) as $nomor_jaksa)
+                            <button type="button" class="badge bg-secondary mt-1" style="border:none">
+                                {{ $nomor_jaksa }}
+                            </button>
+                            @endforeach
+                        </td>
+                        <td class="text-wrap small">{{ $reminder->nama_kasus }}</td>
+                        <td class="text-wrap small">
+                            @foreach(json_decode($reminder->nama_saksi) as $nama_saksi)
+                            <button type="button" class="badge bg-secondary mt-1" style="border:none">
+                                {{ $nama_saksi }}
+                            </button>
+                            @endforeach
+                        </td>
+                        <td class="text-wrap small">{{ $reminder->pesan }}</td>
+                        <td class="text-wrap small">
+                            <div class="d-flex flex-column">
+                                <span class="font-weight-bold">Tgl:</span>
+                                <span>{{ $reminder->tanggal_waktu->format('d-m-Y') }}</span>
+                            </div>
+                            <div class="d-flex flex-column mt-1">
+                                <span class="font-weight-bold">Pukul:</span>
+                                <span>{{ $reminder->tanggal_waktu->format('H:i') }}</span>
+                            </div>
+                        </td>
+                        <td class="text-wrap small">{{ ($reminder->created_at)->format('d-m-Y') }}</td>
 
                         <td>
-                            <button type="button" class="btn bg-info" data-bs-toggle="modal" data-bs-target="#resetModal{{ $reminder->id }}">
+                            <button type="button" class="btn btn-sm bg-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $reminder->id }}">
                                 <span class="material-symbols-outlined text-white">
-                                    restart_alt
+                                    edit_square
                                 </span>
                             </button>
-                            <button type="button" class="btn bg-danger" data-bs-toggle="modal" data-bs-target="#editModal{{ $reminder->id }}">
+                            <button type="button" class="btn btn-sm bg-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $reminder->id }}">
                                 <span class="material-symbols-outlined text-white">
                                     delete
                                     </span>
@@ -90,7 +117,7 @@ Agenda
                     @else
                         <tr>
                             <td colspan="7" class="text-center">
-                                Tidak ada agenda
+                                Tidak ada agenda sidang
                                 @if (request('search'))
                                 <kbd>{{ request('search') }}</kbd>                
                                 @endif
@@ -114,75 +141,164 @@ Agenda
 
 </div>
 
-{{-- @foreach ($users as $user )
-<div class="modal fade" id="editModal{{ $user->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title font-weight-normal" id="exampleModalLabel">Delete User</h5>
-          <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          
-            <h4>Dengan mengklik hapus maka data user <kbd>{{$user->name}}</kbd> akan terhapus secara permanen!</h4>
-
-            <form method="post" action="{{ route('user.destroy',$user->id) }}}}" class="mb-5"
-                enctype="multipart/form-data">
-                @csrf
-                @method('delete')
-           <div class="d-flex justify-content-center">
-            <button type="submit" class="btn btn-danger">Hapus</button>
-           </div>
-            </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-@endforeach --}}
-
-{{-- @foreach ($users as $user )
-<div class="modal fade" id="resetModal{{ $user->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title font-weight-normal" id="exampleModalLabel">Delete User</h5>
-          <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          
-            <h4>Dengan mengklik reset maka password user <kbd>{{$user->name}}</kbd> akan menjadi password default!</h4>
-
-            <form method="post" action="{{ route('user.update',$user->id) }}}}" class="mb-5"
-                enctype="multipart/form-data">
-                @csrf
-                @method('put')
-    
-          
-           <div class="d-flex justify-content-center">
-            <div class="modal-footer">
-                <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Tutup</button>
-                <button type="submit" class="btn bg-gradient-info">Reset</button>
-            </div>
-           </div>
-            </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-@endforeach --}}
-
-
-
 @endsection
 
 
 
+
+
+
+{{-- Modal Edit Agenda --}}
+@foreach ($reminders as $reminder)
+<div class="modal fade" id="editModal{{ $reminder->id }}" tabindex="-1" aria-labelledby="reminderModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="jaksaModalLabel">Edit Data Agenda</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{{ route('agenda.update', $reminder->id) }}" method="POST">
+            @csrf
+            @method('PUT')
+            
+            <label class="form-label">Nama Jaksa</label>
+            <div class="input-group input-group-outline @error('nama_jaksa') is-invalid @enderror mb-1">
+                <select id="nama_jaksa" name="nama_jaksa[]" style="width: 100%;" multiple class="form-control">
+                    @foreach($jaksas as $jaksa)
+                        <option value="{{ $jaksa->nama }}" {{ in_array($jaksa->nama, (array)$reminder->nama_jaksa) ? 'selected' : '' }}>
+                            {{ $jaksa->nama }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            @error('nama_jaksa')
+                <p class="text-bold text-xs text-danger">{{ $message }}</p>
+            @enderror
+        
+            <label class="form-label">Nomor Jaksa</label>
+            <div class="input-group input-group-outline @error('nomor_jaksa') is-invalid @enderror mb-1">
+                <select id="nomor_jaksa" name="nomor_jaksa[]" style="width: 100%;" multiple class="form-control">
+                    @foreach($jaksas as $jaksa)
+                        <option value="{{ $jaksa->nomor_wa }}" {{ in_array($jaksa->nomor_wa, (array)$reminder->nomor_jaksa) ? 'selected' : '' }}>
+                            {{ $jaksa->nama }} ({{ $jaksa->nomor_wa }})
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            @error('nomor_jaksa')
+                <p class="text-bold text-xs text-danger">{{ $message }}</p>
+            @enderror
+        
+            <label for="case_name">Nama Kasus:</label>
+            <div class="input-group input-group-outline @error('nama_kasus') is-invalid @enderror">
+                <input class="form-control" type="text" name="nama_kasus" id="case_name" value="{{ $reminder->nama_kasus }}" required>
+            </div>
+            @error('nama_kasus')
+                <p class="text-bold text-xs text-danger">{{ $message }}</p>
+            @enderror
+        
+            <label class="form-label">Nama Saksi</label>
+            <div class="input-group input-group-outline @error('nama_saksi') is-invalid @enderror mb-1">
+                <select id="nama_saksi" name="nama_saksi[]" style="width: 100%;" multiple class="form-control">
+                    @foreach($saksis as $saksi)
+                        <option value="{{ $saksi->nama }}" {{ in_array($saksi->nama, (array)$reminder->nama_saksi) ? 'selected' : '' }}>
+                            {{ $saksi->nama }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            @error('nama_saksi')
+                <p class="text-bold text-xs text-danger">{{ $message }}</p>
+            @enderror
+        
+            <label for="pesan">Pesan:</label>
+            <div class="input-group input-group-outline @error('pesan') is-invalid @enderror">
+                <textarea class="form-control" rows="5" name="pesan" id="pesan" required>{{ $reminder->pesan }}</textarea>
+            </div>
+            @error('pesan')
+                <p class="text-bold text-xs text-danger">{{ $message }}</p>
+            @enderror
+        
+            <label for="tanggal_waktu">Tanggal & Waktu:</label>
+            <div class="input-group input-group-outline @error('tanggal_waktu') is-invalid @enderror">
+                <input class="form-control" type="datetime-local" name="tanggal_waktu" id="tanggal_waktu" value="{{ date('Y-m-d\TH:i', strtotime($reminder->tanggal_waktu)) }}" required>
+            </div>
+            @error('tanggal_waktu')
+                <p class="text-bold text-xs text-danger">{{ $message }}</p>
+            @enderror
+        
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-info">Simpan</button>
+            </div>
+        </form>
+        
+        
+        
+      </div>
+    </div>
+  </div>
+</div>
+@endforeach
+
+
+{{-- Modal Delete Data Agenda --}}
+@foreach ($reminders as $jaksa)
+<div class="modal fade" id="deleteModal{{ $reminder->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $reminder->id }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Hapus Data Agenda</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Apakah Anda yakin ingin menghapus agenda pada kasus <strong>{{ $reminder->nama_kasus }}</strong>?</p>
+            </div>
+            <div class="modal-footer">
+                <form action="{{ route('agenda.destroy', $reminder->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger">Hapus</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+
+<!-- Include Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Include jQuery (if not already included) -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#nama_jaksa').select2({
+            allowClear: true
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#nomor_jaksa').select2({
+            allowClear: true
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#nama_saksi').select2({
+            allowClear: true
+        });
+    });
+</script>
 
 {{-- Menghilangkan alert --}}
 <script>
