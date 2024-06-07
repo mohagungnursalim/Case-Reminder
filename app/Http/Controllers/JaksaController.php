@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Jaksa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class JaksaController extends Controller
 {
@@ -59,12 +60,19 @@ class JaksaController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(),[
             'nama' => 'required|string',
             'alamat' => 'required|string',
             'nomor_wa' => 'required|numeric',
             'jabatan' => 'required|in:Ajun Jaksa Madya,Ajun Jaksa,Jaksa Pratama,Jaksa Muda,Jaksa Madya,Jaksa Utama Pratama,Jaksa Utama Muda,Jaksa Utama Madya',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('inputModal', true);
+        }
 
         Jaksa::create($request->all());
 
@@ -91,13 +99,19 @@ class JaksaController extends Controller
      */
     public function update(Request $request, Jaksa $jaksa)
     {
-        // Validasi data yang diterima dari form
-        $request->validate([
+        $validator = Validator::make($request->all(),[
             'nama' => 'required|string',
             'alamat' => 'required|string',
-            'nomor_wa' => 'nullable|string',
+            'nomor_wa' => 'required|numeric',
             'jabatan' => 'required|in:Ajun Jaksa Madya,Ajun Jaksa,Jaksa Pratama,Jaksa Muda,Jaksa Madya,Jaksa Utama Pratama,Jaksa Utama Muda,Jaksa Utama Madya',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('editModal', $jaksa->id);
+        }
 
         // Update data jaksa
         $jaksa->update($request->all());

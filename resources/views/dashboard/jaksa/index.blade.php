@@ -268,10 +268,19 @@ Jaksa
 <!-- Include jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-@if ($errors->any())
+@if (session('inputModal'))
 <script>
     $(document).ready(function() {
-         $('#inputModal').modal('show');
+        $('#inputModal').modal('show');
+    });
+</script>
+@endif
+
+@if (session('editModal'))
+<script>
+    $(document).ready(function() {
+        var editModalId = {{ session('editModal') }};
+        $('#editModal' + editModalId).modal('show');
     });
 </script>
 @endif
