@@ -60,10 +60,10 @@ class JaksaController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'nama' => 'required|string',
             'alamat' => 'required|string',
-            'nomor_wa' => 'required|numeric',
+            'nomor_wa' => 'required|string',
             'jabatan' => 'required|in:Ajun Jaksa Madya,Ajun Jaksa,Jaksa Pratama,Jaksa Muda,Jaksa Madya,Jaksa Utama Pratama,Jaksa Utama Muda,Jaksa Utama Madya',
         ]);
 
@@ -74,10 +74,19 @@ class JaksaController extends Controller
                 ->with('inputModal', true);
         }
 
-        Jaksa::create($request->all());
+        // Format nomor WhatsApp yang dimasukkan pengguna
+        $nomor_wa = $this->formatNomorWA($request->nomor_wa);
+
+        Jaksa::create([
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'nomor_wa' => $nomor_wa,
+            'jabatan' => $request->jabatan,
+        ]);
 
         return redirect()->route('jaksa.index')->with('success', 'Data jaksa baru telah ditambahkan.');
     }
+
 
     /**
      * Tampilkan formulir untuk mengedit data jaksa dengan id tertentu.
@@ -97,12 +106,12 @@ class JaksaController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Jaksa $jaksa)
+    public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'nama' => 'required|string',
             'alamat' => 'required|string',
-            'nomor_wa' => 'required|numeric',
+            'nomor_wa' => 'required|string',
             'jabatan' => 'required|in:Ajun Jaksa Madya,Ajun Jaksa,Jaksa Pratama,Jaksa Muda,Jaksa Madya,Jaksa Utama Pratama,Jaksa Utama Muda,Jaksa Utama Madya',
         ]);
 
@@ -110,13 +119,23 @@ class JaksaController extends Controller
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
-                ->with('editModal', $jaksa->id);
+                ->with('inputModal', true);
         }
 
-        // Update data jaksa
-        $jaksa->update($request->all());
-        return redirect()->route('jaksa.index')->with('success', 'Data jaksa telah diperbarui.');
+        $jaksa = Jaksa::findOrFail($id);
+
+        // Perbarui data jaksa dengan data yang baru
+        $jaksa->update([
+            'nama' => $request->nama,
+            'alamat' => $request->alamat,
+            'nomor_wa' => $request->nomor_wa,
+            'jabatan' => $request->jabatan,
+        ]);
+
+        return redirect()->route('jaksa.index')->with('success', 'Data jaksa berhasil diperbarui.');
     }
+
+
 
     /**
      * Hapus data jaksa dengan id tertentu.
@@ -136,4 +155,25 @@ class JaksaController extends Controller
 
         return redirect()->route('jaksa.index')->with('success', 'Data jaksa telah dihapus.');
     }
+
+    // Fungsi untuk memformat nomor WhatsApp
+    private function formatNomorWA($nomor_wa)
+    {
+        // Hapus karakter non-digit dari nomor
+        $nomor_wa = preg_replace('/\D/', '', $nomor_wa);
+
+        // Jika nomor dimulai dengan 0, hapus 0 pertama dan tambahkan kode negara
+        if (substr($nomor_wa, 0, 1) == '0') {
+            $nomor_wa = '+62' . substr($nomor_wa, 1);
+        }
+
+        // Jika nomor tidak dimulai dengan kode negara +62, tambahkan + di depan 62
+        if (substr($nomor_wa, 0, 1) != '+' && substr($nomor_wa, 0, 2) != '62' && strlen($nomor_wa) > 9) {
+            $nomor_wa = '+' . $nomor_wa;
+        }
+
+        return $nomor_wa;
+    }
+
+
 }
