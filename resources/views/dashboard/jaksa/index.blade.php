@@ -55,13 +55,13 @@ Jaksa
             <div class="overflow-auto">
                 <table id="myTable" class="table text-dark">
                     <tr>
-                        <th>No</th>
-                        <th>Nama Jaksa</th>
-                        <th>Alamat</th>
-                        <th>No Wa</th>
-                        <th>Jabatan</th>
-                        <th>Ditambahkan</th>
-                        <th>Aksi</th>
+                        <th class="text-wrap small">No</th>
+                        <th class="text-wrap small">Nama Jaksa</th>
+                        <th class="text-wrap small">Alamat</th>
+                        <th class="text-wrap small">No Wa</th>
+                        <th class="text-wrap small">Jabatan</th>
+                        <th class="text-wrap small">Ditambahkan</th>
+                        <th class="text-wrap small">Aksi</th>
 
                     </tr>
 
