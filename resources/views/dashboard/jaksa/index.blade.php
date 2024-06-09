@@ -5,6 +5,13 @@ Jaksa
 
 @section('konten')
 
+<head>
+    <style>
+        #refresh {
+            font-size: 17px; /* Ubah ukuran sesuai kebutuhan Anda */
+        }
+    </style>
+</head>
 {{-- Card Table --}}
 <div class="card shadow mt-4">
     <div class="card-body">
@@ -41,9 +48,10 @@ Jaksa
               @endif
 
               {{-- Tombol ke halaman form --}}
-              <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#inputModal">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inputModal">
                 Tambah Jaksa
               </button>
+              <a href="/dashboard/jaksa" class="btn btn-dark"><span class="material-symbols-outlined" id="refresh">refresh</span>Refresh</a>
             <div class="overflow-auto">
                 <table id="myTable" class="table text-dark">
                     <tr>
@@ -137,7 +145,7 @@ Jaksa
 
             <label for="nomor_wa">No Wa</label>
             <div class="input-group input-group-outline @error('nomor_wa') is-invalid @enderror">
-                <input class="form-control" type="number" name="nomor_wa" id="nomor_wa" >
+                <input class="form-control" type="text" name="nomor_wa" id="nomor_wa" >
             </div>
             @error('nomor_wa')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -202,7 +210,7 @@ Jaksa
   
             <label for="nomor_wa">No Wa</label>
             <div class="input-group input-group-outline @error('nomor_wa') is-invalid @enderror">
-                <input class="form-control" type="number" name="nomor_wa" id="nomor_wa" value="{{ old('nomor_wa', $jaksa->nomor_wa) }}" required>
+                <input class="form-control" type="text" name="nomor_wa" id="nomor_wa" value="{{ old('nomor_wa', $jaksa->nomor_wa) }}" required>
             </div>
             @error('nomor_wa')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
