@@ -7,6 +7,15 @@ Agenda
 
 <head>
     {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
+    <style>
+        .status {
+            font-size: 12px; /* Ubah ukuran sesuai kebutuhan Anda */
+        }
+
+        #refresh {
+            font-size: 17px; /* Ubah ukuran sesuai kebutuhan Anda */
+        }
+    </style>
 </head>
 
 {{-- Card Table --}}
@@ -45,7 +54,8 @@ Agenda
               @endif
 
               {{-- Tombol ke halaman form --}}
-              <a href="/dashboard/agenda/create" class="btn btn-info">Tambah Agenda+</a>
+              <a href="/dashboard/agenda/create" class="btn btn-primary">Tambah Agenda+</a>
+              <a href="/dashboard/agenda" class="btn btn-dark"><span class="material-symbols-outlined" id="refresh">refresh</span>Refresh</a>
             <div class="overflow-auto">
                 <table id="myTable" class="table text-dark">
                     <tr>
@@ -56,6 +66,7 @@ Agenda
                         <th class="text-wrap small">Nama Saksi</th>
                         <th class="text-wrap small">Pesan</th>
                         <th class="text-wrap small">Tanggal & Waktu Pelaksanaan</th>
+                        <th class="text-wrap small">Status</th>
                         <th class="text-wrap small">Dibuat</th>
                         <th class="text-wrap small">Aksi</th>
 
@@ -67,14 +78,14 @@ Agenda
                         <td class="text-wrap small">{{ $loop->iteration }}</td>
                         <td class="text-wrap small">
                             @foreach(json_decode($reminder->nama_jaksa) as $nama_jaksa)
-                                <button type="button" class="badge bg-secondary mt-1" style="border:none">
+                                <button type="button" class="badge bg-info mt-1" style="border:none">
                                     {{ $nama_jaksa }}
                                 </button>
                             @endforeach
                         </td>
                         <td class="text-wrap small">
                             @foreach(json_decode($reminder->nomor_jaksa) as $nomor_jaksa)
-                            <button type="button" class="badge bg-secondary mt-1" style="border:none">
+                            <button type="button" class="badge bg-info mt-1" style="border:none">
                                 {{ $nomor_jaksa }}
                             </button>
                             @endforeach
@@ -82,7 +93,7 @@ Agenda
                         <td class="text-wrap small">{{ $reminder->nama_kasus }}</td>
                         <td class="text-wrap small">
                             @foreach(json_decode($reminder->nama_saksi) as $nama_saksi)
-                            <button type="button" class="badge bg-secondary mt-1" style="border:none">
+                            <button type="button" class="badge bg-info mt-1" style="border:none">
                                 {{ $nama_saksi }}
                             </button>
                             @endforeach
@@ -97,6 +108,17 @@ Agenda
                                 <span class="font-weight-bold">Pukul:</span>
                                 <span>{{ $reminder->tanggal_waktu->format('H:i') }}</span>
                             </div>
+                        </td>
+                        <td class="text-wrap small">
+                           @if ($reminder->is_sent == true)
+                            <button type="button" class="badge bg-success mt-1" style="border:none">
+                                <span class="material-symbols-outlined status">check</span> Terkirim
+                            </button>
+                            @else
+                            <button type="button" class="badge bg-secondary mt-1" style="border:none">
+                                <span class="material-symbols-outlined status">schedule</span> Penjadwalan
+                            </button>
+                           @endif
                         </td>
                         <td class="text-wrap small">{{ ($reminder->created_at)->format('d-m-Y') }}</td>
 
@@ -146,9 +168,6 @@ Agenda
 
 
 
-
-
-
 {{-- Modal Edit Agenda --}}
 @foreach ($reminders as $reminder)
 <div class="modal fade" id="editModal{{ $reminder->id }}" tabindex="-1" aria-labelledby="reminderModalLabel" aria-hidden="true">
@@ -165,7 +184,7 @@ Agenda
             
             <label class="form-label">Nama Jaksa</label>
             <div class="input-group input-group-outline @error('nama_jaksa') is-invalid @enderror mb-1">
-                <select id="nama_jaksa" name="nama_jaksa[]" style="width: 100%;" multiple class="form-control">
+                <select name="nama_jaksa[]" style="width: 100%;" multiple class="form-control nama_jaksa">
                     @foreach($jaksas as $jaksa)
                         <option value="{{ $jaksa->nama }}" {{ in_array($jaksa->nama, (array)$reminder->nama_jaksa) ? 'selected' : '' }}>
                             {{ $jaksa->nama }}
@@ -179,7 +198,7 @@ Agenda
         
             <label class="form-label">Nomor Jaksa</label>
             <div class="input-group input-group-outline @error('nomor_jaksa') is-invalid @enderror mb-1">
-                <select id="nomor_jaksa" name="nomor_jaksa[]" style="width: 100%;" multiple class="form-control">
+                <select name="nomor_jaksa[]" style="width: 100%;" multiple class="form-control nomor_jaksa">
                     @foreach($jaksas as $jaksa)
                         <option value="{{ $jaksa->nomor_wa }}" {{ in_array($jaksa->nomor_wa, (array)$reminder->nomor_jaksa) ? 'selected' : '' }}>
                             {{ $jaksa->nama }} ({{ $jaksa->nomor_wa }})
@@ -201,7 +220,7 @@ Agenda
         
             <label class="form-label">Nama Saksi</label>
             <div class="input-group input-group-outline @error('nama_saksi') is-invalid @enderror mb-1">
-                <select id="nama_saksi" name="nama_saksi[]" style="width: 100%;" multiple class="form-control">
+                <select name="nama_saksi[]" style="width: 100%;" multiple class="form-control nama_saksi">
                     @foreach($saksis as $saksi)
                         <option value="{{ $saksi->nama }}" {{ in_array($saksi->nama, (array)$reminder->nama_saksi) ? 'selected' : '' }}>
                             {{ $saksi->nama }}
@@ -244,7 +263,7 @@ Agenda
 
 
 {{-- Modal Delete Data Agenda --}}
-@foreach ($reminders as $jaksa)
+@foreach ($reminders as $reminder)
 <div class="modal fade" id="deleteModal{{ $reminder->id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ $reminder->id }}" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -279,7 +298,7 @@ Agenda
 
 <script>
     $(document).ready(function() {
-        $('#nama_jaksa').select2({
+        $('.nama_jaksa').select2({
             allowClear: true
         });
     });
@@ -287,7 +306,7 @@ Agenda
 
 <script>
     $(document).ready(function() {
-        $('#nomor_jaksa').select2({
+        $('.nomor_jaksa').select2({
             allowClear: true
         });
     });
@@ -295,7 +314,7 @@ Agenda
 
 <script>
     $(document).ready(function() {
-        $('#nama_saksi').select2({
+        $('.nama_saksi').select2({
             allowClear: true
         });
     });
