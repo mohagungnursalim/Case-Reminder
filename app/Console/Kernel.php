@@ -8,26 +8,26 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\DB;
 
 class Kernel extends ConsoleKernel
 {
     protected function schedule(Schedule $schedule)
-    {
-        Log::info('Scheduler is running.');
+    {   
+    $schedule->call(function () {
+        $reminders = DB::table('reminders')
+            ->where('tanggal_waktu', '>=', now()->addHours(4))
+            ->where('tanggal_waktu', '<', now()->addHours(5))
+            ->where('is_sent', false)
+            ->get();
 
-        $schedule->call(function () {
-            Log::info('Looking for reminders to send.');
-            
-            $reminders = Reminder::where('is_sent', false)
-                ->where('scheduled_time', '<=', Carbon::now())
-                ->get();
-
+            $reminders = Reminder::where('is_sent', false)->get();
             foreach ($reminders as $reminder) {
-                Log::info('Dispatching SendReminderMessage job for reminder ID: ' . $reminder->id);
-                SendReminderMessage::dispatch($reminder);
+                dispatch(new \App\Jobs\SendReminderMessage($reminder));
             }
-        })->everyMinute();
+    })->hourly();
     }
+
 
     protected function commands()
     {

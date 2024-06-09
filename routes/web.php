@@ -10,6 +10,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\SaksiController;
 use App\Http\Controllers\UserController;
+use App\Jobs\SendReminderMessage;
+use App\Models\Reminder;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +24,29 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+// testing twilio
+// Route::get('/test-whatsapp', function () {
+//     $reminder = App\Models\Reminder::first();
+//     dispatch(new \App\Jobs\SendReminderMessage($reminder));
+// });
+
+// Route::get('/test-whatsapp', function () {
+//     $reminders = Reminder::all();
+
+//     foreach ($reminders as $reminder) {
+//         dispatch(new SendReminderMessage($reminder));
+//     }
+
+//     return 'Reminder messages dispatched.';
+// });
+
+Route::get('/test-whatsapp', function () {
+    $reminders = App\Models\Reminder::where('is_sent', false)->get();
+    foreach ($reminders as $reminder) {
+        dispatch(new \App\Jobs\SendReminderMessage($reminder));
+    }
+});
 
 // ---------Login-----------
 Route::get('/', function () {
