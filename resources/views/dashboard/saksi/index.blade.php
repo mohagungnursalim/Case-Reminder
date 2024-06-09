@@ -5,6 +5,13 @@ Saksi
 
 @section('konten')
 
+<head>
+    <style>
+        #refresh {
+            font-size: 17px; /* Ubah ukuran sesuai kebutuhan Anda */
+        }
+    </style>
+</head>
 {{-- Card Table --}}
 <div class="card shadow mt-4">
     <div class="card-body">
@@ -40,20 +47,20 @@ Saksi
               </div>
               @endif
 
-              {{-- Tombol ke halaman form --}}
-              <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#inputModal">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inputModal">
                 Tambah Saksi
               </button>
+              <a href="/dashboard/saksi" class="btn btn-dark"><span class="material-symbols-outlined" id="refresh">refresh</span>Refresh</a>
             <div class="overflow-auto">
                 <table id="myTable" class="table text-dark">
                     <tr>
-                        <th>No</th>
-                        <th>Nama Saksi</th>
-                        <th>Alamat</th>
-                        <th>No Wa</th>
-                        <th>Pekerjaan</th>
-                        <th>Ditambahkan</th>
-                        <th>Aksi</th>
+                        <th class="text-wrap small">No</th>
+                        <th class="text-wrap small">Nama Saksi</th>
+                        <th class="text-wrap small">Alamat</th>
+                        <th class="text-wrap small">No Wa</th>
+                        <th class="text-wrap small">Pekerjaan</th>
+                        <th class="text-wrap small">Ditambahkan</th>
+                        <th class="text-wrap small">Aksi</th>
 
                     </tr>
 
