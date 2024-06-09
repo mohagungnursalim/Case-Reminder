@@ -42,13 +42,13 @@ class SendReminderMessage implements ShouldQueue
         $nama_saksi = is_string($this->reminder->nama_saksi) ? json_decode($this->reminder->nama_saksi, true) : $this->reminder->nama_saksi;
 
         // Konversi array menjadi string yang dipisahkan dengan koma
-        $nama_jaksa_str = is_array($nama_jaksa) ? implode(', ', $nama_jaksa) : $nama_jaksa;
-        $nama_saksi_str = is_array($nama_saksi) ? implode(', ', $nama_saksi) : $nama_saksi;
+        $nama_jaksa_str = is_array($nama_jaksa) ? implode(' , ' , $nama_jaksa) : $nama_jaksa;
+        $nama_saksi_str = is_array($nama_saksi) ? implode(' , ' , $nama_saksi) : $nama_saksi;
 
         Log::debug('Nama Jaksa: ' . $nama_jaksa_str);
         Log::debug('Nama Saksi: ' . $nama_saksi_str);
 
-        $message = "Reminder Sidang Kejaksaan!! \n\n\nNama Jaksa:$nama_jaksa_str\nNama Saksi: $nama_saksi_str\nNama Kasus: {$this->reminder->nama_kasus}\n*Pesan:* {$this->reminder->pesan}";
+        $message = "*Reminder Sidang Kejaksaan!!* \n\n\n*Nama Jaksa:* $nama_jaksa_str\n*Nama Saksi:* $nama_saksi_str\n*Nama Kasus:* {$this->reminder->nama_kasus}\n*Pesan:* {$this->reminder->pesan}";
 
         $nomor_jaksa = is_string($this->reminder->nomor_jaksa) ? json_decode($this->reminder->nomor_jaksa, true) : $this->reminder->nomor_jaksa;
 
