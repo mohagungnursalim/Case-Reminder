@@ -47,7 +47,7 @@ Jaksa
               </div>
               @endif
 
-              {{-- Tombol ke halaman form --}}
+              {{-- Tombol Modal Input --}}
               <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inputModal">
                 Tambah Jaksa
               </button>
