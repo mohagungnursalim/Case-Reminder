@@ -65,6 +65,21 @@ class UserController extends Controller
         return redirect('/dashboard/user')->with('success', 'Password telah direset menjadi password default!');
     }
 
+    public function peran(Request $request, string $id)
+    {
+        $request->validate([
+            'is_admin' => 'required|in:0,1'
+        ]);
+
+        $user = User::findOrFail($id);
+
+        $user->update([
+            'is_admin' => $request->input('is_admin')
+        ]);
+
+        return redirect('/dashboard/user')->with('success', 'Peran berhasil diubah!');
+    }
+
     /**
      * Remove the specified resource from storage.
      */
