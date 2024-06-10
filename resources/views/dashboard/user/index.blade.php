@@ -117,9 +117,13 @@ Kelola User
                         <td>{{ $user->name }}</td>
                         <td>
                             @if ($user->is_admin == false)
-                            <kbd class="bg-success">Operator</kbd>
+                            <button type="button" class="badge bg-success btn-sm" style="border: none" data-bs-toggle="modal" data-bs-target="#editperanModal{{ $user->id }}">
+                                Operator
+                            </button>
                             @else
-                            <kbd class="bg-primary">Admin</kbd>
+                            <button type="button" class="badge bg-danger btn-sm" style="border: none" data-bs-toggle="modal" data-bs-target="#editperanModal{{ $user->id }}">
+                                Admin
+                            </button>
                             @endif
                             
                         </td>
@@ -127,12 +131,13 @@ Kelola User
                         <td>{{ ($user->created_at)->format('d-m-Y') }}</td>
 
                         <td>
-                            <button type="button" class="btn bg-info" data-bs-toggle="modal" data-bs-target="#resetModal{{ $user->id }}">
+
+                            <button type="button" class="btn bg-info btn-sm" data-bs-toggle="modal" data-bs-target="#resetModal{{ $user->id }}">
                                 <span class="material-symbols-outlined text-white">
                                     restart_alt
                                 </span>
                             </button>
-                            <button type="button" class="btn bg-danger" data-bs-toggle="modal" data-bs-target="#editModal{{ $user->id }}">
+                            <button type="button" class="btn bg-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $user->id }}">
                                 <span class="material-symbols-outlined text-white">
                                     delete
                                     </span>
@@ -156,20 +161,51 @@ Kelola User
                 {{ $users->links() }}
             </div>
 
-
-
         </div>
-
-
-
 
     </div>
 
 </div>
 
 @foreach ($users as $user )
+<!-- Modal Update Peran-->
+<div class="modal fade" id="editperanModal{{ $user->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title font-weight-normal" id="exampleModalLabel">Update Peran {{ $user->name }}</h5>
+          <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+            <form method="post" action="{{ route('user.peran',$user->id) }}" class="mb-2">
+                @csrf
+                @method('put')
+                <div class="form-check form-switch">
+                    @if ($user->is_admin == true)
+                        <input class="form-check-input" type="checkbox" name="is_admin" value="0" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Operator</label>
+                    @else
+                        <input class="form-check-input" type="checkbox" name="is_admin" value="1" id="flexSwitchCheckDefault">
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Admin</label>
+                    @endif
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-info">Simpan</button>
+                </div>
+            </form>
+            
+        </div>
+      </div>
+    </div>
+  </div>
+
+@endforeach
+@foreach ($users as $user )
 <!-- Modal Delete-->
-<div class="modal fade" id="editModal{{ $user->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteModal{{ $user->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -198,12 +234,12 @@ Kelola User
 @endforeach
 
 @foreach ($users as $user )
-<!-- Modal Edit-->
+<!-- Modal Reset-->
 <div class="modal fade" id="resetModal{{ $user->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title font-weight-normal" id="exampleModalLabel">Delete User</h5>
+          <h5 class="modal-title font-weight-normal" id="exampleModalLabel">Reset Password User</h5>
           <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>

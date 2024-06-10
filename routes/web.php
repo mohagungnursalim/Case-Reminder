@@ -26,21 +26,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 // testing twilio
-// Route::get('/test-whatsapp', function () {
-//     $reminder = App\Models\Reminder::first();
-//     dispatch(new \App\Jobs\SendReminderMessage($reminder));
-// });
-
-// Route::get('/test-whatsapp', function () {
-//     $reminders = Reminder::all();
-
-//     foreach ($reminders as $reminder) {
-//         dispatch(new SendReminderMessage($reminder));
-//     }
-
-//     return 'Reminder messages dispatched.';
-// });
-
 Route::get('/test-whatsapp', function () {
     $reminders = App\Models\Reminder::where('is_sent', false)->get();
     foreach ($reminders as $reminder) {
@@ -58,6 +43,9 @@ Route::get('/', function () {
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth']);
 
 Route::resource('/dashboard/user', UserController::class)->middleware(['auth','is_admin']);
+// Rute untuk memperbarui peran user
+Route::put('/dashboard/user/peran/{id}', [UserController::class, 'peran'])->middleware(['auth', 'is_admin'])->name('user.peran');
+
 
 Route::resource('/dashboard/agenda', ReminderController::class)->middleware(['auth','is_admin']);
 
