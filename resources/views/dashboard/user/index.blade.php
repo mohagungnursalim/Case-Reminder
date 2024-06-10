@@ -5,12 +5,6 @@ Kelola User
 
 @section('konten')
 
-<head>
-    <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js"
-        integrity="sha256-tG5mcZUtJsZvyKAxYLVXrmjKBVLd6VpVccqz/r4ypFE=" crossorigin="anonymous"></script>
-</head>
-
-
 <div class="card card-frame">
     <div class="card-body">
         <div class="container">
@@ -22,31 +16,43 @@ Kelola User
                 <form class="form-inline" action="{{ route('user.store') }}" method="post">
                     @csrf
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-group mb-2 input-group input-group-outline">
                                 <label for="staticEmail2" class="sr-only">Email</label>
-                                <input type="text" name="email" class="form-control" id="staticEmail2" placeholder="email@example.com">
+                                <input type="email" name="email" class="form-control" id="staticEmail2" placeholder="email@example.com" required>
                             </div>
                             @error('email')
-                                <p class="text-danger small-text">{{$message}}</p>
+                                <p class="text-danger small">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group mb-2 input-group input-group-outline">
+                                <label for="inputNama2" class="sr-only">Nama</label>
+                                <input type="text" class="form-control" name="name" id="inputNama2" placeholder="Nama" required>
+                            </div>
+                            @error('name')
+                                <p class="text-danger small">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="col-md-2">
+                            <div class="input-group input-group-outline @error('is_admin') is-invalid @enderror mb-1">
+                                <label for="role" class="sr-only">Peran</label>
+                                <select id="role" name="is_admin" style="width: 100%;" class="form-control" required>
+                                    <option value="">-Pilih Peran-</option>
+                                    <option value="1">Admin</option>
+                                    <option value="0">Operator</option>
+                                </select>
+                            </div>
+                            @error('is_admin')
+                                <p class="text-danger small">{{ $message }}</p>
                             @enderror
                         </div>
                         <div class="col-md-4">
-                            <div class="form-group mb-2 input-group input-group-outline">
-                                <label for="" class="sr-only">Nama</label>
-                                <input type="text"  class="form-control" name="name" id="inputNama2" placeholder="Nama">
-                            </div>
-                            @error('name')
-                            <p class="text-danger small-text">{{$message}}</p>
-                            @enderror
+                            <button type="submit" class="btn btn-outline-primary mb-2">Buat</button>
                         </div>
-                            <div class="col-md-4">
-                                <input type="hidden" name="is_admin" value="0">
-                                <button type="submit" class="btn btn-outline-primary mb-2">Buat</button>
-                            </div>
-                           
                     </div>
                 </form>
+                
                 
             </div>
         </div>
@@ -97,7 +103,7 @@ Kelola User
                         <th>No</th>
                         <th>Email</th>
                         <th>Nama User</th>
-                        <th>Role</th>
+                        <th>Peran</th>
                         <th>Dibuat</th>
                         <th>Aksi</th>
 
@@ -230,15 +236,20 @@ Kelola User
 
 @endsection
 
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 {{-- Menghilangkan alert --}}
-<script>
-    $(document).ready(function() {
-        // Mengatur timeout untuk menghilangkan alert dalam 2 detik
-        setTimeout(function() {
-            $('#alertContainer').fadeOut('slow');
-        }, 1200);
+  <script>
+    $(document).ready(function(){
+        // Check if the alert exists
+        if ($('#alertContainer').length) {
+            // Set timeout to hide the alert after 2 seconds
+            setTimeout(function(){
+                $('#alertContainer').fadeOut('slow', function(){
+                    $(this).remove();
+                });
+            }, 1500);
+        }
     });
-  </script>
+</script>
