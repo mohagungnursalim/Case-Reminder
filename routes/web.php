@@ -33,6 +33,10 @@ Route::get('/test-whatsapp', function () {
     }
 });
 
+// route agenda json
+Route::get('/agenda-terkirim-sesuai-jadwal', [DashboardController::class, 'agendaTerkirimSesuaiJadwal']);
+Route::get('/agenda-belum-terkirim-sesuai-jadwal', [DashboardController::class, 'agendaBelumTerkirimSesuaiJadwal']);
+
 // ---------Login-----------
 Route::get('/', function () {
     return redirect()->route('login');

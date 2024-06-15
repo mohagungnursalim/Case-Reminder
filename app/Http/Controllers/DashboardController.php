@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Buku;
 use App\Models\Anggota;
+use App\Models\Jaksa;
 use App\Models\Peminjaman;
+use App\Models\Reminder;
+use App\Models\Saksi;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -15,37 +18,45 @@ class DashboardController extends Controller
      */
     public function index(): View
     {
-        // Menghitung total buku
-        $total_buku = Buku::count();
+        // Menghitung agenda yang belum terkirim
+        $agenda_belum_terkirim = Reminder::where('is_sent', false)->count();
 
-        // Menghitung total anggota
-        $total_anggota = Anggota::count();
+        // Menghitung agenda yang terkirim
+        $agenda_terkirim = Reminder::where('is_sent', true)->count();
 
-        // Menghitung total buku yang dipinjam
-        $buku_dipinjam = Peminjaman::where('status', 'Dipinjam')->count();
+        // Menghitung total Jaksa
+        $total_jaksa = Jaksa::count();
 
-        // Menghitung total buku yang dikembalikan
-        $buku_dikembalikan = Peminjaman::where('status', 'Dikembalikan')->count();
+        // Menghitung total Saksi
+        $total_saksi = Saksi::count();
 
-        // Menghitung total denda
-        $total_denda = Peminjaman::sum('denda');
+        return view('dashboard.dashboard.index', compact('agenda_terkirim','agenda_belum_terkirim','total_jaksa','total_saksi'));
+    }
 
-        // Mengambil data untuk chart
-        $topBooks = DB::table('peminjaman_buku')
-            ->select('buku_id', DB::raw('count(*) as total'))
-            ->groupBy('buku_id')
-            ->orderByDesc('total')
-            ->limit(5)
+    public function agendaTerkirimSesuaiJadwal()
+    {
+        $agendaTerkirimSesuaiJadwal = Reminder::select('tanggal_waktu', DB::raw('count(*) as jumlah'))
+            ->where('is_sent', true)
+            ->groupBy('tanggal_waktu')
+            ->orderBy('tanggal_waktu')
             ->get();
 
-        $chart_data = [['Buku', 'Jumlah Peminjaman', ['role' => 'style']]];
-        foreach ($topBooks as $book) {
-            $judulBuku = Buku::findOrFail($book->buku_id)->judul_buku;
-            $randomColor = sprintf('#%06X', mt_rand(0, 0xFFFFFF));
-            $chart_data[] = [$judulBuku, $book->total, $randomColor];
-        }
-        $chart_data_json = json_encode($chart_data);
-
-        return view('dashboard.dashboard.index', compact('total_buku', 'total_anggota', 'buku_dipinjam', 'buku_dikembalikan', 'chart_data_json', 'total_denda'));
+        return response()->json($agendaTerkirimSesuaiJadwal);
     }
+
+    public function agendaBelumTerkirimSesuaiJadwal()
+    {
+        $agendaBelumTerkirimSesuaiJadwal = Reminder::select('tanggal_waktu', DB::raw('count(*) as jumlah'))
+            ->where('is_sent', false)
+            ->groupBy('tanggal_waktu')
+            ->orderBy('tanggal_waktu')
+            ->get()->map(function ($item) {
+                $item->tanggal_waktu = \Carbon\Carbon::parse($item->tanggal_waktu)->toDateTimeString();
+                return $item;
+            });
+
+        return response()->json($agendaBelumTerkirimSesuaiJadwal);
+    }
+
+    
 }
