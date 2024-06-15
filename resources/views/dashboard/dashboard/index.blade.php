@@ -18,12 +18,12 @@ My Dashboard
                     <div
                         class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
                         <span class="material-symbols-outlined fa-3x text-white">
-                            paid
+                            check
                         </span>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize text-bold text-dark">Pendapatan dari Denda</p>
-                        <h4 class="mb-0">Rp{{ number_format($total_denda) }}</h4>
+                        <p class="text-sm mb-0 text-capitalize text-bold text-dark">Agenda Terkirim</p>
+                        <h4 class="mb-0">{{ $agenda_terkirim }}</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
@@ -39,12 +39,12 @@ My Dashboard
                     <div
                         class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
                         <span class="material-symbols-outlined fa-3x text-white">
-                            auto_stories
+                            schedule
                         </span>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize text-bold text-dark">Total Buku</p>
-                        <h4 class="mb-0">{{$total_buku}}</h4>
+                        <p class="text-sm mb-0 text-capitalize text-bold text-dark">Agenda Belum Terkirim</p>
+                        <h4 class="mb-0">{{ $agenda_belum_terkirim }}</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
@@ -54,7 +54,7 @@ My Dashboard
             </div>
         </div>
 
-        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
             <div class="card">
                 <div class="card-header p-3 pt-2">
                     <div
@@ -64,8 +64,8 @@ My Dashboard
                         </span>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize text-bold text-dark">Total Anggota</p>
-                        <h4 class="mb-0"> {{$total_anggota}} </h4>
+                        <p class="text-sm mb-0 text-capitalize text-bold text-dark">Total Jaksa</p>
+                        <h4 class="mb-0">{{ $total_jaksa }}</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
@@ -80,32 +80,12 @@ My Dashboard
                     <div
                         class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
                         <span class="material-symbols-outlined fa-3x text-white">
-                            beenhere
+                            adaptive_audio_mic
                         </span>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize text-bold text-dark">Peminjaman</p>
-                        <h4 class="mb-0"> {{$buku_dipinjam}} </h4>
-                    </div>
-                </div>
-                <hr class="dark horizontal my-0">
-                <div class="card-footer p-3">
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-sm-6 mt-4">
-            <div class="card">
-                <div class="card-header p-3 pt-2">
-                    <div
-                        class="icon icon-lg icon-shape bg-gradient-warning shadow-warning text-center border-radius-xl mt-n4 position-absolute">
-                        <span class="material-symbols-outlined fa-3x text-white">
-                            keyboard_return
-                        </span>
-                    </div>
-                    <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize text-bold text-dark">Telah Dikembalikan</p>
-                        <h4 class="mb-0"> {{$buku_dikembalikan}} </h4>
+                        <p class="text-sm mb-0 text-capitalize text-bold text-dark">Total Saksi</p>
+                        <h4 class="mb-0">{{ $total_saksi }}</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
@@ -118,38 +98,107 @@ My Dashboard
 
     <div class="row mt-4">
 
-      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-      <script type="text/javascript">
-          google.charts.load("current", {
-              packages: ['corechart']
-          });
-          google.charts.setOnLoadCallback(drawChart);
+      <!-- Chart container -->
+    <div id="chart_div"></div>
+    <div id="chart_belum_terkirim_div"></div>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-          function drawChart() {
-              // Ambil data dari PHP yang disediakan oleh controller
-              var chart_data = {!! $chart_data_json !!};
+    <script type="text/javascript">
+        // Load Google Charts
+        google.charts.load('current', {'packages':['corechart']});
 
-              var data = google.visualization.arrayToDataTable(chart_data);
+        // Draw the chart when Google Charts is loaded
+        google.charts.setOnLoadCallback(drawChart);
 
-              var options = {
-                  title: "5 Buku dengan total peminjaman terbanyak",
-                  width: 1100,
-                  height: 400,
-                  bar: {
-                      groupWidth: "95%"
-                  },
-                  legend: {
-                      position: "none"
-                  },
-              };
-              var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
-              chart.draw(data, options);
-          }
+        function drawChart() {
+            $.ajax({
+                url: "{{ url('/agenda-terkirim-sesuai-jadwal') }}",
+                dataType: "json",
+                success: function(data) {
+                    // Create the data table.
+                    var dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn('datetime', 'Tanggal Waktu');
+                    dataTable.addColumn('number', 'Jumlah');
 
-      </script>
+                    // Parse the JSON data and add it to the data table
+                    $.each(data, function(index, row) {
+                        dataTable.addRow([new Date(row.tanggal_waktu), row.jumlah]);
+                    });
 
-      
-        <div id="columnchart_values" style="width: 900px; height: 300px;"></div>
+                    // Set chart options
+                    var options = {
+                        title: 'Agenda Terkirim Sesuai Jadwal',
+                        curveType: 'function',
+                        legend: { position: 'bottom' }
+                    };
+
+                    // Instantiate and draw the chart
+                    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+                    chart.draw(dataTable, options);
+                }
+            });
+        }
+    </script>
+
+<script type="text/javascript">
+    // Load Google Charts
+    google.charts.load('current', {'packages':['corechart']});
+
+    // Draw the charts when Google Charts is loaded
+    google.charts.setOnLoadCallback(drawTerkirimChart);
+    google.charts.setOnLoadCallback(drawBelumTerkirimChart);
+
+    function drawTerkirimChart() {
+        $.ajax({
+            url: "{{ url('/agenda-terkirim-sesuai-jadwal') }}",
+            dataType: "json",
+            success: function(data) {
+                var dataTable = new google.visualization.DataTable();
+                dataTable.addColumn('datetime', 'Tanggal Waktu');
+                dataTable.addColumn('number', 'Jumlah');
+
+                $.each(data, function(index, row) {
+                    dataTable.addRow([new Date(row.tanggal_waktu), row.jumlah]);
+                });
+
+                var options = {
+                    title: 'Agenda Terkirim Sesuai Jadwal',
+                    curveType: 'function',
+                    legend: { position: 'bottom' }
+                };
+
+                var chart = new google.visualization.AreaChart(document.getElementById('chart_terkirim_div'));
+                chart.draw(dataTable, options);
+            }
+        });
+    }
+
+    function drawBelumTerkirimChart() {
+        $.ajax({
+            url: "{{ url('/agenda-belum-terkirim-sesuai-jadwal') }}",
+            dataType: "json",
+            success: function(data) {
+                var dataTable = new google.visualization.DataTable();
+                dataTable.addColumn('datetime', 'Tanggal Waktu');
+                dataTable.addColumn('number', 'Jumlah');
+
+                $.each(data, function(index, row) {
+                    dataTable.addRow([new Date(row.tanggal_waktu), row.jumlah]);
+                });
+
+                var options = {
+                    title: 'Agenda Belum Terkirim Sesuai Jadwal',
+                    curveType: 'function',
+                    legend: { position: 'bottom' }
+                };
+
+                var chart = new google.visualization.AreaChart(document.getElementById('chart_belum_terkirim_div'));
+                chart.draw(dataTable, options);
+            }
+        });
+    }
+</script>
 
     </div>
 
