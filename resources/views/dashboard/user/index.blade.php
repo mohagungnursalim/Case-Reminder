@@ -246,7 +246,7 @@ Kelola User
         </div>
         <div class="modal-body">
           
-            <h4>Dengan mengklik reset maka password user <kbd>{{$user->name}}</kbd> akan menjadi password default!</h4>
+            <h4>Dengan mengklik reset maka password user <kbd>{{$user->name}}</kbd> akan menjadi password bawaan!</h4>
 
             <form method="post" action="{{ route('user.update',$user->id) }}}}" class="mb-5"
                 enctype="multipart/form-data">

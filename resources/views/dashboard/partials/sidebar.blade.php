@@ -7,7 +7,7 @@
             aria-hidden="true" id="iconSidenav"></i>
         <a class="navbar-brand m-0" href="/dashboard">
             {{-- <img src="" class="navbar-brand-img h-100" alt="main_logo"> --}}
-            <span class="ms-1 font-weight-bold text-white">Case Reminder App</span>
+            <span class="ms-1 font-weight-bold text-white">SI-RIKSALIDIK</span>
         </a>
     </div>
 
