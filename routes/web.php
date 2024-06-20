@@ -5,6 +5,7 @@ use App\Http\Controllers\BukuController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JaksaController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\ProyekController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReminderController;
@@ -33,6 +34,7 @@ Route::get('/test-whatsapp', function () {
     }
 });
 
+Route::get('/dashboard/logs', [LogController::class, 'showLogs']);
 // route agenda json
 Route::get('/agenda-terkirim-sesuai-jadwal', [DashboardController::class, 'agendaTerkirimSesuaiJadwal']);
 Route::get('/agenda-belum-terkirim-sesuai-jadwal', [DashboardController::class, 'agendaBelumTerkirimSesuaiJadwal']);
