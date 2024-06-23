@@ -45,8 +45,8 @@ class ReminderController extends Controller
     // halaman form
     public function create()
     {
-        $jaksas = Jaksa::latest()->get();
-        $saksis = Saksi::latest()->get();
+        $jaksas = Jaksa::select('nama','nomor_wa')->latest()->get();
+        $saksis = Saksi::select('nama')->latest()->get();
         return view('dashboard.agenda.create',compact('jaksas','saksis'));
     }
 
