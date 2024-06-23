@@ -19,23 +19,23 @@ class DashboardController extends Controller
     public function index(): View
     {
         // Menghitung agenda yang belum terkirim
-        $agenda_belum_terkirim = Reminder::where('is_sent', false)->count();
+        $agenda_belum_terkirim = Reminder::where('is_sent', false)->select('id')->count();
 
         // Menghitung agenda yang terkirim
-        $agenda_terkirim = Reminder::where('is_sent', true)->count();
+        $agenda_terkirim = Reminder::where('is_sent', true)->select('id')->count();
 
         // Menghitung total Jaksa
-        $total_jaksa = Jaksa::count();
+        $total_jaksa = Jaksa::select('id')->count();
 
         // Menghitung total Saksi
-        $total_saksi = Saksi::count();
+        $total_saksi = Saksi::select('id')->count();
 
         return view('dashboard.dashboard.index', compact('agenda_terkirim','agenda_belum_terkirim','total_jaksa','total_saksi'));
     }
 
     public function agendaTerkirimSesuaiJadwal()
     {
-        $agendaTerkirimSesuaiJadwal = Reminder::select('tanggal_waktu', DB::raw('count(*) as jumlah'))
+        $agendaTerkirimSesuaiJadwal = Reminder::select('tanggal_waktu', DB::raw('count(id) as jumlah'))
             ->where('is_sent', true)
             ->groupBy('tanggal_waktu')
             ->orderBy('tanggal_waktu')
@@ -46,7 +46,7 @@ class DashboardController extends Controller
 
     public function agendaBelumTerkirimSesuaiJadwal()
     {
-        $agendaBelumTerkirimSesuaiJadwal = Reminder::select('tanggal_waktu', DB::raw('count(*) as jumlah'))
+        $agendaBelumTerkirimSesuaiJadwal = Reminder::select('tanggal_waktu', DB::raw('count(id) as jumlah'))
             ->where('is_sent', false)
             ->groupBy('tanggal_waktu')
             ->orderBy('tanggal_waktu')
