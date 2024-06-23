@@ -15,8 +15,8 @@ class ReminderController extends Controller
     public function index(Request $request)
     {
        // Ambil data jaksa dan saksi untuk ditampilkan di view
-        $jaksas = Jaksa::latest()->get();
-        $saksis = Saksi::latest()->get();
+        $jaksas = Jaksa::select('nama','nomor_wa')->latest()->get();
+        $saksis = Saksi::select('nama')->latest()->get();
 
         // Membuat query builder untuk mengambil data reminder
         $query = Reminder::query();
@@ -33,7 +33,7 @@ class ReminderController extends Controller
                 ->orWhere('tanggal_waktu', 'like', '%'.$search.'%');
         }
 
-        // Ambil data reminder berdasarkan query yang telah dibuat
+        // Ambil data reminder berdasarkan query yang telah dibuat lalu paginasi perbaris (10)
         $reminders = $query->latest()->simplePaginate(10);
         return view('dashboard.agenda.index', compact('reminders','jaksas','saksis'));
     }
