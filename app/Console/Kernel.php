@@ -14,19 +14,18 @@ class Kernel extends ConsoleKernel
 {
     protected function schedule(Schedule $schedule)
     {   
-    $schedule->call(function () {
-        $reminders = DB::table('reminders')
-            ->where('tanggal_waktu', '>=', now()->addHours(4))
-            ->where('tanggal_waktu', '<', now()->addHours(5))
-            ->where('is_sent', false)
-            ->get();
+        $schedule->call(function () {
+            $reminders = Reminder::where('tanggal_waktu', '>=', now()->addHours(4))
+                ->where('tanggal_waktu', '<', now()->addHours(5))
+                ->where('is_sent', false)
+                ->get();
 
-            $reminders = Reminder::where('is_sent', false)->get();
             foreach ($reminders as $reminder) {
                 dispatch(new \App\Jobs\SendReminderMessage($reminder));
             }
-    })->hourly();
+        })->hourly();
     }
+
 
 
     protected function commands()
