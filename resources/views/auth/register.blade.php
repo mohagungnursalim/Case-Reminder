@@ -28,15 +28,15 @@
                   </div>
                   <div class="input-group input-group-outline mb-2">
                     <label class="form-label">Email</label>
-                    <input name="email" type="email" class="form-control">
+                    <input name="email" type="email" required class="form-control">
                   </div>
                   <div class="input-group input-group-outline mb-3">
                     <label class="form-label">Password</label>
-                    <input name="password" type="password" class="form-control">
+                    <input name="password" type="password" required class="form-control">
                   </div>
                   <div class="input-group input-group-outline mb-3">
                     <label class="form-label">Password Confirmation</label>
-                    <input name="password_confirmation" type="password" class="form-control">
+                    <input name="password_confirmation" required type="password" class="form-control">
                   </div>
                  
                   <div class="text-center">
