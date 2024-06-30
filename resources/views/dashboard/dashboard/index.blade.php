@@ -1,6 +1,6 @@
 @extends('dashboard.layouts.main')
 @section('judul-halaman')
-My Dashboard
+{{ Auth::user()->name }}
 @endsection
 
 @section('konten')
