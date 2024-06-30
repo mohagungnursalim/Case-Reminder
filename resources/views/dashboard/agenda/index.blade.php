@@ -16,6 +16,27 @@ Agenda
             font-size: 17px; /* Ubah ukuran sesuai kebutuhan Anda */
         }
     </style>
+    <style>
+       .namaJaksa {
+            border: none;
+            background-color: #85c1e9; /* Ganti dengan warna latar belakang yang Anda inginkan */
+            color: #0056b3; /* Ganti dengan warna teks yang Anda inginkan */
+        }
+        .success {
+            border: none;
+            background-color: #a3e4a9; 
+            color: #196f3d; /* Ganti dengan warna teks yang Anda inginkan */
+        }
+        .secondary {
+            border: none;
+            background-color: #d2d0d0; 
+            color: #595959; /* Ganti dengan warna teks yang Anda inginkan */
+        }
+        .warning { 
+            border: none;
+            background-color: #fbdba8; 
+            color: #b9770e; }
+    </style>
 </head>
 
 {{-- Card Table --}}
@@ -78,14 +99,14 @@ Agenda
                         <td class="text-wrap small">{{ $loop->iteration }}</td>
                         <td class="text-wrap small">
                             @foreach(json_decode($reminder->nama_jaksa) as $nama_jaksa)
-                                <button type="button" class="badge bg-info mt-1" style="border:none">
+                                <button type="button" class="badge mt-1 namaJaksa">
                                     {{ $nama_jaksa }}
                                 </button>
                             @endforeach
                         </td>
                         <td class="text-wrap small">
                             @foreach(json_decode($reminder->nomor_jaksa) as $nomor_jaksa)
-                            <button type="button" class="badge bg-info mt-1" style="border:none">
+                            <button type="button" class="badge bg-success mt-1" style="border:none">
                                 {{ $nomor_jaksa }}
                             </button>
                             @endforeach
@@ -93,7 +114,7 @@ Agenda
                         <td class="text-wrap small">{{ $reminder->nama_kasus }}</td>
                         <td class="text-wrap small">
                             @foreach(json_decode($reminder->nama_saksi) as $nama_saksi)
-                            <button type="button" class="badge bg-info mt-1" style="border:none">
+                            <button type="button" class="badge warning mt-1" style="border:none">
                                 {{ $nama_saksi }}
                             </button>
                             @endforeach
@@ -111,11 +132,11 @@ Agenda
                         </td>
                         <td class="text-wrap small">
                            @if ($reminder->is_sent == true)
-                            <button type="button" class="badge bg-success mt-1" style="border:none">
+                            <button type="button" class="badge success mt-1" style="border:none">
                                 <span class="material-symbols-outlined status">check</span> Terkirim
                             </button>
                             @else
-                            <button type="button" class="badge bg-secondary mt-1" style="border:none">
+                            <button type="button" class="badge secondary mt-1" style="border:none">
                                 <span class="material-symbols-outlined status">schedule</span> Penjadwalan
                             </button>
                            @endif
