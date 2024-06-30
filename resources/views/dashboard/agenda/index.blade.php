@@ -17,7 +17,7 @@ Agenda
         }
     </style>
     <style>
-       .namaJaksa {
+       .info {
             border: none;
             background-color: #85c1e9; /* Ganti dengan warna latar belakang yang Anda inginkan */
             color: #0056b3; /* Ganti dengan warna teks yang Anda inginkan */
@@ -36,6 +36,16 @@ Agenda
             border: none;
             background-color: #fbdba8; 
             color: #b9770e; }
+    </style>
+    <style>
+        .hidden-text {
+            display: none;
+        }
+        .read-more-btn, .read-less-btn {
+            color: blue;
+            cursor: pointer;
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -99,7 +109,7 @@ Agenda
                         <td class="text-wrap small">{{ $loop->iteration }}</td>
                         <td class="text-wrap small">
                             @foreach(json_decode($reminder->nama_jaksa) as $nama_jaksa)
-                                <button type="button" class="badge mt-1 namaJaksa">
+                                <button type="button" class="badge mt-1 info">
                                     {{ $nama_jaksa }}
                                 </button>
                             @endforeach
@@ -119,7 +129,18 @@ Agenda
                             </button>
                             @endforeach
                         </td>
-                        <td class="text-wrap small">{{ $reminder->pesan }}</td>
+                        <td class="text-wrap small">
+                            <span class="short-text">
+                                {{ implode(' ', array_slice(explode(' ', $reminder->pesan), 0, 8)) }}
+                                @if (str_word_count($reminder->pesan) > 8)
+                                <span class="read-more-btn">Read more</span>
+                                @endif
+                            </span>
+                            <span class="full-text hidden-text">
+                                {{ $reminder->pesan }}
+                                <span class="read-less-btn">Read less</span>
+                            </span>
+                        </td>
                         <td class="text-wrap small">
                             <div class="d-flex flex-column">
                                 <span class="font-weight-bold">Tgl:</span>
@@ -350,3 +371,28 @@ Agenda
         }, 1200);
     });
   </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var readMoreButtons = document.querySelectorAll('.read-more-btn');
+        var readLessButtons = document.querySelectorAll('.read-less-btn');
+
+        readMoreButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var shortText = button.parentElement;
+                var fullText = shortText.nextElementSibling;
+                shortText.style.display = 'none';
+                fullText.style.display = 'inline';
+            });
+        });
+
+        readLessButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var fullText = button.parentElement;
+                var shortText = fullText.previousElementSibling;
+                fullText.style.display = 'none';
+                shortText.style.display = 'inline';
+            });
+        });
+    });
+</script>
