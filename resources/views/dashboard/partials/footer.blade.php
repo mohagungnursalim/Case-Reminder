@@ -5,9 +5,8 @@
                 <div class="copyright text-center text-sm text-muted text-lg-start">
                     © <script>
                         document.write(new Date().getFullYear())
-
-                    </script>
-                    Case Reminder.
+                      </script> SI-RIKSALIDIK,
+                       All rights reserved.
                 </div>
             </div>
         </div>

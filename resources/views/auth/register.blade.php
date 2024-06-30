@@ -56,8 +56,8 @@
               <div class="copyright text-center text-sm text-white text-lg-start">
                 © <script>
                   document.write(new Date().getFullYear())
-                </script>,
-                made with <i class="fa fa-heart" aria-hidden="true"></i> 
+                </script> SI-RIKSALIDIK,
+                 All rights reserved.
               </div>
             </div>
             
