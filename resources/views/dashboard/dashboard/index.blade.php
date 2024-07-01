@@ -99,107 +99,141 @@
     <div class="row mt-4">
 
       <!-- Chart container -->
-    <div id="chart_div"></div>
+    <div id="chart_terkirim_div"></div>
     <div id="chart_belum_terkirim_div"></div>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-    <script type="text/javascript">
+   
+
+    {{-- <script type="text/javascript">
         // Load Google Charts
         google.charts.load('current', {'packages':['corechart']});
 
-        // Draw the chart when Google Charts is loaded
-        google.charts.setOnLoadCallback(drawChart);
+        // Draw the charts when Google Charts is loaded
+        google.charts.setOnLoadCallback(drawTerkirimChart);
+        google.charts.setOnLoadCallback(drawBelumTerkirimChart);
 
-        function drawChart() {
+        function drawTerkirimChart() {
             $.ajax({
                 url: "{{ url('/agenda-terkirim-sesuai-jadwal') }}",
                 dataType: "json",
                 success: function(data) {
-                    // Create the data table.
                     var dataTable = new google.visualization.DataTable();
                     dataTable.addColumn('datetime', 'Tanggal Waktu');
                     dataTable.addColumn('number', 'Jumlah');
 
-                    // Parse the JSON data and add it to the data table
                     $.each(data, function(index, row) {
                         dataTable.addRow([new Date(row.tanggal_waktu), row.jumlah]);
                     });
 
-                    // Set chart options
                     var options = {
                         title: 'Agenda Terkirim Sesuai Jadwal',
                         curveType: 'function',
                         legend: { position: 'bottom' }
                     };
 
-                    // Instantiate and draw the chart
-                    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+                    var chart = new google.visualization.AreaChart(document.getElementById('chart_terkirim_div'));
+                    chart.draw(dataTable, options);
+                }
+            });
+        }
+
+        function drawBelumTerkirimChart() {
+            $.ajax({
+                url: "{{ url('/agenda-belum-terkirim-sesuai-jadwal') }}",
+                dataType: "json",
+                success: function(data) {
+                    var dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn('datetime', 'Tanggal Waktu');
+                    dataTable.addColumn('number', 'Jumlah');
+
+                    $.each(data, function(index, row) {
+                        dataTable.addRow([new Date(row.tanggal_waktu), row.jumlah]);
+                    });
+
+                    var options = {
+                        title: 'Agenda Belum Terkirim Sesuai Jadwal',
+                        curveType: 'function',
+                        legend: { position: 'bottom' }
+                    };
+
+                    var chart = new google.visualization.AreaChart(document.getElementById('chart_belum_terkirim_div'));
+                    chart.draw(dataTable, options);
+                }
+            });
+        }
+    </script> --}}
+
+    <script type="text/javascript">
+        // Load Google Charts
+        google.charts.load('current', {'packages':['corechart']});
+    
+        // Draw the charts when Google Charts is loaded
+        google.charts.setOnLoadCallback(initCharts);
+    
+        function initCharts() {
+            drawTerkirimChart();
+            drawBelumTerkirimChart();
+    
+            // Set interval to poll every 8 seconds
+            setInterval(function() {
+                drawTerkirimChart();
+                drawBelumTerkirimChart();
+            }, 8000);
+        }
+    
+        function drawTerkirimChart() {
+            $.ajax({
+                url: "{{ url('/agenda-terkirim-sesuai-jadwal') }}",
+                dataType: "json",
+                success: function(data) {
+                    var dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn('datetime', 'Tanggal Waktu');
+                    dataTable.addColumn('number', 'Jumlah');
+    
+                    $.each(data, function(index, row) {
+                        dataTable.addRow([new Date(row.tanggal_waktu), row.jumlah]);
+                    });
+    
+                    var options = {
+                        title: 'Agenda Terkirim Sesuai Jadwal',
+                        curveType: 'function',
+                        legend: { position: 'bottom' }
+                    };
+    
+                    var chart = new google.visualization.AreaChart(document.getElementById('chart_terkirim_div'));
+                    chart.draw(dataTable, options);
+                }
+            });
+        }
+    
+        function drawBelumTerkirimChart() {
+            $.ajax({
+                url: "{{ url('/agenda-belum-terkirim-sesuai-jadwal') }}",
+                dataType: "json",
+                success: function(data) {
+                    var dataTable = new google.visualization.DataTable();
+                    dataTable.addColumn('datetime', 'Tanggal Waktu');
+                    dataTable.addColumn('number', 'Jumlah');
+    
+                    $.each(data, function(index, row) {
+                        dataTable.addRow([new Date(row.tanggal_waktu), row.jumlah]);
+                    });
+    
+                    var options = {
+                        title: 'Agenda Belum Terkirim Sesuai Jadwal',
+                        curveType: 'function',
+                        legend: { position: 'bottom' }
+                    };
+    
+                    var chart = new google.visualization.AreaChart(document.getElementById('chart_belum_terkirim_div'));
                     chart.draw(dataTable, options);
                 }
             });
         }
     </script>
-
-<script type="text/javascript">
-    // Load Google Charts
-    google.charts.load('current', {'packages':['corechart']});
-
-    // Draw the charts when Google Charts is loaded
-    google.charts.setOnLoadCallback(drawTerkirimChart);
-    google.charts.setOnLoadCallback(drawBelumTerkirimChart);
-
-    function drawTerkirimChart() {
-        $.ajax({
-            url: "{{ url('/agenda-terkirim-sesuai-jadwal') }}",
-            dataType: "json",
-            success: function(data) {
-                var dataTable = new google.visualization.DataTable();
-                dataTable.addColumn('datetime', 'Tanggal Waktu');
-                dataTable.addColumn('number', 'Jumlah');
-
-                $.each(data, function(index, row) {
-                    dataTable.addRow([new Date(row.tanggal_waktu), row.jumlah]);
-                });
-
-                var options = {
-                    title: 'Agenda Terkirim Sesuai Jadwal',
-                    curveType: 'function',
-                    legend: { position: 'bottom' }
-                };
-
-                var chart = new google.visualization.AreaChart(document.getElementById('chart_terkirim_div'));
-                chart.draw(dataTable, options);
-            }
-        });
-    }
-
-    function drawBelumTerkirimChart() {
-        $.ajax({
-            url: "{{ url('/agenda-belum-terkirim-sesuai-jadwal') }}",
-            dataType: "json",
-            success: function(data) {
-                var dataTable = new google.visualization.DataTable();
-                dataTable.addColumn('datetime', 'Tanggal Waktu');
-                dataTable.addColumn('number', 'Jumlah');
-
-                $.each(data, function(index, row) {
-                    dataTable.addRow([new Date(row.tanggal_waktu), row.jumlah]);
-                });
-
-                var options = {
-                    title: 'Agenda Belum Terkirim Sesuai Jadwal',
-                    curveType: 'function',
-                    legend: { position: 'bottom' }
-                };
-
-                var chart = new google.visualization.AreaChart(document.getElementById('chart_belum_terkirim_div'));
-                chart.draw(dataTable, options);
-            }
-        });
-    }
-</script>
-
+    
     </div>
 
     @endsection
