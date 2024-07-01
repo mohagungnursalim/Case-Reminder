@@ -1,6 +1,6 @@
 @extends('layouts.authentication')
 @section('judul-halaman')
-    Register | 
+    Register | SI-RIKSALIDIK
 @endsection
 
 @section('konten')
