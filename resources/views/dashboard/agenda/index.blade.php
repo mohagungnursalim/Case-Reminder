@@ -6,7 +6,7 @@ Agenda
 @section('konten')
 
 <head>
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> --}}
+    <link rel="icon" href="{{ asset('assets/favicon_io/favicon.ico') }}" type="image/x-icon">
     <style>
         .status {
             font-size: 12px; /* Ubah ukuran sesuai kebutuhan Anda */
