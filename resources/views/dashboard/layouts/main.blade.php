@@ -13,7 +13,6 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 {{-- Head --}}
 @includeIf('dashboard.partials.header')
 {{-- End head --}}
