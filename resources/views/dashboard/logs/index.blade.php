@@ -11,6 +11,33 @@ Log Status
             font-size: 17px; /* Ubah ukuran sesuai kebutuhan Anda */
         }
     </style>
+    <style>
+        .info {
+            border: none;
+            background-color: #85c1e9; /* Ganti dengan warna latar belakang yang Anda inginkan */
+            color: #0056b3; /* Ganti dengan warna teks yang Anda inginkan */
+        }
+        .success {
+            border: none;
+            background-color: #a3e4a9; 
+            color: #196f3d; /* Ganti dengan warna teks yang Anda inginkan */
+        }
+        .secondary {
+            border: none;
+            background-color: #d2d0d0; 
+            color: #595959; /* Ganti dengan warna teks yang Anda inginkan */
+        }
+        .warning { 
+            border: none;
+            background-color: #fbdba8; 
+            color: #b9770e; 
+        }
+        .danger { 
+            border: none;
+            background-color: #fba8a8; 
+            color: #b90e0e; }
+
+    </style>
 </head>
 {{-- Card Table --}}
 <div class="card shadow mt-4">
@@ -42,55 +69,58 @@ Log Status
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Direction</th>
-                        <th>From</th>
-                        <th>To</th>
-                        <th>Status</th>
-                        <th>Date Sent</th>
+                        <th class="text-wrap small">Direction</th>
+                        <th class="text-wrap small">From</th>
+                        <th class="text-wrap small">To</th>
+                        <th class="text-wrap small">Status</th>
+                        <th class="text-wrap small">Date Sent (Waktu Server)</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($messages as $message)
                         <tr>
-                            <td>
+                            <td class="text-wrap small">
                                 @if ($message['direction'] == 'inbound')
                                     Pesan Masuk
                                 @elseif ($message['direction'] == 'outbound-api')
                                     Pesan keluar(Dikirim)
                                 @endif
                             </td>
-                            <td>{{ $message['from'] }}</td>
-                            <td>{{ $message['to'] }}</td>
-                            <td>
+                            <td class="text-wrap small">{{ $message['from'] }}</td>
+                            <td class="text-wrap small">{{ $message['to'] }}</td>
+                            <td class="text-wrap small">
                                 @if ($message['status'] == 'read') 
-                                Dibaca 
+                                <button class="badge success">
+                                    Dibaca 
+                                </button>
                                 @elseif ($message['status'] == 'delivered') 
-                                Terkirim
+                                <button class="badge secondary">
+                                    Terkirim
+                                </button>
                                 @elseif ($message['status'] == 'received')
-                                Diterima
+                                <button class="badge info">
+                                    Diterima
+                                </button>
                                 @elseif ($message['status'] == 'failed')
-                                Gagal Terkirim
+                                <button class="badge danger">
+                                    Gagal Terkirim
+                                </button>
                                 @endif 
                             </td>
-                            <td>{{ $message['date_sent'] }}</td>
+                            <td class="text-wrap small">{{ $message['date_sent'] }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-            <div class="d-flex justify-content-center">
-                {{ $messagesPaginated->links() }} {{-- Menampilkan link halaman paginasi --}}
-            </div>
+            
           
         @else
-            <p>No messages found.</p>
+            <p>Tidak Ada Pesan.</p>
         @endif
             </div>
-            <div class="d-flex justify-content-center">
-                {{-- {{ $jaksas->links() }} --}}
+            <div class="text-center mt-3">
+                {{ $messagesPaginated->links() }} {{-- Menampilkan link halaman paginasi --}}
             </div>
-
-
-
         </div>
 
 

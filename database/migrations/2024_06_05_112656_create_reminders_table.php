@@ -15,9 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('nama_kasus');
             $table->text('pesan');
+            $table->json('nama_atasan');
+            $table->json('nomor_atasan');
             $table->json('nama_jaksa');
             $table->json('nomor_jaksa');
             $table->json('nama_saksi');
+            $table->boolean('is_sent')->default(0);
             $table->dateTime('tanggal_waktu');
             $table->timestamps();
         });

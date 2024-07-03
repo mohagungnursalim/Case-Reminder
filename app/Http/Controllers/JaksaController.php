@@ -108,6 +108,7 @@ class JaksaController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $jaksa = Jaksa::findOrFail($id);
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string',
             'alamat' => 'required|string',
@@ -121,14 +122,12 @@ class JaksaController extends Controller
                 ->withInput()
                 ->with('inputModal', true);
         }
-
-        $jaksa = Jaksa::findOrFail($id);
-
+        $nomor_wa = $this->formatNomorWA($request->nomor_wa);
         // Perbarui data jaksa dengan data yang baru
         $jaksa->update([
             'nama' => $request->nama,
             'alamat' => $request->alamat,
-            'nomor_wa' => $request->nomor_wa,
+            'nomor_wa' => $nomor_wa,
             'jabatan' => $request->jabatan,
         ]);
 
@@ -159,18 +158,24 @@ class JaksaController extends Controller
     // Fungsi untuk memformat nomor WhatsApp
     private function formatNomorWA($nomor_wa)
     {
-        // Hapus karakter non-digit dari nomor
+        // Hapus tanda minus (-) dari nomor
+        $nomor_wa = str_replace('-', '', $nomor_wa);
+
+        // Hapus karakter non-digit lainnya dari nomor
         $nomor_wa = preg_replace('/\D/', '', $nomor_wa);
 
         // Jika nomor dimulai dengan 0, hapus 0 pertama dan tambahkan kode negara
         if (substr($nomor_wa, 0, 1) == '0') {
-            $nomor_wa = '+62' . substr($nomor_wa, 1);
+            $nomor_wa = '62' . substr($nomor_wa, 1);
         }
 
         // Jika nomor tidak dimulai dengan kode negara +62, tambahkan + di depan 62
-        if (substr($nomor_wa, 0, 1) != '+' && substr($nomor_wa, 0, 2) != '62' && strlen($nomor_wa) > 9) {
-            $nomor_wa = '+' . $nomor_wa;
+        if (substr($nomor_wa, 0, 2) != '62') {
+            $nomor_wa = '62' . $nomor_wa;
         }
+
+        // Tambahkan + di depan nomor
+        $nomor_wa = '+' . $nomor_wa;
 
         return $nomor_wa;
     }

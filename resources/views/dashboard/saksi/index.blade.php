@@ -100,7 +100,7 @@ Saksi
                     @endif
                 </table>
             </div>
-            <div class="d-flex justify-content-center">
+            <div class="text-center mt-3">
                 {{ $saksis->links() }}
             </div>
 
@@ -128,7 +128,7 @@ Saksi
             @csrf
             <label for="nama">Nama Saksi</label>
             <div class="input-group input-group-outline @error('nama') is-invalid @enderror">
-                <input class="form-control" type="text" name="nama" id="nama" >
+                <input class="form-control" type="text" name="nama" id="nama" placeholder="Masukan Nama..">
             </div>
             @error('nama')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -136,7 +136,7 @@ Saksi
 
             <label class="alamat">Alamat</label>
             <div class="input-group input-group-outline @error('alamat') is-invalid @enderror">
-                <input class="form-control" type="text" name="alamat" id="alamat" >
+                <input class="form-control" type="text" name="alamat" id="alamat" placeholder="Masukan Alamat..">
             </div>
             @error('alamat')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -144,15 +144,15 @@ Saksi
 
             <label for="nomor_wa">No Wa</label>
             <div class="input-group input-group-outline @error('nomor_wa') is-invalid @enderror">
-                <input class="form-control" type="number" name="nomor_wa" id="nomor_wa" >
+                <input class="form-control" type="text" name="nomor_wa" id="nomor_wa" placeholder="e.g.08575706xxxx">
             </div>
             @error('nomor_wa')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
             @enderror
 
-            <label for="pekerjaan">pekerjaan</label>
+            <label for="pekerjaan">Pekerjaan</label>
             <div class="input-group input-group-outline @error('pekerjaan') is-invalid @enderror">
-                <input class="form-control" type="text" name="pekerjaan" id="pekerjaan" >
+                <input class="form-control" type="text" name="pekerjaan" id="pekerjaan" placeholder="Masukan Pekerjaan..">
             </div>
             @error('pekerjaan')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -183,7 +183,7 @@ Saksi
             @method('PUT')
             <label for="nama">Nama Saksi</label>
             <div class="input-group input-group-outline @error('nama') is-invalid @enderror">
-                <input class="form-control" type="text" name="nama" id="nama" required value="{{ old('nama', $saksi->nama) }}">
+                <input class="form-control" type="text" name="nama" id="nama" required value="{{ old('nama', $saksi->nama) }}" placeholder="Masukan Nama..">
             </div>
             @error('nama')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -191,7 +191,7 @@ Saksi
   
             <label for="alamat">Alamat</label>
             <div class="input-group input-group-outline @error('alamat') is-invalid @enderror">
-                <input class="form-control" type="text" name="alamat" id="alamat" required value="{{ old('alamat', $saksi->alamat) }}">
+                <input class="form-control" type="text" name="alamat" id="alamat" required value="{{ old('alamat', $saksi->alamat) }}" placeholder="Masukan Alamat..">
             </div>
             @error('alamat')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -199,7 +199,7 @@ Saksi
   
             <label for="nomor_wa">No Wa</label>
             <div class="input-group input-group-outline @error('nomor_wa') is-invalid @enderror">
-                <input class="form-control" type="number" name="nomor_wa" id="nomor_wa" required value="{{ old('nomor_wa', $saksi->nomor_wa) }}">
+                <input class="form-control" type="text" name="nomor_wa" id="nomor_wa" required value="{{ old('nomor_wa', $saksi->nomor_wa) }}" placeholder="e.g.08575706xxxx">
             </div>
             @error('nomor_wa')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -207,7 +207,7 @@ Saksi
   
             <label for="jabatan">Pekerjaan</label>
             <div class="input-group input-group-outline @error('pekerjaan') is-invalid @enderror">
-                <input class="form-control" type="text" name="pekerjaan" id="pekerjaan" required value="{{ old('pekerjaan', $saksi->pekerjaan) }}">
+                <input class="form-control" type="text" name="pekerjaan" id="pekerjaan" required value="{{ old('pekerjaan', $saksi->pekerjaan) }}" placeholder="Masukan Pekerjaan..">
             </div>
             @error('pekerjaan')
                 <p class="text-danger"><small>*{{ $message }}</small></p>

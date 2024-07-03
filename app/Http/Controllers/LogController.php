@@ -49,7 +49,12 @@ class LogController extends Controller
             }
 
             // Tampilkan data ke view 'sms-status'
-            return view('dashboard.logs.index', ['messages' => $data, 'messagesPaginated' => $messagesPaginated]);
+            return view('dashboard.logs.index',
+                [
+                    'messages' => $data, 
+                    'messagesPaginated' => $messagesPaginated
+                ]
+            );
 
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

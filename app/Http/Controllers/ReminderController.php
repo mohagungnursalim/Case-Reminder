@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Atasan;
 use App\Models\Jaksa;
+use App\Models\Kasus;
 use App\Models\Reminder;
 use App\Models\Saksi;
 use Illuminate\Http\Request;
@@ -14,10 +16,12 @@ class ReminderController extends Controller
      */
     public function index(Request $request)
     {
-       // Ambil data jaksa dan saksi untuk ditampilkan di view
+       // Ambil data 
+        $atasans = Atasan::select('nama','nomor_wa')->latest()->get();
         $jaksas = Jaksa::select('nama','nomor_wa')->latest()->get();
         $saksis = Saksi::select('nama')->latest()->get();
-
+        $kasuss= Kasus::select('nama')->latest()->get();
+        
         // Membuat query builder untuk mengambil data reminder
         $query = Reminder::query();
 
@@ -27,15 +31,12 @@ class ReminderController extends Controller
             // Terapkan logika pencarian ke query builder
             $query->where('nama_kasus', 'like', '%'.$search.'%')
                 ->orWhere('pesan', 'like', '%'.$search.'%')
-                ->orWhereJsonContains('nama_jaksa', $search)
-                ->orWhereJsonContains('nomor_jaksa', $search)
-                ->orWhereJsonContains('nama_saksi', $search)
-                ->orWhere('tanggal_waktu', 'like', '%'.$search.'%');
+                ->orWhere('tanggal_waktu', 'like', '%'.$search.'%')->paginate(10);
         }
 
         // Ambil data reminder berdasarkan query yang telah dibuat lalu paginasi perbaris (10)
-        $reminders = $query->latest()->simplePaginate(10);
-        return view('dashboard.agenda.index', compact('reminders','jaksas','saksis'));
+        $reminders = $query->latest()->paginate(10);
+        return view('dashboard.agenda.index', compact('reminders','jaksas','saksis','kasuss','atasans'));
     }
 
     /**
@@ -45,15 +46,22 @@ class ReminderController extends Controller
     // halaman form
     public function create()
     {
+        $atasans = Atasan::select('nama','nomor_wa')->latest()->get();
         $jaksas = Jaksa::select('nama','nomor_wa')->latest()->get();
         $saksis = Saksi::select('nama')->latest()->get();
-        return view('dashboard.agenda.create',compact('jaksas','saksis'));
+        $kasuss= Kasus::select('nama')->latest()->get();
+        return view('dashboard.agenda.create',compact('jaksas','saksis','kasuss','atasans'));
     }
 
     // fungsi store
     public function store(Request $request)
     {
         $request->validate([
+
+            'nama_atasan' => 'required|array',
+            'nama_atasan.*' => 'string',
+            'nomor_atasan' => 'required|array',
+            'nomor_atasan.*' => 'string',
             'nama_jaksa' => 'required|array',
             'nama_jaksa.*' => 'string',
             'nomor_jaksa' => 'required|array',
@@ -61,6 +69,7 @@ class ReminderController extends Controller
             'nama_kasus' => 'required|string',
             'nama_saksi' => 'required|array',
             'nama_saksi.*' => 'string',
+            'nama_kasus' => 'string',
             'pesan' => 'required|string',
             'tanggal_waktu' => 'required|date',
         ]);
@@ -70,6 +79,8 @@ class ReminderController extends Controller
             'nama_kasus' => $request->input('nama_kasus'),
             'pesan' => $request->input('pesan'),
             'tanggal_waktu' => $request->input('tanggal_waktu'),
+            'nama_atasan' => json_encode($request->input('nama_atasan')),
+            'nomor_atasan' => json_encode($request->input('nomor_atasan')),
             'nama_jaksa' => json_encode($request->input('nama_jaksa')),
             'nomor_jaksa' => json_encode($request->input('nomor_jaksa')),
             'nama_saksi' => json_encode($request->input('nama_saksi')),
@@ -94,6 +105,10 @@ class ReminderController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
+            'nama_atasan' => 'required|array',
+            'nama_atasan.*' => 'string',
+            'nomor_atasan' => 'required|array',
+            'nomor_atasan.*' => 'string',
             'nama_jaksa' => 'required|array',
             'nama_jaksa.*' => 'string',
             'nomor_jaksa' => 'required|array',
@@ -113,6 +128,8 @@ class ReminderController extends Controller
             'nama_kasus' => $request->input('nama_kasus'),
             'pesan' => $request->input('pesan'),
             'tanggal_waktu' => $request->input('tanggal_waktu'),
+            'nama_atasan' => json_encode($request->input('nama_atasan')),
+            'nomor_atasan' => json_encode($request->input('nomor_atasan')),
             'nama_jaksa' => json_encode($request->input('nama_jaksa')),
             'nomor_jaksa' => json_encode($request->input('nomor_jaksa')),
             'nama_saksi' => json_encode($request->input('nama_saksi')),

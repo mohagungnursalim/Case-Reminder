@@ -18,8 +18,32 @@ Tambah
     <div class="container">
                 <form action="{{ route('agenda.store') }}" method="POST">
                     @csrf
-                    <label class="form-label">Nama Jaksa</label>
-                    <div class="input-group input-group-outline @error('judul_buku') is-invalid @enderror mb-1">
+                    <label class="form-label">Atasan</label>
+                    <div class="input-group input-group-outline @error('nama_atasan') is-invalid @enderror mb-1">
+                        <select id="nama_atasan" name="nama_atasan[]" style="width: 100%;" multiple class="form-control">
+                            @foreach($atasans as $atasan)
+                                <option value="{{ $atasan->nama }}">{{ $atasan->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('nama_atasan')
+                        <p class="text-bold text-xs text-danger">{{ $message }}</p>
+                    @enderror
+
+                    <label class="form-label">Nomor Atasan</label>
+                    <div class="input-group input-group-outline @error('nomor_atasan') is-invalid @enderror mb-1">
+                        <select id="nomor_atasan" name="nomor_atasan[]" style="width: 100%;" multiple class="form-control">
+                            @foreach($atasans as $atasan)
+                                <option value="{{ $atasan->nomor_wa }}">{{ $atasan->nama }} ({{ $atasan->nomor_wa }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('nomor_atasan')
+                        <p class="text-bold text-xs text-danger">{{ $message }}</p>
+                    @enderror
+
+                    <label class="form-label">Jaksa</label>
+                    <div class="input-group input-group-outline @error('nama_jaksa') is-invalid @enderror mb-1">
                         <select id="nama_jaksa" name="nama_jaksa[]" style="width: 100%;" multiple class="form-control">
                             @foreach($jaksas as $jaksa)
                                 <option value="{{ $jaksa->nama }}">{{ $jaksa->nama }}</option>
@@ -31,7 +55,7 @@ Tambah
                     @enderror
 
                     <label class="form-label">Nomor Jaksa</label>
-                    <div class="input-group input-group-outline @error('judul_buku') is-invalid @enderror mb-1">
+                    <div class="input-group input-group-outline @error('nomor_jaksa') is-invalid @enderror mb-1">
                         <select id="nomor_jaksa" name="nomor_jaksa[]" style="width: 100%;" multiple class="form-control">
                             @foreach($jaksas as $jaksa)
                                 <option value="{{ $jaksa->nomor_wa }}">{{ $jaksa->nama }} ({{ $jaksa->nomor_wa }})</option>
@@ -42,15 +66,20 @@ Tambah
                         <p class="text-bold text-xs text-danger">{{ $message }}</p>
                     @enderror
 
-                    <label for="case_name">Nama Kasus:</label>
-                    <div class="input-group input-group-outline @error('case_name') is-invalid @enderror">
-                        <input class="form-control" type="text" name="nama_kasus" id="case_name" required>
+                    <label class="form-label">Kasus</label>
+                    <div class="input-group input-group-outline @error('nama_kasus') is-invalid @enderror mb-1">
+                        <select id="nama_kasus" name="nama_kasus" style="width: 100%;" class="form-control">
+                            <option value="" disabled selected>---Pilih Kasus---</option>
+                            @foreach($kasuss as $kasus)
+                                <option value="{{ $kasus->nama }}">{{ $kasus->nama }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     @error('nama_kasus')
                         <p class="text-bold text-xs text-danger">{{ $message }}</p>
                     @enderror
 
-                    <label class="form-label">Nama Saksi</label>
+                    <label class="form-label">Saksi</label>
                     <div class="input-group input-group-outline @error('judul_buku') is-invalid @enderror mb-1">
                         <select id="nama_saksi" name="nama_saksi[]" style="width: 100%;" multiple class="form-control">
                             @foreach($saksis as $saksi)
@@ -98,24 +127,39 @@ Tambah
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
+     $(document).ready(function() {
+        $('#nama_atasan').select2({
+            allowClear: true
+        });
+    });
+
+    $(document).ready(function() {
+        $('#nomor_atasan').select2({
+            allowClear: true
+        });
+    });
+
     $(document).ready(function() {
         $('#nama_jaksa').select2({
             allowClear: true
         });
     });
-</script>
 
-<script>
     $(document).ready(function() {
         $('#nomor_jaksa').select2({
             allowClear: true
         });
     });
-</script>
 
-<script>
     $(document).ready(function() {
         $('#nama_saksi').select2({
+            allowClear: true
+        });
+    });
+
+    $(document).ready(function() {
+        $('#nama_kasus').select2({
+            placeholder: '---Pilih Kasus---',
             allowClear: true
         });
     });
