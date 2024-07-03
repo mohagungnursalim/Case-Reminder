@@ -4,6 +4,29 @@ Kelola User
 @endsection
 
 @section('konten')
+<head>
+    <style>
+         .info {
+            border: none;
+            background-color: #85c1e9; /* Ganti dengan warna latar belakang yang Anda inginkan */
+            color: #0056b3; /* Ganti dengan warna teks yang Anda inginkan */
+        }
+        .success {
+            border: none;
+            background-color: #a3e4a9; 
+            color: #196f3d; /* Ganti dengan warna teks yang Anda inginkan */
+        }
+        .secondary {
+            border: none;
+            background-color: #d2d0d0; 
+            color: #595959; /* Ganti dengan warna teks yang Anda inginkan */
+        }
+        .warning { 
+            border: none;
+            background-color: #fbdba8; 
+            color: #b9770e; }
+    </style>
+</head>
 
 <div class="card card-frame">
     <div class="card-body">
@@ -100,37 +123,37 @@ Kelola User
             <div class="overflow-auto">
                 <table id="myTable" class="table text-dark">
                     <tr>
-                        <th>No</th>
-                        <th>Email</th>
-                        <th>Nama User</th>
-                        <th>Peran</th>
-                        <th>Dibuat</th>
-                        <th>Aksi</th>
+                        <th class="text-wrap small">No</th>
+                        <th class="text-wrap small">Email</th>
+                        <th class="text-wrap small">Nama User</th>
+                        <th class="text-wrap small">Peran</th>
+                        <th class="text-wrap small">Dibuat</th>
+                        <th class="text-wrap small">Aksi</th>
 
                     </tr>
 
                     @if ($users->count())
                     @foreach ($users as $user )
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>{{ $user->name }}</td>
-                        <td>
+                        <td class="text-wrap small">{{ $loop->iteration }}</td>
+                        <td class="text-wrap small">{{ $user->email }}</td>
+                        <td class="text-wrap small">{{ $user->name }}</td>
+                        <td class="text-wrap small">
                             @if ($user->is_admin == false)
-                            <button type="button" class="badge bg-success btn-sm" style="border: none" data-bs-toggle="modal" data-bs-target="#editperanModal{{ $user->id }}">
+                            <button type="button" class="badge secondary btn-sm" style="border: none" data-bs-toggle="modal" data-bs-target="#editperanModal{{ $user->id }}">
                                 Operator
                             </button>
                             @else
-                            <button type="button" class="badge bg-danger btn-sm" style="border: none" data-bs-toggle="modal" data-bs-target="#editperanModal{{ $user->id }}">
+                            <button type="button" class="badge success btn-sm" style="border: none" data-bs-toggle="modal" data-bs-target="#editperanModal{{ $user->id }}">
                                 Admin
                             </button>
                             @endif
                             
                         </td>
                     
-                        <td>{{ ($user->created_at)->format('d-m-Y') }}</td>
+                        <td class="text-wrap small">{{ ($user->created_at)->format('d-m-Y') }}</td>
 
-                        <td>
+                        <td class="text-wrap small">
 
                             <button type="button" class="btn bg-info btn-sm" data-bs-toggle="modal" data-bs-target="#resetModal{{ $user->id }}">
                                 <span class="material-symbols-outlined text-white">
@@ -157,7 +180,7 @@ Kelola User
                     @endif
                 </table>
             </div>
-            <div class="d-flex justify-content-center">
+            <div class="d-flex justify-content-center mt-3">
                 {{ $users->links() }}
             </div>
 

@@ -1,18 +1,14 @@
 <?php
 
-use App\Http\Controllers\AnggotaController;
-use App\Http\Controllers\BukuController;
+use App\Http\Controllers\AtasanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JaksaController;
-use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\KasusController;
 use App\Http\Controllers\LogController;
-use App\Http\Controllers\ProyekController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\SaksiController;
 use App\Http\Controllers\UserController;
-use App\Jobs\SendReminderMessage;
-use App\Models\Reminder;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,8 +34,8 @@ Route::get('/dashboard/logs', [LogController::class, 'getAllStatus'])->name('get
 Route::delete('/dashboard/delete-all', [LogController::class, 'deleteAll'])->name('delete-all');
 
 // route agenda json
-Route::get('/agenda-terkirim-sesuai-jadwal', [DashboardController::class, 'agendaTerkirimSesuaiJadwal']);
-Route::get('/agenda-belum-terkirim-sesuai-jadwal', [DashboardController::class, 'agendaBelumTerkirimSesuaiJadwal']);
+Route::get('/agenda-terkirim-sesuai-jadwal', [DashboardController::class, 'agendaTerkirimSesuaiJadwal'])->middleware('auth');
+Route::get('/agenda-belum-terkirim-sesuai-jadwal', [DashboardController::class, 'agendaBelumTerkirimSesuaiJadwal'])->middleware('auth');
 
 // ---------Login-----------
 Route::get('/', function () {
@@ -61,6 +57,9 @@ Route::resource('/dashboard/jaksa', JaksaController::class)->middleware('auth');
 
 Route::resource('/dashboard/saksi', SaksiController::class)->middleware('auth');
 
+Route::resource('/dashboard/kasus', KasusController::class)->middleware('auth');
+
+Route::resource('/dashboard/atasan', AtasanController::class)->middleware('auth');
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard/profile', [ProfileController::class, 'index']);

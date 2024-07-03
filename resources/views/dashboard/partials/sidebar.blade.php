@@ -32,6 +32,21 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link text-white {{Request::is('dashboard/atasan*') ? 'active' : ''}} "
+                    href="/dashboard/atasan">
+
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        {{-- icon --}}
+                        <span class="material-symbols-outlined">
+                            supervisor_account
+                        </span>
+                    </div>
+
+                    <span class="nav-link-text ms-1">Atasan</span>
+                </a>
+            </li>
+            
+            <li class="nav-item">
                 <a class="nav-link text-white {{Request::is('dashboard/jaksa*') ? 'active' : ''}} "
                     href="/dashboard/jaksa">
 
@@ -58,6 +73,21 @@
                     </div>
 
                     <span class="nav-link-text ms-1">Saksi</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link text-white {{Request::is('dashboard/kasus*') ? 'active' : ''}} "
+                    href="/dashboard/kasus">
+
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        {{-- icon --}}
+                        <span class="material-symbols-outlined">
+                            cases
+                        </span>
+                    </div>
+
+                    <span class="nav-link-text ms-1">Kasus</span>
                 </a>
             </li>
 

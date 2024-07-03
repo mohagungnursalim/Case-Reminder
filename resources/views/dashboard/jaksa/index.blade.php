@@ -59,7 +59,7 @@ Jaksa
                         <th class="text-wrap small">Nama Jaksa</th>
                         <th class="text-wrap small">Alamat</th>
                         <th class="text-wrap small">No Wa</th>
-                        <th class="text-wrap small">Jabatan</th>
+                        <th class="text-wrap small">Pangkat</th>
                         <th class="text-wrap small">Ditambahkan</th>
                         <th class="text-wrap small">Aksi</th>
 
@@ -101,7 +101,7 @@ Jaksa
                     @endif
                 </table>
             </div>
-            <div class="d-flex justify-content-center">
+            <div class="text-center mt-3">
                 {{ $jaksas->links() }}
             </div>
 
@@ -129,7 +129,7 @@ Jaksa
             @csrf
             <label for="nama">Nama Jaksa</label>
             <div class="input-group input-group-outline @error('nama') is-invalid @enderror">
-                <input class="form-control" type="text" name="nama" id="nama" >
+                <input class="form-control" type="text" name="nama" id="nama" placeholder="Masukan Nama..">
             </div>
             @error('nama')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -137,7 +137,7 @@ Jaksa
 
             <label class="alamat">Alamat</label>
             <div class="input-group input-group-outline @error('alamat') is-invalid @enderror">
-                <input class="form-control" type="text" name="alamat" id="alamat" >
+                <input class="form-control" type="text" name="alamat" id="alamat" placeholder="Masukan Alamat.." >
             </div>
             @error('alamat')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -145,16 +145,16 @@ Jaksa
 
             <label for="nomor_wa">No Wa</label>
             <div class="input-group input-group-outline @error('nomor_wa') is-invalid @enderror">
-                <input class="form-control" type="text" name="nomor_wa" id="nomor_wa" >
+                <input class="form-control" type="text" name="nomor_wa" id="nomor_wa" placeholder="e.g.08575706xxxx">
             </div>
             @error('nomor_wa')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
             @enderror
 
-            <label for="jabatan">Jabatan</label>
+            <label for="jabatan">Pangkat</label>
             <div class="input-group input-group-outline @error('jabatan') is-invalid @enderror">
                 <select class="form-control" name="jabatan" id="jabatan">
-                    <option value="">--Pilih Jabatan--</option>
+                    <option value="">--Pilih Pangkat--</option>
                     <option value="Ajun Jaksa Madya">Ajun Jaksa Madya</option>
                     <option value="Ajun Jaksa">Ajun Jaksa</option>
                     <option value="Jaksa Pratama">Jaksa Pratama</option>
@@ -194,7 +194,7 @@ Jaksa
             @method('PUT')
             <label for="nama">Nama Jaksa</label>
             <div class="input-group input-group-outline @error('nama') is-invalid @enderror">
-                <input class="form-control" type="text" name="nama" id="nama" value="{{ old('nama', $jaksa->nama) }}" required>
+                <input class="form-control" type="text" name="nama" id="nama" value="{{ old('nama', $jaksa->nama) }}" placeholder="Masukan Nama.." required>
             </div>
             @error('nama')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -202,7 +202,7 @@ Jaksa
   
             <label for="alamat">Alamat</label>
             <div class="input-group input-group-outline @error('alamat') is-invalid @enderror">
-                <input class="form-control" type="text" name="alamat" id="alamat" value="{{ old('alamat', $jaksa->alamat) }}" required>
+                <input class="form-control" type="text" name="alamat" id="alamat" value="{{ old('alamat', $jaksa->alamat) }}" placeholder="Masukan Alamat.." required>
             </div>
             @error('alamat')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -210,16 +210,16 @@ Jaksa
   
             <label for="nomor_wa">No Wa</label>
             <div class="input-group input-group-outline @error('nomor_wa') is-invalid @enderror">
-                <input class="form-control" type="text" name="nomor_wa" id="nomor_wa" value="{{ old('nomor_wa', $jaksa->nomor_wa) }}" required>
+                <input class="form-control" type="text" name="nomor_wa" id="nomor_wa" value="{{ old('nomor_wa', $jaksa->nomor_wa) }}" placeholder="e.g.08575706xxxx" required>
             </div>
             @error('nomor_wa')
                 <p class="text-danger"><small>*{{ $message }}</small></p>
             @enderror
   
-            <label for="jabatan">Jabatan</label>
+            <label for="jabatan">Pangkat</label>
             <div class="input-group input-group-outline @error('jabatan') is-invalid @enderror">
                 <select required class="form-control" name="jabatan" id="jabatan">
-                    <option>--Pilih Jabatan--</option>
+                    <option>--Pilih Pangkat--</option>
                     <option value="Ajun Jaksa Madya" {{ old('jabatan', $jaksa->jabatan) == 'Ajun Jaksa Madya' ? 'selected' : '' }}>Ajun Jaksa Madya</option>
                     <option value="Ajun Jaksa" {{ old('jabatan', $jaksa->jabatan) == 'Ajun Jaksa' ? 'selected' : '' }}>Ajun Jaksa</option>
                     <option value="Jaksa Pratama" {{ old('jabatan', $jaksa->jabatan) == 'Jaksa Pratama' ? 'selected' : '' }}>Jaksa Pratama</option>

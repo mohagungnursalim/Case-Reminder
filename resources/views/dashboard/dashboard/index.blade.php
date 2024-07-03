@@ -197,7 +197,7 @@
                     });
     
                     var options = {
-                        title: 'Agenda Terkirim Sesuai Jadwal',
+                        title: 'Agenda Terkirim',
                         curveType: 'function',
                         legend: { position: 'bottom' }
                     };
@@ -222,7 +222,7 @@
                     });
     
                     var options = {
-                        title: 'Agenda Belum Terkirim Sesuai Jadwal',
+                        title: 'Agenda Belum Terkirim',
                         curveType: 'function',
                         legend: { position: 'bottom' }
                     };
