@@ -28,10 +28,10 @@ Route::get('/test-whatsapp', function () {
     foreach ($reminders as $reminder) {
         dispatch(new \App\Jobs\SendReminderMessage($reminder));
     }
-});
+})->middleware('auth');
 
-Route::get('/dashboard/logs', [LogController::class, 'getAllStatus'])->name('get-all');
-Route::delete('/dashboard/delete-all', [LogController::class, 'deleteAll'])->name('delete-all');
+Route::get('/dashboard/logs', [LogController::class, 'getAllStatus'])->name('get-all')->middleware('auth');
+Route::delete('/dashboard/delete-all', [LogController::class, 'deleteAll'])->name('delete-all')->middleware('auth');
 
 // route agenda json
 Route::get('/agenda-terkirim-sesuai-jadwal', [DashboardController::class, 'agendaTerkirimSesuaiJadwal'])->middleware('auth');
