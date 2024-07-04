@@ -87,7 +87,7 @@ class SaksiController extends Controller
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string',
             'alamat' => 'required|string',
-            'nomor_wa' => 'required|numeric',
+            'nomor_wa' => 'nullable|numeric',
             'pekerjaan' => 'required|string',
         ]);
 

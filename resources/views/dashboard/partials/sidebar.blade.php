@@ -125,7 +125,7 @@
                     <span class="nav-link-text ms-1">Kelola Akun </span>
                 </a>
             </li>
-
+            @endcan
             <li class="nav-item">
                 <a class="nav-link text-white {{Request::is('dashboard/logs') ? 'active' : ''}}" 
                 href="/dashboard/logs">
@@ -137,7 +137,7 @@
                     <span class="nav-link-text ms-1">Log Status </span>
                 </a>
             </li>
-            @endcan
+            
            
 
             <li class="nav-item">
