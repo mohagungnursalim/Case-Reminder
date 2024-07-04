@@ -262,7 +262,7 @@ Kelola User
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title font-weight-normal" id="exampleModalLabel">Reset Password User</h5>
+          <h5 class="modal-title font-weight-normal" id="exampleModalLabel">Reset Password User <kbd>{{ $user->email }}</kbd></h5>
           <button type="button" class="btn-close text-dark" data-bs-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>

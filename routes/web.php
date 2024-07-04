@@ -51,7 +51,7 @@ Route::resource('/dashboard/user', UserController::class)->middleware(['auth','i
 Route::put('/dashboard/user/peran/{id}', [UserController::class, 'peran'])->middleware(['auth', 'is_admin'])->name('user.peran');
 
 
-Route::resource('/dashboard/agenda', ReminderController::class)->middleware(['auth','is_admin']);
+Route::resource('/dashboard/agenda', ReminderController::class)->middleware('auth');
 
 Route::resource('/dashboard/jaksa', JaksaController::class)->middleware('auth');
 
