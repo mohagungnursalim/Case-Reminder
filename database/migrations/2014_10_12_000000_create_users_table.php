@@ -14,6 +14,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->enum('kejari_nama', [
+                'Kejari Sulteng',
+                'Kejari Palu',
+                'Kejari Poso',
+                'Kejari Tolitoli',
+                'Kejari Banggai',
+                'Kejari Parigi',
+                'Kejari Donggala',
+                'Kejari Buol',
+                'Kejari Morowali'
+            ])->nullable();
             $table->string('name');
             $table->boolean('is_admin')->default(false);
             $table->string('email')->unique();

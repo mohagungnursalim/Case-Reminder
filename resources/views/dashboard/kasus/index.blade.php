@@ -73,7 +73,9 @@ Kasus
                     <tr>
                         <th class="text-wrap small">No</th>
                         <th class="text-wrap small">Kasus</th>
-                        <th class="text-wrap small">Status</th>
+                        @can('is_admin')
+                        <th class="text-wrap small">Lokasi</th>
+                        @endcan
                         <th class="text-wrap small">Ditambahkan</th>
                         <th class="text-wrap small">Aksi</th>
 
@@ -84,23 +86,10 @@ Kasus
                     <tr>
                         <td class="text-wrap small">{{ $loop->iteration }}</td>
                         <td class="small">{{ $kasus->nama }}</td>
-                        <td class="small">
-                            @if ($kasus->status == 'Proses')
-                            <button type="button" class="badge info" style="border:none">
-                                {{ $kasus->status }}
-                            </button>
-                            @elseif ($kasus->status == 'Pending')
-                            <button type="button" class="badge secondary" style="border:none">
-                                {{ $kasus->status }}
-                            </button>
-                            @elseif ($kasus->status == 'Selesai')
-                            <button type="button" class="badge success" style="border:none">
-                                {{ $kasus->status }}
-                            </button>
-                            @endif
-                        </td>
+                        @can('is_admin')
+                        <td class="small">{{ $kasus->lokasi }}</td>
+                        @endcan
                         <td class="text-wrap small">{{ $kasus->created_at->format('d-m-Y') }}</td>
-
                         <td>
                             <button type="button" class="btn btn-sm bg-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $kasus->id }}">
                                 <span class="material-symbols-outlined text-white">
@@ -188,18 +177,6 @@ Kasus
                             <p class="text-danger"><small>*{{ $message }}</small></p>
                         @enderror
                     
-                        <label for="status">Status</label>
-                        <div class="input-group input-group-outline @error('status') is-invalid @enderror">
-                            <select class="form-control" name="status" id="status">
-                                <option value="">--Pilih Status--</option>
-                                <option value="Pending" {{ old('status', $kasus->status) == 'Pending' ? 'selected' : '' }} style="background-color: #d2d0d0;color: #595959;">Pending</option>
-                                <option value="Proses" {{ old('status', $kasus->status) == 'Proses' ? 'selected' : '' }} style=" background-color: #85c1e9;color: #0056b3;">Proses</option>
-                                <option value="Selesai" {{ old('status', $kasus->status) == 'Selesai' ? 'selected' : '' }} style="background-color: #a3e4a9;color: #196f3d;">Selesai</option>
-                            </select>
-                        </div>
-                        @error('status')
-                            <p class="text-danger"><small>*{{ $message }}</small></p>
-                        @enderror
                         <div class="text-center mt-3">
                             <button type="submit" class="btn btn-info">Simpan</button>
                         </div>

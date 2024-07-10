@@ -98,7 +98,13 @@
 
     <div class="row mt-4">
 
- <!-- Chart container -->
+      <!-- Chart container -->
+<div id="chart_terkirim_div"></div>
+<div id="chart_belum_terkirim_div"></div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Chart container -->
 <div id="chart_terkirim_div"></div>
 <div id="chart_belum_terkirim_div"></div>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -169,6 +175,8 @@
     // Set interval to poll every 8 seconds
     setInterval(initCharts, 8000);
 </script>
+
+
 
     
     </div>

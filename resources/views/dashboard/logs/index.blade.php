@@ -58,11 +58,13 @@ Log Status
                 </button>
             </div>
             @endif
+                @can('is_admin')
                 <button type="button" class="btn btn-sm bg-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
                     <span class="material-symbols-outlined text-white">
                         delete
                         </span>
                 </button>
+                @endcan
               <a href="/dashboard/logs" class="btn btn-dark"><span class="material-symbols-outlined" id="refresh">refresh</span>Refresh</a>
             <div class="overflow-auto">
                 @if (count($messages) > 0)
@@ -104,6 +106,10 @@ Log Status
                                 @elseif ($message['status'] == 'failed')
                                 <button class="badge danger">
                                     Gagal Terkirim
+                                </button>
+                                @elseif ($message['status'] == 'undelivered')
+                                <button class="badge danger">
+                                    Tidak Terkirim
                                 </button>
                                 @endif 
                             </td>

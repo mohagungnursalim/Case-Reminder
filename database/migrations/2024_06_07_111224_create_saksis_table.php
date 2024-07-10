@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('saksi', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
+            $table->string('lokasi');
             $table->string('nama');
             $table->string('alamat');
             $table->string('nomor_wa')->nullable();
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('saksis');
+        Schema::dropIfExists('saksi');
     }
 };

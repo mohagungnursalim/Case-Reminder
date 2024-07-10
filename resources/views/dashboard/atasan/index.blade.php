@@ -76,6 +76,7 @@ Atasan
                         <th class="text-wrap small">No WA</th>
                         <th class="text-wrap small">Jabatan</th>
                         <th class="text-wrap small">Pangkat</th>
+                        @can('is_admin')<th class="text-wrap small">Lokasi</th>@endcan
                         <th class="text-wrap small">Ditambahkan</th>
                         <th class="text-wrap small">Aksi</th>
                     </tr>
@@ -88,6 +89,7 @@ Atasan
                         <td class="small">{{ $atasan->nomor_wa }}</td>
                         <td class="small">{{ $atasan->jabatan }}</td>
                         <td class="small">{{ $atasan->pangkat }}</td>
+                        @can('is_admin') <td class="small">{{ $atasan->lokasi }}</td>@endcan
                         <td class="text-wrap small">{{ $atasan->created_at->format('d-m-Y') }}</td>
 
                         <td>

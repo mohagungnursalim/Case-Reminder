@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('reminders', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
+            $table->string('lokasi');
             $table->string('nama_kasus');
             $table->text('pesan');
             $table->json('nama_atasan');

@@ -39,7 +39,7 @@ Kelola User
                 <form class="form-inline" action="{{ route('user.store') }}" method="post">
                     @csrf
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group mb-2 input-group input-group-outline">
                                 <label for="staticEmail2" class="sr-only">Email</label>
                                 <input type="email" name="email" class="form-control" id="staticEmail2" placeholder="email@example.com" required>
@@ -48,7 +48,7 @@ Kelola User
                                 <p class="text-danger small">{{ $message }}</p>
                             @enderror
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-group mb-2 input-group input-group-outline">
                                 <label for="inputNama2" class="sr-only">Nama</label>
                                 <input type="text" class="form-control" name="name" id="inputNama2" placeholder="Nama" required>
@@ -70,6 +70,27 @@ Kelola User
                                 <p class="text-danger small">{{ $message }}</p>
                             @enderror
                         </div>
+                        <div class="col-md-2">
+                            <div class="input-group input-group-outline @error('kejari_nama') is-invalid @enderror mb-1">
+                                <label for="kejari_nama" class="sr-only">Lokasi Kejari</label>
+                                <select id="kejari_nama" name="kejari_nama" style="width: 100%;" class="form-control" required>
+                                    <option>-Pilih Lokasi-</option>
+                                    <option value="Kejari Sulteng">Kejari Sulteng</option>
+                                    <option value="Kejari Palu">Kejari Palu</option>
+                                    <option value="Kejari Poso">Kejari Poso</option>
+                                    <option value="Kejari Tolitoli">Kejari Tolitoli</option>
+                                    <option value="Kejari Banggai">Kejari Banggai</option>
+                                    <option value="Kejari Parigi">Kejari Parigi</option>
+                                    <option value="Kejari Donggala">Kejari Donggala</option>
+                                    <option value="Kejari Buol">Kejari Buol</option>
+                                    <option value="Kejari Morowali">Kejari Morowali</option>
+                                </select>
+                            </div>
+                            @error('kejari_nama')
+                                <p class="text-danger small">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        
                         <div class="col-md-4">
                             <button type="submit" class="btn btn-outline-primary mb-2">Buat</button>
                         </div>
@@ -127,6 +148,7 @@ Kelola User
                         <th class="text-wrap small">Email</th>
                         <th class="text-wrap small">Nama User</th>
                         <th class="text-wrap small">Peran</th>
+                        <th class="text-wrap small">Operator</th>
                         <th class="text-wrap small">Dibuat</th>
                         <th class="text-wrap small">Aksi</th>
 
@@ -150,6 +172,7 @@ Kelola User
                             @endif
                             
                         </td>
+                        <td class="text-wrap small">{{ $user->kejari_nama }}</td>
                     
                         <td class="text-wrap small">{{ ($user->created_at)->format('d-m-Y') }}</td>
 
