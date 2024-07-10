@@ -104,6 +104,7 @@ Tambah
                         <input class="form-control" type="datetime-local" name="tanggal_waktu" id="tanggal_waktu"
                             required>
                     </div>
+                    <p class="text-xs text-bold text-secondary mt-2">*PM Mulai dari 00.00 hingga 11.59 | AM Mulai dari 12.00 hingga 23.59</p>
                     @error('tanggal_waktu')
                         <p class="text-bold text-xs text-danger">{{ $message }}</p>
                     @enderror

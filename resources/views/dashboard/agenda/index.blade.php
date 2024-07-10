@@ -100,6 +100,7 @@ Agenda
                         <th class="text-wrap small">Pesan</th>
                         <th class="text-wrap small">Tanggal & Waktu Pelaksanaan</th>
                         <th class="text-wrap small">Status</th>
+                        @can('is_admin') <th class="text-wrap small">Lokasi</th> @endcan
                         <th class="text-wrap small">Dibuat</th>
                         <th class="text-wrap small">Aksi</th>
 
@@ -178,6 +179,7 @@ Agenda
                             </button>
                            @endif
                         </td>
+                        @can('is_admin') <td class="small">{{ $reminder->lokasi }}</td> @endcan
                         <td class="small">{{ ($reminder->created_at)->format('d-m-Y') }}</td>
 
                         <td>
@@ -216,7 +218,6 @@ Agenda
 </div>
 
 @endsection
-
 
 
 {{-- Modal Edit Agenda --}}
@@ -327,6 +328,7 @@ Agenda
                             <input class="form-control" type="datetime-local" name="tanggal_waktu" id="tanggal_waktu"
                                 value="{{ old('tanggal_waktu', date('Y-m-d\TH:i', strtotime($reminder->tanggal_waktu))) }}" required>
                         </div>
+                        <p class="text-xs text-bold text-secondary mt-2">*PM Mulai dari 00.00 hingga 11.59 | AM Mulai dari 12.00 hingga 23.59</p>
                         @error('tanggal_waktu')
                             <p class="text-bold text-xs text-danger">{{ $message }}</p>
                         @enderror

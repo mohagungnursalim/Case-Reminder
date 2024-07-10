@@ -8,6 +8,7 @@ use App\Models\Kasus;
 use App\Models\Reminder;
 use App\Models\Saksi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReminderController extends Controller
 {
@@ -16,28 +17,51 @@ class ReminderController extends Controller
      */
     public function index(Request $request)
     {
-       // Ambil data 
-        $atasans = Atasan::select('nama','nomor_wa')->latest()->get();
-        $jaksas = Jaksa::select('nama','nomor_wa')->latest()->get();
-        $saksis = Saksi::select('nama')->latest()->get();
-        $kasuss= Kasus::select('nama')->latest()->get();
-        
-        // Membuat query builder untuk mengambil data reminder
-        $query = Reminder::query();
+        $user = Auth::user(); // Mendapatkan pengguna yang sedang login
 
-        // Cek apakah ada parameter pencarian
-        if ($request->has('search')) {
-            $search = $request->get('search');
-            // Terapkan logika pencarian ke query builder
-            $query->where('nama_kasus', 'like', '%'.$search.'%')
-                ->orWhere('pesan', 'like', '%'.$search.'%')
-                ->orWhere('tanggal_waktu', 'like', '%'.$search.'%')->paginate(10);
+        // Ambil data
+        $atasans = Atasan::select('nama', 'nomor_wa')->latest()->get();
+        $jaksas = Jaksa::select('nama', 'nomor_wa')->latest()->get();
+        $saksis = Saksi::select('nama')->latest()->get();
+        $kasuss = Kasus::select('nama')->latest()->get();
+
+        // Membuat query builder untuk mengambil data reminder
+        if ($user->is_admin) {
+            // Jika pengguna adalah admin, tampilkan semua data Reminder
+            $query = Reminder::latest();
+        } else {
+            // Jika bukan admin, tampilkan hanya data Reminder yang terkait dengan user_id tersebut
+            $query = Reminder::where('user_id', $user->id)->latest();
+        }
+
+        // Pencarian berdasarkan query 'search'
+        $search = $request->query('search');
+
+        if (Auth::user()->is_admin) {
+            if ($search) {
+                $query = $query->where(function($query) use ($search) {
+                    $query->where('nama_kasus', 'LIKE', "%{$search}%")
+                        ->orWhere('pesan', 'LIKE', "%{$search}%")
+                        ->orWhere('tanggal_waktu', 'LIKE', "%{$search}%")
+                        ->orWhere('lokasi','LIKE', "%{$search}%");
+                });
+            }
+        } else {
+            if ($search) {
+                $query = $query->where(function($query) use ($search) {
+                    $query->where('nama_kasus', 'LIKE', "%{$search}%")
+                        ->orWhere('pesan', 'LIKE', "%{$search}%")
+                        ->orWhere('tanggal_waktu', 'LIKE', "%{$search}%");
+                });
+            }
         }
 
         // Ambil data reminder berdasarkan query yang telah dibuat lalu paginasi perbaris (10)
-        $reminders = $query->latest()->paginate(10);
-        return view('dashboard.agenda.index', compact('reminders','jaksas','saksis','kasuss','atasans'));
+        $reminders = $query->paginate(10);
+
+        return view('dashboard.agenda.index', compact('reminders', 'jaksas', 'saksis', 'kasuss', 'atasans'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -76,6 +100,8 @@ class ReminderController extends Controller
     
         // Map the request data to the database columns
         $reminderData = [
+            'user_id' => Auth::user()->id,
+            'lokasi' => Auth::user()->kejari_nama,
             'nama_kasus' => $request->input('nama_kasus'),
             'pesan' => $request->input('pesan'),
             'tanggal_waktu' => $request->input('tanggal_waktu'),

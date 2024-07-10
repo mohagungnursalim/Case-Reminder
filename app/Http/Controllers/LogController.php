@@ -6,6 +6,7 @@ use App\Providers\TwilioService;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LogController extends Controller
 {
@@ -63,11 +64,15 @@ class LogController extends Controller
 
     public function deleteAll(Request $request)
     {
-        try {
-            $this->twilioService->deleteAllMessages();
-            return redirect()->route('get-all')->with('success', 'Semua pesan berhsail dihapus!');
-        } catch (\Exception $e) {
-            return redirect()->route('get-all')->with('error', $e->getMessage());
+        if (Auth::user()->is_admin == true) {
+            try {
+                $this->twilioService->deleteAllMessages();
+                return redirect()->route('get-all')->with('success', 'Semua pesan berhsail dihapus!');
+            } catch (\Exception $e) {
+                return redirect()->route('get-all')->with('error', $e->getMessage());
+            }
+        }else {
+            abort(404);
         }
     }
 }

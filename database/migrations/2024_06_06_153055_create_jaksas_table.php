@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('jaksa', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id');
+            $table->string('lokasi');
             $table->string('nama');
-            $table->string('alamat');
             $table->string('nomor_wa')->nullable();
-            $table->string('jabatan');
+            $table->string('pangkat');
             $table->timestamps();
         });
     }

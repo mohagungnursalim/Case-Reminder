@@ -4,18 +4,46 @@ namespace App\Http\Controllers;
 
 use App\Models\Atasan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class AtasanController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->query('search');
-        if ($search) {
-            $atasans = Atasan::where('nama', 'LIKE', "%{$search}%")->latest()->paginate(10);
+        $user = Auth::user(); // Mendapatkan pengguna yang sedang login
+
+        if ($user->is_admin) {
+            // Jika pengguna adalah admin, tampilkan semua data Atasan
+            $atasans = Atasan::latest();
         } else {
-            $atasans = Atasan::latest()->paginate(10);
+            // Jika bukan admin, tampilkan hanya data Jaksa yang terkait dengan user_id tersebut
+            $atasans = Atasan::where('user_id', $user->id)->latest();
         }
+
+        // Pencarian berdasarkan query 'search'
+        $search = $request->query('search');    
+            
+        if (Auth::user()->is_admin) {
+            if ($search) {
+                $atasans = $atasans->where(function($query) use ($search) {
+                    $query->where('nama', 'LIKE', "%{$search}%")
+                    ->orWhere('nomor_wa', 'LIKE', "%{$search}%")
+                    ->orWhere('pangkat', 'LIKE', "%{$search}%")
+                    ->orWhere('lokasi', 'LIKE', "%{$search}%");
+                });
+            }
+        }else{
+            if ($search) {
+                $atasans = $atasans->where(function($query) use ($search) {
+                    $query->where('nama', 'LIKE', "%{$search}%")
+                    ->orWhere('nomor_wa', 'LIKE', "%{$search}%")
+                    ->orWhere('pangkat', 'LIKE', "%{$search}%");
+                });
+            }
+        }
+    
+        $atasans = $atasans->paginate(10);
     
 
         return view('dashboard.atasan.index', compact('atasans'));
@@ -49,14 +77,28 @@ class AtasanController extends Controller
                 ->with('inputModal', true);
         }
 
-        $nomor_wa = $this->formatNomorWA($request->nomor_wa);
-
-        Atasan::create([
-            'nama' => $request->nama,
-            'nomor_wa' => $nomor_wa,
-            'jabatan' => $request->jabatan,
-            'pangkat' => $request->pangkat
+        $validator = Validator::make($request->all(), [
+            'nama' => 'required|string',
+            'nomor_wa' => 'required|string',
+            'jabatan' => 'required|string',
+            'pangkat' => 'required|in:Ajun Jaksa Madya,Ajun Jaksa,Jaksa Pratama,Jaksa Muda,Jaksa Madya,Jaksa Utama Pratama,Jaksa Utama Muda,Jaksa Utama Madya',
         ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('inputModal', true);
+        }
+
+        $atasan = new Atasan();
+        $atasan->user_id = Auth::user()->id;
+        $atasan->lokasi = Auth::user()->kejari_nama;
+        $atasan->nama = $request->input('nama');
+        $atasan->nomor_wa = $this->formatNomorWA($request->nomor_wa); // Format nomor WhatsApp yang dimasukkan pengguna
+        $atasan->jabatan = $request->input('jabatan');
+        $atasan->pangkat = $request->input('pangkat');
+        $atasan->save();
 
         return redirect()->route('atasan.index')->with('success', 'Atasan telah ditambahkan.');
     }
@@ -82,9 +124,14 @@ class AtasanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $atasan = Atasan::find($id);
+        // Cari data Atasan yang akan diupdate berdasarkan $id
+        $atasan = Atasan::findOrFail($id);
+        // Validasi
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string',
+            'nomor_wa' => 'required|string',
+            'jabatan' => 'required|string',
+            'pangkat' => 'required|in:Ajun Jaksa Madya,Ajun Jaksa,Jaksa Pratama,Jaksa Muda,Jaksa Madya,Jaksa Utama Pratama,Jaksa Utama Muda,Jaksa Utama Madya',
         ]);
 
         if ($validator->fails()) {
@@ -94,12 +141,21 @@ class AtasanController extends Controller
                 ->with('editModal', $atasan->id);
         }
 
-        $nomor_wa = $this->formatNomorWA($request->nomor_wa);
-        // Update data atasan
-        $atasan->update([
-            'nama' => $request->nama,
-            'nomor_wa' => $nomor_wa
-        ]);
+
+        // Pastikan pengguna memiliki izin untuk mengupdate data
+        if (!Auth::user()->is_admin) {
+            // Jika bukan admin, hanya izinkan pengguna mengupdate data mereka sendiri
+            if ($atasan->user_id != Auth::user()->id) {
+                return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mengupdate data ini.');
+            }
+        }
+
+        // Update data Atasan
+        $atasan->nama = $request->input('nama');
+        $atasan->nomor_wa = $this->formatNomorWA($request->nomor_wa);
+        $atasan->pangkat = $request->input('jabatan');
+        $atasan->pangkat = $request->input('pangkat');
+        $atasan->save();
 
         return redirect()->route('atasan.index')->with('success', 'Atasan telah diperbarui.');
     }

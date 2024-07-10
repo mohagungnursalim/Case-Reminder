@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Kasus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
@@ -14,13 +15,37 @@ class KasusController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->query('search');
-        if ($search) {
-            $kasuss = Kasus::where('nama', 'LIKE', "%{$search}%")->latest()->paginate(10);
+        $user = Auth::user(); // Mendapatkan pengguna yang sedang login
+
+        if ($user->is_admin) {
+            // Jika pengguna adalah admin, tampilkan semua data Kasus
+            $kasuss = Kasus::latest();
         } else {
-            $kasuss = Kasus::latest()->paginate(10);
+            // Jika bukan admin, tampilkan hanya data Kasus yang terkait dengan user_id tersebut
+            $kasuss = Kasus::where('user_id', $user->id)->latest();
+        }
+
+        // Pencarian berdasarkan query 'search'
+        $search = $request->query('search');    
+            
+        if (Auth::user()->is_admin) {
+            if ($search) {
+                $kasuss = $kasuss->where(function($query) use ($search) {
+                    $query->where('nama', 'LIKE', "%{$search}%")
+                        ->orWhere('status', 'LIKE', "%{$search}%")
+                        ->orWhere('lokasi', 'LIKE', "%{$search}%");
+                });
+            }
+        }else{
+            if ($search) {
+                $kasuss = $kasuss->where(function($query) use ($search) {
+                    $query->where('nama', 'LIKE', "%{$search}%")
+                        ->orWhere('status', 'LIKE', "%{$search}%");
+                });
+            }
         }
     
+        $kasuss = $kasuss->paginate(10);
 
         return view('dashboard.kasus.index', compact('kasuss'));
     }
@@ -38,9 +63,9 @@ class KasusController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi data yang diterima dari form
-        $validator = Validator::make($request->all(), [
-            'nama' => 'required|string'
+       // Validasi data yang diterima dari form
+       $validator = Validator::make($request->all(), [
+        'nama' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -50,7 +75,12 @@ class KasusController extends Controller
                 ->with('inputModal', true);
         }
 
-        Kasus::create($request->all());
+        // Buat instance Kasus baru dan tetapkan user_id serta lokasi (kejari_nama)
+        $kasus = new Kasus();
+        $kasus->user_id = Auth::user()->id;
+        $kasus->nama = $request->input('nama');
+        $kasus->lokasi = Auth::user()->kejari_nama; // Tetapkan lokasi dari kejari_nama pengguna yang sedang login
+        $kasus->save();
 
         return redirect()->route('kasus.index')->with('success', 'Kasus baru telah ditambahkan.');
     }
@@ -76,22 +106,33 @@ class KasusController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $kasus = Kasus::find($id);
+        // Validasi data yang diterima dari form
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string',
-            'status' => 'nullable',
-
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
-                ->with('editModal', $kasus->id);
+                ->with('inputModal', true);
         }
 
-        // Update data kasus
-        $kasus->update($request->all());
+        // Cari data Kasus yang akan diupdate berdasarkan $id
+        $kasus = Kasus::findOrFail($id);
+
+        // Pastikan pengguna memiliki izin untuk mengupdate data
+        if (!Auth::user()->is_admin) {
+            // Jika bukan admin, hanya izinkan pengguna mengupdate data mereka sendiri
+            if ($kasus->user_id != Auth::user()->id) {
+                return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mengupdate data ini.');
+            }
+        }
+
+        // Update data Saksi
+        $kasus->nama = $request->input('nama');
+        $kasus->save();
+
 
         return redirect()->route('kasus.index')->with('success', 'Kasus telah diperbarui.');
     }

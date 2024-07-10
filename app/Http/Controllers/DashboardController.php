@@ -8,6 +8,7 @@ use App\Models\Jaksa;
 use App\Models\Peminjaman;
 use App\Models\Reminder;
 use App\Models\Saksi;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -18,45 +19,82 @@ class DashboardController extends Controller
      */
     public function index(): View
     {
-        // Menghitung agenda yang belum terkirim
-        $agenda_belum_terkirim = Reminder::where('is_sent', false)->select('id')->count();
+        $user = Auth::user(); // Mendapatkan pengguna yang sedang login
 
-        // Menghitung agenda yang terkirim
-        $agenda_terkirim = Reminder::where('is_sent', true)->select('id')->count();
+        if ($user->is_admin) {
+            // Menghitung agenda yang belum terkirim untuk admin
+            $agenda_belum_terkirim = Reminder::where('is_sent', false)->count();
 
-        // Menghitung total Jaksa
-        $total_jaksa = Jaksa::select('id')->count();
+            // Menghitung agenda yang terkirim untuk admin
+            $agenda_terkirim = Reminder::where('is_sent', true)->count();
 
-        // Menghitung total Saksi
-        $total_saksi = Saksi::select('id')->count();
+            // Menghitung total Jaksa untuk admin
+            $total_jaksa = Jaksa::count();
 
-        return view('dashboard.dashboard.index', compact('agenda_terkirim','agenda_belum_terkirim','total_jaksa','total_saksi'));
+            // Menghitung total Saksi untuk admin
+            $total_saksi = Saksi::count();
+        } else {
+            // Menghitung agenda yang belum terkirim untuk pengguna biasa
+            $agenda_belum_terkirim = Reminder::where('user_id', $user->id)->where('is_sent', false)->count();
+
+            // Menghitung agenda yang terkirim untuk pengguna biasa
+            $agenda_terkirim = Reminder::where('user_id', $user->id)->where('is_sent', true)->count();
+
+            // Menghitung total Jaksa untuk pengguna biasa
+            $total_jaksa = Jaksa::where('user_id', $user->id)->count();
+
+            // Menghitung total Saksi untuk pengguna biasa
+            $total_saksi = Saksi::where('user_id', $user->id)->count();
+        }
+
+        return view('dashboard.dashboard.index', compact('agenda_terkirim', 'agenda_belum_terkirim', 'total_jaksa', 'total_saksi'));
     }
 
     public function agendaTerkirimSesuaiJadwal()
     {
-        $agendaTerkirimSesuaiJadwal = Reminder::select('tanggal_waktu', DB::raw('count(id) as jumlah'))
+        $user = Auth::user(); // Mendapatkan pengguna yang sedang login
+
+        // Membuat query builder untuk agenda terkirim sesuai jadwal
+        $query = Reminder::select('tanggal_waktu', DB::raw('count(id) as jumlah'))
             ->where('is_sent', true)
             ->groupBy('tanggal_waktu')
-            ->orderBy('tanggal_waktu')
-            ->get();
+            ->orderBy('tanggal_waktu');
+
+        // Jika bukan admin, tambahkan kondisi user_id
+        if (!$user->is_admin) {
+            $query->where('user_id', $user->id);
+        }
+
+        // Mendapatkan hasil query
+        $agendaTerkirimSesuaiJadwal = $query->get();
 
         return response()->json($agendaTerkirimSesuaiJadwal);
     }
 
     public function agendaBelumTerkirimSesuaiJadwal()
     {
-        $agendaBelumTerkirimSesuaiJadwal = Reminder::select('tanggal_waktu', DB::raw('count(id) as jumlah'))
+        $user = Auth::user(); // Mendapatkan pengguna yang sedang login
+
+        // Membuat query builder untuk agenda belum terkirim sesuai jadwal
+        $query = Reminder::select('tanggal_waktu', DB::raw('count(id) as jumlah'))
             ->where('is_sent', false)
             ->groupBy('tanggal_waktu')
-            ->orderBy('tanggal_waktu')
-            ->get()->map(function ($item) {
-                $item->tanggal_waktu = \Carbon\Carbon::parse($item->tanggal_waktu)->toDateTimeString();
-                return $item;
-            });
+            ->orderBy('tanggal_waktu');
+
+        // Jika bukan admin, tambahkan kondisi user_id
+        if (!$user->is_admin) {
+            $query->where('user_id', $user->id);
+        }
+
+        // Mendapatkan hasil query dan mengubah format tanggal_waktu
+        $agendaBelumTerkirimSesuaiJadwal = $query->get()->map(function ($item) {
+            $item->tanggal_waktu = \Carbon\Carbon::parse($item->tanggal_waktu)->toDateTimeString();
+            return $item;
+        });
 
         return response()->json($agendaBelumTerkirimSesuaiJadwal);
     }
+
 
     
 }

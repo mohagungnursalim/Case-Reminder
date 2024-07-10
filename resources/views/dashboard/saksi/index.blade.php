@@ -59,6 +59,9 @@ Saksi
                         <th class="text-wrap small">Alamat</th>
                         <th class="text-wrap small">No Wa</th>
                         <th class="text-wrap small">Pekerjaan</th>
+                        @can('is_admin')
+                        <th class="text-wrap small">Lokasi</th>
+                        @endcan
                         <th class="text-wrap small">Ditambahkan</th>
                         <th class="text-wrap small">Aksi</th>
 
@@ -72,6 +75,9 @@ Saksi
                         <td class="text-wrap small">{{ $saksi->alamat}}</td>
                         <td class="text-wrap small">{{ $saksi->nomor_wa }}</td>
                         <td class="text-wrap small">{{ $saksi->pekerjaan }}</td>
+                        @can('is_admin')
+                        <td class="text-wrap small">{{ $saksi->lokasi }}</td>
+                        @endcan
                         <td class="text-wrap small">{{ $saksi->created_at->format('d-m-Y') }}</td>
 
                         <td>

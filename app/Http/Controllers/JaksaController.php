@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Jaksa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class JaksaController extends Controller
@@ -15,18 +16,39 @@ class JaksaController extends Controller
      */
     public function index(Request $request)
     {
-        $jaksas = Jaksa::latest()->paginate(10);$search = $request->query('search');
+        $user = Auth::user(); // Mendapatkan pengguna yang sedang login
 
-        if ($search) {
-            $jaksas = Jaksa::where('nama', 'LIKE', "%{$search}%")
-                            ->orWhere('alamat', 'LIKE', "%{$search}%")
-                            ->orWhere('nomor_wa', 'LIKE', "%{$search}%")
-                            ->orWhere('jabatan', 'LIKE', "%{$search}%")
-                            ->latest()->paginate(10);
+        if ($user->is_admin) {
+            // Jika pengguna adalah admin, tampilkan semua data Jaksa
+            $jaksas = Jaksa::latest();
         } else {
-            $jaksas = Jaksa::latest()->paginate(10);
+            // Jika bukan admin, tampilkan hanya data Jaksa yang terkait dengan user_id tersebut
+            $jaksas = Jaksa::where('user_id', $user->id)->latest();
+        }
+
+        // Pencarian berdasarkan query 'search'
+        $search = $request->query('search');    
+            
+        if (Auth::user()->is_admin) {
+            if ($search) {
+                $jaksas = $jaksas->where(function($query) use ($search) {
+                    $query->where('nama', 'LIKE', "%{$search}%")
+                    ->orWhere('nomor_wa', 'LIKE', "%{$search}%")
+                    ->orWhere('pangkat', 'LIKE', "%{$search}%")
+                    ->orWhere('lokasi', 'LIKE', "%{$search}%");
+                });
+            }
+        }else{
+            if ($search) {
+                $jaksas = $jaksas->where(function($query) use ($search) {
+                    $query->where('nama', 'LIKE', "%{$search}%")
+                    ->orWhere('nomor_wa', 'LIKE', "%{$search}%")
+                    ->orWhere('pangkat', 'LIKE', "%{$search}%");
+            });
+            }
         }
     
+        $jaksas = $jaksas->paginate(10);
 
         return view('dashboard.jaksa.index', compact('jaksas'));
     }
@@ -62,9 +84,8 @@ class JaksaController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string',
-            'alamat' => 'required|string',
             'nomor_wa' => 'required|string',
-            'jabatan' => 'required|in:Ajun Jaksa Madya,Ajun Jaksa,Jaksa Pratama,Jaksa Muda,Jaksa Madya,Jaksa Utama Pratama,Jaksa Utama Muda,Jaksa Utama Madya',
+            'pangkat' => 'required|in:Ajun Jaksa Madya,Ajun Jaksa,Jaksa Pratama,Jaksa Muda,Jaksa Madya,Jaksa Utama Pratama,Jaksa Utama Muda,Jaksa Utama Madya',
         ]);
 
         if ($validator->fails()) {
@@ -74,15 +95,13 @@ class JaksaController extends Controller
                 ->with('inputModal', true);
         }
 
-        // Format nomor WhatsApp yang dimasukkan pengguna
-        $nomor_wa = $this->formatNomorWA($request->nomor_wa);
-
-        Jaksa::create([
-            'nama' => $request->nama,
-            'alamat' => $request->alamat,
-            'nomor_wa' => $nomor_wa,
-            'jabatan' => $request->jabatan,
-        ]);
+        $jaksa = new Jaksa();
+        $jaksa->user_id = Auth::user()->id;
+        $jaksa->lokasi = Auth::user()->kejari_nama;
+        $jaksa->nama = $request->input('nama');
+        $jaksa->nomor_wa = $this->formatNomorWA($request->nomor_wa); // Format nomor WhatsApp yang dimasukkan pengguna
+        $jaksa->pangkat = $request->input('pangkat');
+        $jaksa->save();
 
         return redirect()->route('jaksa.index')->with('success', 'Data jaksa baru telah ditambahkan.');
     }
@@ -108,28 +127,35 @@ class JaksaController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Cari data Jaksa yang akan diupdate berdasarkan $id
         $jaksa = Jaksa::findOrFail($id);
+        // Validasi data yang diterima dari form
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string',
-            'alamat' => 'required|string',
             'nomor_wa' => 'required|string',
-            'jabatan' => 'required|in:Ajun Jaksa Madya,Ajun Jaksa,Jaksa Pratama,Jaksa Muda,Jaksa Madya,Jaksa Utama Pratama,Jaksa Utama Muda,Jaksa Utama Madya',
+            'pangkat' => 'required|in:Ajun Jaksa Madya,Ajun Jaksa,Jaksa Pratama,Jaksa Muda,Jaksa Madya,Jaksa Utama Pratama,Jaksa Utama Muda,Jaksa Utama Madya',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput()
-                ->with('inputModal', true);
+                ->with('editModal', $jaksa->id);
         }
-        $nomor_wa = $this->formatNomorWA($request->nomor_wa);
-        // Perbarui data jaksa dengan data yang baru
-        $jaksa->update([
-            'nama' => $request->nama,
-            'alamat' => $request->alamat,
-            'nomor_wa' => $nomor_wa,
-            'jabatan' => $request->jabatan,
-        ]);
+
+        // Pastikan pengguna memiliki izin untuk mengupdate data
+        if (!Auth::user()->is_admin) {
+            // Jika bukan admin, hanya izinkan pengguna mengupdate data mereka sendiri
+            if ($jaksa->user_id != Auth::user()->id) {
+                return redirect()->back()->with('error', 'Anda tidak memiliki izin untuk mengupdate data ini.');
+            }
+        }
+
+        // Update data Jaksa
+        $jaksa->nama = $request->input('nama');
+        $jaksa->nomor_wa = $this->formatNomorWA($request->nomor_wa);
+        $jaksa->pangkat = $request->input('pangkat');
+        $jaksa->save();
 
         return redirect()->route('jaksa.index')->with('success', 'Data jaksa berhasil diperbarui.');
     }

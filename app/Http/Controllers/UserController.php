@@ -18,7 +18,8 @@ class UserController extends Controller
             $users = User::where(function($query) {
                             $searchTerm = request('search');
                             $query->where('name', 'like', '%' . $searchTerm . '%')
-                                  ->orWhere('email', 'like', '%' . $searchTerm . '%');
+                                  ->orWhere('email', 'like', '%' . $searchTerm . '%')
+                                  ->orWhere('kejari_nama', 'like', '%' . $searchTerm . '%');
                         })
                         ->where('id', '!=', $loggedInUserId)
                         ->oldest()
@@ -42,10 +43,12 @@ class UserController extends Controller
         $request->validate([
             'email' => 'required|email|unique:users,email',
             'name' => 'required',
-            'is_admin' => 'required|in:0,1'
+            'is_admin' => 'required|in:0,1',
+            'kejari_nama' => 'required|in:Kejari Sulteng,Kejari Palu,Kejari Poso,Kejari Tolitoli,Kejari Banggai,Kejari Parigi,Kejari Donggala,Kejari Buol,Kejari Morowali'
         ]);
 
-        $userData = $request->only(['email', 'name', 'is_admin']);
+        
+        $userData = $request->only(['email', 'name', 'is_admin', 'kejari_nama']);
         $userData['password'] = Hash::make('12345678');
         User::create($userData);
 
