@@ -250,7 +250,7 @@ Agenda
                                 @endforeach
                             </select>
                         </div>
-                        @error('nama_jaksa')
+                        @error('nama_atasan')
                             <p class="text-bold text-xs text-danger">{{ $message }}</p>
                         @enderror
 
@@ -262,7 +262,7 @@ Agenda
                                 @endforeach
                             </select>
                         </div>
-                        @error('nomor_jaksa')
+                        @error('nomor_atasan')
                             <p class="text-bold text-xs text-danger">{{ $message }}</p>
                         @enderror
 
