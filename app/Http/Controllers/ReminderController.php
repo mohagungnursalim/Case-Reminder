@@ -17,50 +17,42 @@ class ReminderController extends Controller
      */
     public function index(Request $request)
     {
-        $user = Auth::user(); // Mendapatkan pengguna yang sedang login
+        // Mendapatkan pengguna yang sedang login
+        $user = Auth::user();
+        $loggedInUserId = $user->id;
 
-        // Ambil data
-        $atasans = Atasan::select('nama', 'nomor_wa')->latest()->get();
-        $jaksas = Jaksa::select('nama', 'nomor_wa')->latest()->get();
-        $saksis = Saksi::select('nama')->latest()->get();
-        $kasuss = Kasus::select('nama')->latest()->get();
+        // Ambil data terkait dengan user_id yang sedang login
+        $atasans = Atasan::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->latest()->get();
+        $jaksas = Jaksa::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->latest()->get();
+        $saksis = Saksi::select('nama')->where('user_id', $loggedInUserId)->latest()->get();
+        $kasuss = Kasus::select('nama')->where('user_id', $loggedInUserId)->latest()->get();
 
         // Membuat query builder untuk mengambil data reminder
-        if ($user->is_admin) {
-            // Jika pengguna adalah admin, tampilkan semua data Reminder
-            $query = Reminder::latest();
-        } else {
+        $query = Reminder::latest();
+
+        if (!$user->is_admin) {
             // Jika bukan admin, tampilkan hanya data Reminder yang terkait dengan user_id tersebut
-            $query = Reminder::where('user_id', $user->id)->latest();
+            $query = $query->where('user_id', $loggedInUserId);
         }
 
         // Pencarian berdasarkan query 'search'
         $search = $request->query('search');
-
-        if (Auth::user()->is_admin) {
-            if ($search) {
-                $query = $query->where(function($query) use ($search) {
-                    $query->where('nama_kasus', 'LIKE', "%{$search}%")
-                        ->orWhere('pesan', 'LIKE', "%{$search}%")
-                        ->orWhere('tanggal_waktu', 'LIKE', "%{$search}%")
-                        ->orWhere('lokasi','LIKE', "%{$search}%");
-                });
-            }
-        } else {
-            if ($search) {
-                $query = $query->where(function($query) use ($search) {
-                    $query->where('nama_kasus', 'LIKE', "%{$search}%")
-                        ->orWhere('pesan', 'LIKE', "%{$search}%")
-                        ->orWhere('tanggal_waktu', 'LIKE', "%{$search}%");
-                });
-            }
+        if ($search) {
+            $query->where(function($query) use ($search) {
+                $query->where('nama_kasus', 'LIKE', "%{$search}%")
+                    ->orWhere('pesan', 'LIKE', "%{$search}%")
+                    ->orWhere('tanggal_waktu', 'LIKE', "%{$search}%")
+                    ->orWhere('lokasi', 'LIKE', "%{$search}%");
+            });
         }
 
         // Ambil data reminder berdasarkan query yang telah dibuat lalu paginasi perbaris (10)
         $reminders = $query->paginate(10);
 
+        // Mengirim data ke view
         return view('dashboard.agenda.index', compact('reminders', 'jaksas', 'saksis', 'kasuss', 'atasans'));
     }
+
 
 
     /**
@@ -70,10 +62,13 @@ class ReminderController extends Controller
     // halaman form
     public function create()
     {
-        $atasans = Atasan::select('nama','nomor_wa')->latest()->get();
-        $jaksas = Jaksa::select('nama','nomor_wa')->latest()->get();
-        $saksis = Saksi::select('nama')->latest()->get();
-        $kasuss= Kasus::select('nama')->latest()->get();
+        $loggedInUserId = Auth::id();
+
+        $atasans = Atasan::select('nama','nomor_wa')->where('user_id', $loggedInUserId)->latest()->get();
+        $jaksas = Jaksa::select('nama','nomor_wa')->where('user_id', $loggedInUserId)->latest()->get();
+        $saksis = Saksi::select('nama')->where('user_id', $loggedInUserId)->latest()->get();
+        $kasuss = Kasus::select('nama')->where('user_id', $loggedInUserId)->latest()->get();
+
         return view('dashboard.agenda.create',compact('jaksas','saksis','kasuss','atasans'));
     }
 
