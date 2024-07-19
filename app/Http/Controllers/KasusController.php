@@ -32,15 +32,13 @@ class KasusController extends Controller
             if ($search) {
                 $kasuss = $kasuss->where(function($query) use ($search) {
                     $query->where('nama', 'LIKE', "%{$search}%")
-                        ->orWhere('status', 'LIKE', "%{$search}%")
                         ->orWhere('lokasi', 'LIKE', "%{$search}%");
                 });
             }
         }else{
             if ($search) {
                 $kasuss = $kasuss->where(function($query) use ($search) {
-                    $query->where('nama', 'LIKE', "%{$search}%")
-                        ->orWhere('status', 'LIKE', "%{$search}%");
+                    $query->where('nama', 'LIKE', "%{$search}%");
                 });
             }
         }
