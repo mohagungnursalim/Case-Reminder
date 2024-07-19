@@ -19,10 +19,10 @@ class KasusController extends Controller
 
         if ($user->is_admin) {
             // Jika pengguna adalah admin, tampilkan semua data Kasus
-            $kasuss = Kasus::latest();
+            $kasuss = Kasus::oldest();
         } else {
             // Jika bukan admin, tampilkan hanya data Kasus yang terkait dengan user_id tersebut
-            $kasuss = Kasus::where('user_id', $user->id)->latest();
+            $kasuss = Kasus::where('user_id', $user->id)->oldest();
         }
 
         // Pencarian berdasarkan query 'search'

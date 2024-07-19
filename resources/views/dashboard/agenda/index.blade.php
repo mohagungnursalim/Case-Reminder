@@ -199,7 +199,7 @@ Agenda
                     @else
                         <tr>
                             <td colspan="12" class="text-center">
-                                Tidak ada agenda sidang
+                                Tidak ada agenda..
                                 @if (request('search'))
                                 <kbd>{{ request('search') }}</kbd>                
                                 @endif

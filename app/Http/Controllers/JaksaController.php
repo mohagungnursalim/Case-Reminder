@@ -20,10 +20,10 @@ class JaksaController extends Controller
 
         if ($user->is_admin) {
             // Jika pengguna adalah admin, tampilkan semua data Jaksa
-            $jaksas = Jaksa::latest();
+            $jaksas = Jaksa::oldest();
         } else {
             // Jika bukan admin, tampilkan hanya data Jaksa yang terkait dengan user_id tersebut
-            $jaksas = Jaksa::where('user_id', $user->id)->latest();
+            $jaksas = Jaksa::where('user_id', $user->id)->oldest();
         }
 
         // Pencarian berdasarkan query 'search'

@@ -22,10 +22,10 @@ class ReminderController extends Controller
         $loggedInUserId = $user->id;
 
         // Ambil data terkait dengan user_id yang sedang login
-        $atasans = Atasan::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->latest()->get();
-        $jaksas = Jaksa::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->latest()->get();
-        $saksis = Saksi::select('nama')->where('user_id', $loggedInUserId)->latest()->get();
-        $kasuss = Kasus::select('nama')->where('user_id', $loggedInUserId)->latest()->get();
+        $atasans = Atasan::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
+        $jaksas = Jaksa::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
+        $saksis = Saksi::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
+        $kasuss = Kasus::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
 
         // Membuat query builder untuk mengambil data reminder
         $query = Reminder::latest();
@@ -64,10 +64,10 @@ class ReminderController extends Controller
     {
         $loggedInUserId = Auth::id();
 
-        $atasans = Atasan::select('nama','nomor_wa')->where('user_id', $loggedInUserId)->latest()->get();
-        $jaksas = Jaksa::select('nama','nomor_wa')->where('user_id', $loggedInUserId)->latest()->get();
-        $saksis = Saksi::select('nama')->where('user_id', $loggedInUserId)->latest()->get();
-        $kasuss = Kasus::select('nama')->where('user_id', $loggedInUserId)->latest()->get();
+        $atasans = Atasan::select('nama','nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
+        $jaksas = Jaksa::select('nama','nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
+        $saksis = Saksi::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
+        $kasuss = Kasus::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
 
         return view('dashboard.agenda.create',compact('jaksas','saksis','kasuss','atasans'));
     }
