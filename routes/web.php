@@ -26,13 +26,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// testing twilio
-// Route::get('/test-whatsapp', function () {
-//     $reminders = App\Models\Reminder::where('is_sent', false)->get();
-//     foreach ($reminders as $reminder) {
-//         dispatch(new \App\Jobs\SendReminderMessage($reminder));
-//     }
-// });
+// testing wablas
+Route::get('/test-whatsapp', function () {
+    $reminders = App\Models\Reminder::where('is_sent', false)->get();
+    foreach ($reminders as $reminder) {
+        dispatch(new \App\Jobs\SendReminderMessage($reminder));
+    }
+});
 
 
 Route::get('/dashboard/logs', [LogController::class, 'getAllStatus'])->name('get-all')->middleware('auth');
