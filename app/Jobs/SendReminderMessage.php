@@ -8,7 +8,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Twilio\Rest\Client;
 use Illuminate\Support\Facades\Log;
 
 class SendReminderMessage implements ShouldQueue
@@ -31,16 +30,13 @@ class SendReminderMessage implements ShouldQueue
 
         Log::info('SendReminderMessage job started for reminder ID: ' . $this->reminder->id);
 
-        $sid = config('services.twilio.sid');
-        $token = config('services.twilio.auth_token');
-        $from = config('services.twilio.whatsapp_from');
+        // untuk ubah token di config/service atau di env
+        $token = config('services.wablas.token');
 
-        if (!$sid || !$token || !$from) {
-            Log::error('Twilio configuration values are missing.');
+        if (!$token) {
+            Log::error('Wablas configuration value is missing.');
             return;
         }
-
-        $client = new Client($sid, $token);
 
         $nama_atasan = is_string($this->reminder->nama_atasan) ? json_decode($this->reminder->nama_atasan, true) : $this->reminder->nama_atasan;
         $nama_jaksa = is_string($this->reminder->nama_jaksa) ? json_decode($this->reminder->nama_jaksa, true) : $this->reminder->nama_jaksa;
@@ -54,10 +50,10 @@ class SendReminderMessage implements ShouldQueue
         Log::debug('Nama Jaksa: ' . $nama_jaksa_str);
         Log::debug('Nama Saksi: ' . $nama_saksi_str);
 
-        $message = "*Reminder Sidang Kejaksaan!!* 
+        $message = "*Reminder Pemeriksaan Saksi!* 
         \n\n\n{$this->reminder->pesan}
         
-        \n*Nama Atasan:* $nama_atasan_str
+        \n*Menghadap:* $nama_atasan_str
         \n*Nama Jaksa:* $nama_jaksa_str
         \n*Nama Saksi:* $nama_saksi_str
         \n*Nama Kasus:* {$this->reminder->nama_kasus}
@@ -75,24 +71,38 @@ class SendReminderMessage implements ShouldQueue
 
         foreach ($nomor_penerima as $nomor) {
             try {
-                $response = $client->messages->create(
-                    'whatsapp:' . $nomor,
-                    [
-                        'from' => $from,
-                        'body' => $message,
+                $payload = [
+                    "data" => [
+                        [
+                            'phone' => $nomor,
+                            'message' => $message,
+                        ]
                     ]
-                );
-
-                $logData = [
-                    'DATE' => $response->dateCreated->format('Y-m-d H:i:s'),
-                    'DIRECTION' => $response->direction,
-                    'FROM' => $response->from,
-                    'TO' => $response->to,
-                    'STATUS' => $response->status,
                 ];
 
-                Log::info('Reminder message sent successfully to: ' . $nomor);
-                Log::info('Twilio response: ' . json_encode($logData));
+                $curl = curl_init();
+                curl_setopt($curl, CURLOPT_HTTPHEADER, [
+                    "Authorization: $token",
+                    "Content-Type: application/json"
+                ]);
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "POST");
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($payload));
+                curl_setopt($curl, CURLOPT_URL, "https://jkt.wablas.com/api/v2/send-message");
+                curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+                curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+
+                $result = curl_exec($curl);
+                curl_close($curl);
+
+                $response = json_decode($result, true);
+
+                if (isset($response['status']) && $response['status'] == 'success') {
+                    Log::info('Reminder message sent successfully to: ' . $nomor);
+                    Log::info('Wablas response: ' . json_encode($response));
+                } else {
+                    throw new \Exception('Error response from Wablas: ' . json_encode($response));
+                }
 
             } catch (\Exception $e) {
                 Log::error('Failed to send reminder message to: ' . $nomor . '. Error: ' . $e->getMessage());
