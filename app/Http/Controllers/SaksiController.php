@@ -17,10 +17,10 @@ class SaksiController extends Controller
 
         if ($user->is_admin) {
             // Jika pengguna adalah admin, tampilkan semua data Saksi
-            $saksis = Saksi::latest();
+            $saksis = Saksi::oldest();
         } else {
             // Jika bukan admin, tampilkan hanya data Saksi yang terkait dengan user_id tersebut
-            $saksis = Saksi::where('user_id', $user->id)->latest();
+            $saksis = Saksi::where('user_id', $user->id)->oldest();
         }
 
         // Pencarian berdasarkan query 'search'

@@ -92,7 +92,7 @@ Jaksa
                     @else
                         <tr>
                             <td colspan="7" class="text-center">
-                                Tidak ada data Jaksa..
+                                Tidak ada data jaksa..
                                 @if (request('search'))
                                 <kbd>{{ request('search') }}</kbd>                
                                 @endif

@@ -15,10 +15,10 @@ class AtasanController extends Controller
 
         if ($user->is_admin) {
             // Jika pengguna adalah admin, tampilkan semua data Atasan
-            $atasans = Atasan::latest();
+            $atasans = Atasan::oldest();
         } else {
             // Jika bukan admin, tampilkan hanya data Jaksa yang terkait dengan user_id tersebut
-            $atasans = Atasan::where('user_id', $user->id)->latest();
+            $atasans = Atasan::where('user_id', $user->id)->oldest();
         }
 
         // Pencarian berdasarkan query 'search'

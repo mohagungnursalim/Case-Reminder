@@ -35,8 +35,8 @@ Route::get('/test-whatsapp', function () {
 });
 
 
-Route::get('/dashboard/logs', [LogController::class, 'getAllStatus'])->name('get-all')->middleware('auth');
-Route::delete('/dashboard/delete-all', [LogController::class, 'deleteAll'])->name('delete-all')->middleware('auth');
+// Route::get('/dashboard/logs', [LogController::class, 'getAllStatus'])->name('get-all')->middleware('auth');
+// Route::delete('/dashboard/delete-all', [LogController::class, 'deleteAll'])->name('delete-all')->middleware('auth');
 
 // route agenda json
 Route::get('/agenda-terkirim-sesuai-jadwal', [DashboardController::class, 'agendaTerkirimSesuaiJadwal'])->middleware('auth');

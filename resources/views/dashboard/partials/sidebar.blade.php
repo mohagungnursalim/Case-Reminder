@@ -1,5 +1,5 @@
 <aside
-    class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-info"
+    class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark"
     id="sidenav-main">
 
     <div class="sidenav-header">
@@ -126,7 +126,7 @@
                 </a>
             </li>
             @endcan
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link text-white {{Request::is('dashboard/logs') ? 'active' : ''}}" 
                 href="/dashboard/logs">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -136,7 +136,7 @@
                     </div>
                     <span class="nav-link-text ms-1">Log Status </span>
                 </a>
-            </li>
+            </li> --}}
             
            
 
