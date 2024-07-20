@@ -145,6 +145,7 @@ Kelola User
                 <table id="myTable" class="table text-dark">
                     <tr>
                         <th class="text-wrap small">No</th>
+                        <th class="text-wrap small">Status</th>
                         <th class="text-wrap small">Email</th>
                         <th class="text-wrap small">Nama User</th>
                         <th class="text-wrap small">Peran</th>
@@ -158,6 +159,16 @@ Kelola User
                     @foreach ($users as $user )
                     <tr>
                         <td class="text-wrap small">{{ $loop->iteration }}</td>
+                        <td class="text-wrap small">
+                            @if ($user->is_online)
+                                <span class="badge btn-sm text-success success">Online</span>
+                            @elseif (is_null($user->last_seen))
+                                <a class="text-muted">Non Aktif</a>
+                            @else
+                                <a class="text-muted">Terakhir dilihat {{ $user->last_seen->diffForHumans() }}</a>
+                            @endif
+                        </td>
+                        
                         <td class="text-wrap small">{{ $user->email }}</td>
                         <td class="text-wrap small">{{ $user->name }}</td>
                         <td class="text-wrap small">

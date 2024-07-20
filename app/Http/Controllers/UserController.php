@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -14,26 +15,28 @@ class UserController extends Controller
     public function index()
     {
         $loggedInUserId = auth()->id();
+        $query = User::where('id', '!=', $loggedInUserId)
+                    ->where('email', '!=', 'mohagungnursalim@gmail.com'); // Tambahkan kondisi pengecualian di sini
+
         if (request('search')) {
-            $users = User::where(function($query) {
-                            $searchTerm = request('search');
-                            $query->where('name', 'like', '%' . $searchTerm . '%')
-                                  ->orWhere('email', 'like', '%' . $searchTerm . '%')
-                                  ->orWhere('kejari_nama', 'like', '%' . $searchTerm . '%');
-                        })
-                        ->where('id', '!=', $loggedInUserId)
-                        ->oldest()
-                        ->cursorPaginate(10)
-                        ->withQueryString();
-        } else {
-            $users = User::where('id', '!=', $loggedInUserId)
-                        ->oldest()
-                        ->cursorPaginate(10)
-                        ->withQueryString();
+            $searchTerm = request('search');
+            $query->where(function($query) use ($searchTerm) {
+                $query->where('name', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('email', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('kejari_nama', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        $users = $query->oldest()->cursorPaginate(10)->withQueryString();
+
+        foreach ($users as $user) {
+            $user->is_online = Cache::has('user-is-online-' . $user->id);
+          
         }
 
         return view('dashboard.user.index', compact('users'));
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -49,6 +52,7 @@ class UserController extends Controller
 
         
         $userData = $request->only(['email', 'name', 'is_admin', 'kejari_nama']);
+        $userData['last_seen'] = null; // Atur nilai last_seen menjadi null
         $userData['password'] = Hash::make('12345678');
         User::create($userData);
 
