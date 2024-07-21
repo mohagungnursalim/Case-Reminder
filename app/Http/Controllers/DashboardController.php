@@ -23,7 +23,7 @@ class DashboardController extends Controller
         $user = Auth::user(); // Mendapatkan pengguna yang sedang login
     
         $cacheKey = $user->is_admin ? 'dashboard_admin' : 'dashboard_user_' . $user->id;
-        $data = Cache::remember($cacheKey, now()->addMinutes(10), function () use ($user) {
+        $data = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($user) {
             if ($user->is_admin) {
                 // Menghitung data untuk admin
                 return [
@@ -52,7 +52,7 @@ class DashboardController extends Controller
         $user = Auth::user(); // Mendapatkan pengguna yang sedang login
     
         $cacheKey = $user->is_admin ? 'agenda_terkirim_admin' : 'agenda_terkirim_user_' . $user->id;
-        $agendaTerkirimSesuaiJadwal = Cache::remember($cacheKey, now()->addMinutes(30), function () use ($user) {
+        $agendaTerkirimSesuaiJadwal = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($user) {
             // Membuat query builder untuk agenda terkirim sesuai jadwal
             $query = Reminder::select('tanggal_waktu', DB::raw('count(id) as jumlah'))
                 ->where('is_sent', true)
@@ -76,7 +76,7 @@ class DashboardController extends Controller
         $user = Auth::user(); // Mendapatkan pengguna yang sedang login
     
         $cacheKey = $user->is_admin ? 'agenda_belum_terkirim_admin' : 'agenda_belum_terkirim_user_' . $user->id;
-        $agendaBelumTerkirimSesuaiJadwal = Cache::remember($cacheKey, now()->addMinutes(30), function () use ($user) {
+        $agendaBelumTerkirimSesuaiJadwal = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($user) {
             // Membuat query builder untuk agenda belum terkirim sesuai jadwal
             $query = Reminder::select('tanggal_waktu', DB::raw('count(id) as jumlah'))
                 ->where('is_sent', false)
