@@ -173,11 +173,11 @@ Kelola User
                         <td class="text-wrap small">{{ $user->name }}</td>
                         <td class="text-wrap small">
                             @if ($user->is_admin == false)
-                            <button type="button" class="badge secondary btn-sm" style="border: none" data-bs-toggle="modal" data-bs-target="#editperanModal{{ $user->id }}">
+                            <button type="button" required class="badge secondary btn-sm" style="border: none" data-bs-toggle="modal" data-bs-target="#editperanModal{{ $user->id }}">
                                 Operator
                             </button>
                             @else
-                            <button type="button" class="badge success btn-sm" style="border: none" data-bs-toggle="modal" data-bs-target="#editperanModal{{ $user->id }}">
+                            <button type="button" required class="badge success btn-sm" style="border: none" data-bs-toggle="modal" data-bs-target="#editperanModal{{ $user->id }}">
                                 Admin
                             </button>
                             @endif
