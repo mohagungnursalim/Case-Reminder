@@ -175,7 +175,7 @@ Agenda
                             </button>
                             @else
                             <button type="button" class="badge secondary mt-1" style="border:none">
-                                <span class="material-symbols-outlined status">schedule</span> Penjadwalan
+                                <span class="material-symbols-outlined status">schedule</span> Dijadwalkan
                             </button>
                            @endif
                         </td>
