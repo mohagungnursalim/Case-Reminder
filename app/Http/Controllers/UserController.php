@@ -15,15 +15,37 @@ class UserController extends Controller
     public function index()
     {
         $loggedInUserId = auth()->id();
-        $query = User::where('id', '!=', $loggedInUserId)
-                    ->where('email', '!=', 'mohagungnursalim@gmail.com'); // Tambahkan kondisi pengecualian di sini
+        $loggedInUserEmail = auth()->user()->email;
+        $loggedInUserIsAdmin = auth()->user()->is_admin;
+
+        $query = User::query();
+
+        if ($loggedInUserIsAdmin && $loggedInUserEmail == 'mohagungnursalim@gmail.com') {
+            // Super Admin dapat melihat semua data
+            $query->where('id', '!=', $loggedInUserId);
+        } elseif ($loggedInUserIsAdmin) {
+            // Admin hanya dapat melihat data Operator
+            $query->where('is_admin', false)
+                ->where('id', '!=', $loggedInUserId);
+        } else {
+            // Operator tidak dapat melihat data admin lain dan data diri sendiri
+            $query->where('id', '!=', $loggedInUserId);
+        }
 
         if (request('search')) {
             $searchTerm = request('search');
-            $query->where(function($query) use ($searchTerm) {
+            $query->where(function($query) use ($searchTerm, $loggedInUserIsAdmin, $loggedInUserId) {
                 $query->where('name', 'like', '%' . $searchTerm . '%')
                     ->orWhere('email', 'like', '%' . $searchTerm . '%')
                     ->orWhere('kejari_nama', 'like', '%' . $searchTerm . '%');
+                
+                // Pastikan pengguna tidak melihat data mereka sendiri saat mencari
+                $query->where('id', '!=', $loggedInUserId);
+
+                if ($loggedInUserIsAdmin) {
+                    // Admin hanya dapat melihat data Operator saat melakukan pencarian
+                    $query->where('is_admin', false);
+                }
             });
         }
 
@@ -31,11 +53,11 @@ class UserController extends Controller
 
         foreach ($users as $user) {
             $user->is_online = Cache::has('user-is-online-' . $user->id);
-          
         }
 
         return view('dashboard.user.index', compact('users'));
     }
+
 
 
     /**
