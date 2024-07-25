@@ -9,6 +9,7 @@ use App\Models\Reminder;
 use App\Models\Saksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ReminderController extends Controller
 {
@@ -21,39 +22,59 @@ class ReminderController extends Controller
         $user = Auth::user();
         $loggedInUserId = $user->id;
 
-        // Ambil data terkait dengan user_id yang sedang login
-        $atasans = Atasan::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
-        $jaksas = Jaksa::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
-        $saksis = Saksi::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
-        $kasuss = Kasus::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
+
+        // Logika berdasarkan peran pengguna
+        if ($user->email === 'mohagungnursalim@gmail.com') {
+            // Super Admin: tampilkan semua data
+            $atasans = Atasan::select('nama', 'nomor_wa')->oldest()->get();
+            $jaksas = Jaksa::select('nama', 'nomor_wa')->oldest()->get();
+            $saksis = Saksi::select('nama')->oldest()->get();
+            $kasuss = Kasus::select('nama')->oldest()->get();
+        } elseif ($user->is_admin) {
+            // Admin: tampilkan semua data pada lokasi Kejari tertentu
+            $atasans = Atasan::select('nama', 'nomor_wa')->where('lokasi', $user->kejari_nama)->oldest()->get();
+            $jaksas = Jaksa::select('nama', 'nomor_wa')->where('lokasi', $user->kejari_nama)->oldest()->get();
+            $saksis = Saksi::select('nama')->where('lokasi', $user->kejari_nama)->oldest()->get();
+            $kasuss = Kasus::select('nama')->where('lokasi', $user->kejari_nama)->oldest()->get();
+        } else {
+            // Operator: tampilkan hanya data mereka sendiri
+            $atasans = Atasan::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
+            $jaksas = Jaksa::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
+            $saksis = Saksi::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
+            $kasuss = Kasus::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
+        }
 
         // Membuat query builder untuk mengambil data reminder
-        $query = Reminder::latest();
+    $query = Reminder::latest();
 
-        if (!$user->is_admin) {
-            // Jika bukan admin, tampilkan hanya data Reminder yang terkait dengan user_id tersebut
-            $query = $query->where('user_id', $loggedInUserId);
-        }
+    // Logika berdasarkan peran pengguna untuk data reminder
+    if ($user->email === 'mohagungnursalim@gmail.com') {
+        // Super Admin: tampilkan semua data
+        
+    } elseif ($user->is_admin) {
+        // Admin: tampilkan semua data pada lokasi Kejari tertentu
+        $query->where('lokasi', $user->kejari_nama);
+    } else {
+        // Operator: tampilkan hanya data mereka sendiri
+        $query->where('user_id', $loggedInUserId);
+    }
 
-        // Pencarian berdasarkan query 'search'
-        $search = $request->query('search');
-        if ($search) {
-            $query->where(function($query) use ($search) {
-                $query->where('nama_kasus', 'LIKE', "%{$search}%")
-                    ->orWhere('pesan', 'LIKE', "%{$search}%")
-                    ->orWhere('tanggal_waktu', 'LIKE', "%{$search}%")
-                    ->orWhere('lokasi', 'LIKE', "%{$search}%");
-            });
-        }
+    // Pencarian berdasarkan query 'search'
+    $search = $request->query('search');
+    if ($search) {
+        $query->where(function($query) use ($search) {
+            $query->where('nama_kasus', 'LIKE', "%{$search}%")
+                ->orWhere('pesan', 'LIKE', "%{$search}%")
+                ->orWhere('tanggal_waktu', 'LIKE', "%{$search}%")
+                ->orWhere('lokasi', 'LIKE', "%{$search}%");
+        });
+    }
 
-        // Ambil data reminder berdasarkan query yang telah dibuat lalu paginasi perbaris (10)
-        $reminders = $query->paginate(10);
-
+    // Ambil data reminder berdasarkan query yang telah dibuat lalu paginasi perbaris (10)
+    $reminders = $query->paginate(10);
         // Mengirim data ke view
         return view('dashboard.agenda.index', compact('reminders', 'jaksas', 'saksis', 'kasuss', 'atasans'));
     }
-
-
 
     /**
      * Show the form for creating a new resource.
@@ -62,15 +83,35 @@ class ReminderController extends Controller
     // halaman form
     public function create()
     {
-        $loggedInUserId = Auth::id();
+        // Mendapatkan pengguna yang sedang login
+        $user = Auth::user();
+        $loggedInUserId = $user->id;
 
-        $atasans = Atasan::select('nama','nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
-        $jaksas = Jaksa::select('nama','nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
-        $saksis = Saksi::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
-        $kasuss = Kasus::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
+        // Logika berdasarkan peran pengguna
+        if ($user->email === 'mohagungnursalim@gmail.com') {
+            // Super Admin: tampilkan semua data
+            $atasans = Atasan::select('nama', 'nomor_wa')->oldest()->get();
+            $jaksas = Jaksa::select('nama', 'nomor_wa')->oldest()->get();
+            $saksis = Saksi::select('nama')->oldest()->get();
+            $kasuss = Kasus::select('nama')->oldest()->get();
+        } elseif ($user->is_admin) {
+            // Admin: tampilkan semua data pada lokasi Kejari tertentu
+            $atasans = Atasan::select('nama', 'nomor_wa')->where('lokasi', $user->kejari_nama)->oldest()->get();
+            $jaksas = Jaksa::select('nama', 'nomor_wa')->where('lokasi', $user->kejari_nama)->oldest()->get();
+            $saksis = Saksi::select('nama')->where('lokasi', $user->kejari_nama)->oldest()->get();
+            $kasuss = Kasus::select('nama')->where('lokasi', $user->kejari_nama)->oldest()->get();
+        } else {
+            // Operator: tampilkan hanya data mereka sendiri
+            $atasans = Atasan::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
+            $jaksas = Jaksa::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
+            $saksis = Saksi::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
+            $kasuss = Kasus::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
+        }
 
-        return view('dashboard.agenda.create',compact('jaksas','saksis','kasuss','atasans'));
+        // Mengirim data ke view
+        return view('dashboard.agenda.create', compact('jaksas', 'saksis', 'kasuss', 'atasans'));
     }
+
 
     // fungsi store
     public function store(Request $request)
