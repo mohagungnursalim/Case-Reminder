@@ -91,16 +91,20 @@ Agenda
                 <table id="myTable" class="table text-dark">
                     <tr>
                         <th class="text-wrap small">No</th>
+                        <th class="text-wrap small">Kasus</th>
                         <th class="text-wrap small">Atasan</th>
                         <th class="text-wrap small">No Atasan</th>
                         <th class="text-wrap small">Jaksa</th>
                         <th class="text-wrap small">No Jaksa</th>
-                        <th class="text-wrap small">Kasus</th>
                         <th class="text-wrap small">Saksi</th>
                         <th class="text-wrap small">Pesan</th>
                         <th class="text-wrap small">Tanggal & Waktu Pelaksanaan</th>
                         <th class="text-wrap small">Status</th>
-                        @can('is_admin') <th class="text-wrap small">Lokasi</th> @endcan
+                        @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
+                        @can('is_admin') 
+                        <th class="text-wrap small">Lokasi</th> 
+                        @endcan
+                        @endif
                         <th class="text-wrap small">Dibuat</th>
                         <th class="text-wrap small">Aksi</th>
 
@@ -110,6 +114,7 @@ Agenda
                     @foreach ($reminders as $reminder )
                     <tr>
                         <td class="text-wrap small">{{ $loop->iteration }}</td>
+                        <td class="text-wrap small">{{ $reminder->nama_kasus }}</td>
                         <td class="text-wrap small">
                             @foreach(json_decode($reminder->nama_atasan) as $nama_atasan)
                                 <button type="button" class="badge mt-1 info">
@@ -138,7 +143,6 @@ Agenda
                             </button>
                             @endforeach
                         </td>
-                        <td class="text-wrap small">{{ $reminder->nama_kasus }}</td>
                         <td class="text-wrap small">
                             @foreach(json_decode($reminder->nama_saksi) as $nama_saksi)
                             <button type="button" class="badge warning mt-1" style="border:none">
@@ -179,7 +183,11 @@ Agenda
                             </button>
                            @endif
                         </td>
-                        @can('is_admin') <td class="small">{{ $reminder->lokasi }}</td> @endcan
+                        @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
+                        @can('is_admin') 
+                        <td class="small">{{ $reminder->lokasi }}</td> 
+                        @endcan
+                        @endif
                         <td class="small">{{ ($reminder->created_at)->format('d-m-Y') }}</td>
 
                         <td>
@@ -242,6 +250,19 @@ Agenda
                         @csrf
                         @method('PUT')
                         
+                        <label class="form-label">Kasus</label>
+                        <div class="input-group input-group-outline @error('nama_kasus') is-invalid @enderror mb-1">
+                            <select id="nama_kasus{{ $reminder->id }}" name="nama_kasus" style="width: 100%;" class="form-control">
+                                <option value="" disabled>---Pilih Kasus---</option>
+                                @foreach($kasuss as $kasus)
+                                    <option value="{{ $kasus->nama }}" {{ $reminder->nama_kasus == $kasus->nama ? 'selected' : '' }}>{{ $kasus->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('nama_kasus')
+                            <p class="text-bold text-xs text-danger">{{ $message }}</p>
+                        @enderror
+
                         <label class="form-label">Atasan</label>
                         <div class="input-group input-group-outline @error('nama_atasan') is-invalid @enderror mb-1">
                             <select id="nama_atasan{{ $reminder->id }}" name="nama_atasan[]" style="width: 100%;" multiple class="form-control">
@@ -287,19 +308,6 @@ Agenda
                             </select>
                         </div>
                         @error('nomor_jaksa')
-                            <p class="text-bold text-xs text-danger">{{ $message }}</p>
-                        @enderror
-
-                        <label class="form-label">Kasus</label>
-                        <div class="input-group input-group-outline @error('nama_kasus') is-invalid @enderror mb-1">
-                            <select id="nama_kasus{{ $reminder->id }}" name="nama_kasus" style="width: 100%;" class="form-control">
-                                <option value="" disabled>---Pilih Kasus---</option>
-                                @foreach($kasuss as $kasus)
-                                    <option value="{{ $kasus->nama }}" {{ $reminder->nama_kasus == $kasus->nama ? 'selected' : '' }}>{{ $kasus->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        @error('nama_kasus')
                             <p class="text-bold text-xs text-danger">{{ $message }}</p>
                         @enderror
 

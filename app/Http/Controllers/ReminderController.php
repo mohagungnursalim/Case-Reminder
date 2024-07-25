@@ -116,8 +116,15 @@ class ReminderController extends Controller
     // fungsi store
     public function store(Request $request)
     {
+        // Determine lokasi based on the user role
+        if (Auth::user()->email == 'mohagungnursalim@gmail.com') {
+            $lokasi = $request->input('lokasi'); // Adjusted to match the form field name
+        } else {
+            $lokasi = Auth::user()->kejari_nama;
+        }
+    
+        // Validasi input
         $request->validate([
-
             'nama_atasan' => 'required|array',
             'nama_atasan.*' => 'string',
             'nomor_atasan' => 'required|array',
@@ -127,17 +134,18 @@ class ReminderController extends Controller
             'nomor_jaksa' => 'required|array',
             'nomor_jaksa.*' => 'string',
             'nama_kasus' => 'required|string',
+            'nama_kasus.*' => 'string',
             'nama_saksi' => 'required|array',
             'nama_saksi.*' => 'string',
-            'nama_kasus' => 'string',
             'pesan' => 'required|string',
             'tanggal_waktu' => 'required|date',
+            'lokasi' => 'nullable|string'
         ]);
     
-        // Map the request data to the database columns
+        // Map request data ke kolom database
         $reminderData = [
             'user_id' => Auth::user()->id,
-            'lokasi' => Auth::user()->kejari_nama,
+            'lokasi' => $lokasi,
             'nama_kasus' => $request->input('nama_kasus'),
             'pesan' => $request->input('pesan'),
             'tanggal_waktu' => $request->input('tanggal_waktu'),
@@ -150,9 +158,10 @@ class ReminderController extends Controller
     
         // Create the reminder record
         Reminder::create($reminderData);
-
+    
         return redirect('dashboard/agenda')->with('success', 'Agenda berhasil ditambahkan.');
     }
+    
 
     public function edit(string $id)
     {

@@ -18,6 +18,42 @@ Tambah
     <div class="container">
                 <form action="{{ route('agenda.store') }}" method="POST">
                     @csrf
+
+                    @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
+                    <label class="form-label">Tetapkan Lokasi</label>
+                    <div class="input-group input-group-outline @error('lokasi') is-invalid @enderror mb-1">
+                        <select id="lokasi" name="lokasi" style="width: 100%;" required class="form-control">
+                                    <option>-Pilih Lokasi-</option>
+                                    <option value="Kejati Sulteng">Kejati Sulteng</option>
+                                    <option value="Kejari Palu">Kejari Palu</option>
+                                    <option value="Kejari Poso">Kejari Poso</option>
+                                    <option value="Kejari Tolitoli">Kejari Tolitoli</option>
+                                    <option value="Kejari Banggai">Kejari Banggai</option>
+                                    <option value="Kejari Parigi">Kejari Parigi</option>
+                                    <option value="Kejari Donggala">Kejari Donggala</option>
+                                    <option value="Kejari Buol">Kejari Buol</option>
+                                    <option value="Kejari Morowali">Kejari Morowali</option>
+                        </select>
+                    </div>
+                    @error('lokasi')
+                        <p class="text-bold text-xs text-danger">{{ $message }}</p>
+                    @enderror
+
+                    @endif
+
+                    <label class="form-label">Kasus</label>
+                    <div class="input-group input-group-outline @error('nama_kasus') is-invalid @enderror mb-1">
+                        <select id="nama_kasus" name="nama_kasus" style="width: 100%;" class="form-control">
+                            <option value="" disabled selected>---Pilih Kasus---</option>
+                            @foreach($kasuss as $kasus)
+                                <option value="{{ $kasus->nama }}">{{ $kasus->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('nama_kasus')
+                        <p class="text-bold text-xs text-danger">{{ $message }}</p>
+                    @enderror
+                    
                     <label class="form-label">Atasan</label>
                     <div class="input-group input-group-outline @error('nama_atasan') is-invalid @enderror mb-1">
                         <select id="nama_atasan" name="nama_atasan[]" style="width: 100%;" multiple class="form-control">
@@ -63,19 +99,6 @@ Tambah
                         </select>
                     </div>
                     @error('nomor_jaksa')
-                        <p class="text-bold text-xs text-danger">{{ $message }}</p>
-                    @enderror
-
-                    <label class="form-label">Kasus</label>
-                    <div class="input-group input-group-outline @error('nama_kasus') is-invalid @enderror mb-1">
-                        <select id="nama_kasus" name="nama_kasus" style="width: 100%;" class="form-control">
-                            <option value="" disabled selected>---Pilih Kasus---</option>
-                            @foreach($kasuss as $kasus)
-                                <option value="{{ $kasus->nama }}">{{ $kasus->nama }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @error('nama_kasus')
                         <p class="text-bold text-xs text-danger">{{ $message }}</p>
                     @enderror
 
