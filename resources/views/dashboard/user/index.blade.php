@@ -70,12 +70,13 @@ Kelola User
                                 <p class="text-danger small">{{ $message }}</p>
                             @enderror
                         </div>
+                        @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                         <div class="col-md-2">
                             <div class="input-group input-group-outline @error('kejari_nama') is-invalid @enderror mb-1">
-                                <label for="kejari_nama" class="sr-only">Lokasi Kejari</label>
+                                <label for="kejari_nama" class="sr-only">Lokasi Kejaksaan</label>
                                 <select id="kejari_nama" name="kejari_nama" style="width: 100%;" class="form-control" required>
                                     <option>-Pilih Lokasi-</option>
-                                    <option value="Kejari Sulteng">Kejari Sulteng</option>
+                                    <option value="Kejati Sulteng">Kejati Sulteng</option>
                                     <option value="Kejari Palu">Kejari Palu</option>
                                     <option value="Kejari Poso">Kejari Poso</option>
                                     <option value="Kejari Tolitoli">Kejari Tolitoli</option>
@@ -90,6 +91,9 @@ Kelola User
                                 <p class="text-danger small">{{ $message }}</p>
                             @enderror
                         </div>
+                        @elseif (Auth::user()->is_admin == true)
+                        <input type="hidden" name="kejari_nama" value="{{ Auth::user()->kejari_nama }}">
+                        @endif
                         
                         <div class="col-md-4">
                             <button type="submit" class="btn btn-outline-primary mb-2">Buat</button>
@@ -149,7 +153,7 @@ Kelola User
                         <th class="text-wrap small">Email</th>
                         <th class="text-wrap small">Nama User</th>
                         <th class="text-wrap small">Peran</th>
-                        <th class="text-wrap small">Operator</th>
+                        <th class="text-wrap small">Lokasi</th>
                         <th class="text-wrap small">Dibuat</th>
                         <th class="text-wrap small">Aksi</th>
 
@@ -205,9 +209,11 @@ Kelola User
                     @else
                         <tr>
                             <td colspan="7" class="text-center">
-                                Tidak ada user 
-                                @if (request('search'))
-                                <kbd>{{ request('search') }}</kbd>                
+                                Tidak ada data user
+                                
+                                @if(request('search'))
+                                <kbd>{{ request('search') }}</kbd> ditemukan!   
+                               <a class="text-info text-underlined font-italic" href="/dashboard/user">Kembali</a>
                                 @endif
                             </td>
                         </tr>

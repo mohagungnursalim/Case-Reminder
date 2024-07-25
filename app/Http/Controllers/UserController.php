@@ -17,6 +17,7 @@ class UserController extends Controller
         $loggedInUserId = auth()->id();
         $loggedInUserEmail = auth()->user()->email;
         $loggedInUserIsAdmin = auth()->user()->is_admin;
+        $kejariNama = auth()->user()->kejari_nama;
 
         $query = User::query();
 
@@ -24,9 +25,10 @@ class UserController extends Controller
             // Super Admin dapat melihat semua data
             $query->where('id', '!=', $loggedInUserId);
         } elseif ($loggedInUserIsAdmin) {
-            // Admin hanya dapat melihat data Operator
+            // Admin hanya dapat melihat data Operator dan jika lokasi kejari sama 
             $query->where('is_admin', false)
-                ->where('id', '!=', $loggedInUserId);
+                ->where('id', '!=', $loggedInUserId)
+                ->where('kejari_nama', $kejariNama);
         } else {
             // Operator tidak dapat melihat data admin lain dan data diri sendiri
             $query->where('id', '!=', $loggedInUserId);
@@ -41,11 +43,6 @@ class UserController extends Controller
                 
                 // Pastikan pengguna tidak melihat data mereka sendiri saat mencari
                 $query->where('id', '!=', $loggedInUserId);
-
-                if ($loggedInUserIsAdmin) {
-                    // Admin hanya dapat melihat data Operator saat melakukan pencarian
-                    $query->where('is_admin', false);
-                }
             });
         }
 
@@ -69,7 +66,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'name' => 'required',
             'is_admin' => 'required|in:0,1',
-            'kejari_nama' => 'required|in:Kejari Sulteng,Kejari Palu,Kejari Poso,Kejari Tolitoli,Kejari Banggai,Kejari Parigi,Kejari Donggala,Kejari Buol,Kejari Morowali'
+            'kejari_nama' => 'required|in:Kejati Sulteng,Kejari Palu,Kejari Poso,Kejari Tolitoli,Kejari Banggai,Kejari Parigi,Kejari Donggala,Kejari Buol,Kejari Morowali'
         ]);
 
         
