@@ -13,20 +13,25 @@ class SaksiController extends Controller
      */
     public function index(Request $request)
     {
-        $user = Auth::user(); // Mendapatkan pengguna yang sedang login
+        // Mendapatkan pengguna yang sedang login
+        $user = Auth::user(); 
+        $loggedInUserId = $user->id;
 
-        if ($user->is_admin) {
-            // Jika pengguna adalah admin, tampilkan semua data Saksi
+        if ($user->email === 'mohagungnursalim@gmail.com') {
+            // Super Admin: tampilkan semua data
             $saksis = Saksi::oldest();
+        } elseif ($user->is_admin) {
+            // Admin: tampilkan semua data pada lokasi Kejari tertentu
+            $saksis = Saksi::where('lokasi', $user->kejari_nama)->oldest();
         } else {
-            // Jika bukan admin, tampilkan hanya data Saksi yang terkait dengan user_id tersebut
-            $saksis = Saksi::where('user_id', $user->id)->oldest();
+            // Operator: tampilkan hanya data mereka sendiri
+            $saksis = Saksi::where('user_id', $loggedInUserId)->oldest();
         }
 
         // Pencarian berdasarkan query 'search'
         $search = $request->query('search');    
             
-        if (Auth::user()->is_admin) {
+        if (Auth::user()->email == 'mohagungnursalim@gmail.com') {
             if ($search) {
                 $saksis = $saksis->where(function($query) use ($search) {
                     $query->where('nama', 'LIKE', "%{$search}%")
@@ -45,8 +50,6 @@ class SaksiController extends Controller
                         ->orWhere('nomor_wa', 'LIKE', "%{$search}%")
                         ->orWhere('pekerjaan', 'LIKE', "%{$search}%");
 
-
-                        
                 });
             }
         }
@@ -74,12 +77,20 @@ class SaksiController extends Controller
      */
     public function store(Request $request)
     {
+
+        if (Auth::user()->email == 'mohagungnursalim@gmail.com') {
+            $lokasi = $request->input('lokasi'); 
+        } else {
+            $lokasi = Auth::user()->kejari_nama;
+        }
+
         // Validasi data yang diterima dari form
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string',
             'alamat' => 'required|string',
             'nomor_wa' => 'nullable|string',
             'pekerjaan' => 'required|string',
+            'lokasi' => 'nullable|string'
         ]);
 
         if ($validator->fails()) {
@@ -92,7 +103,7 @@ class SaksiController extends Controller
         // Buat instance Saksi baru dan tetapkan user_id serta lokasi (kejari_nama)
         $saksi = new Saksi();
         $saksi->user_id = Auth::user()->id;
-        $saksi->lokasi = Auth::user()->kejari_nama; // Tetapkan lokasi dari kejari_nama pengguna yang sedang login
+        $saksi->lokasi = $lokasi; // Tetapkan lokasi dari kejari_nama pengguna yang sedang login
         $saksi->nama = $request->input('nama');
         $saksi->alamat = $request->input('alamat');
         $saksi->nomor_wa = $request->input('nomor_wa');

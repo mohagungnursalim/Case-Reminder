@@ -59,9 +59,11 @@ Saksi
                         <th class="text-wrap small">Alamat</th>
                         <th class="text-wrap small">No Wa</th>
                         <th class="text-wrap small">Pekerjaan</th>
+                        @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                         @can('is_admin')
                         <th class="text-wrap small">Lokasi</th>
-                        @endcan
+                        @endcan  
+                        @endif
                         <th class="text-wrap small">Ditambahkan</th>
                         <th class="text-wrap small">Aksi</th>
 
@@ -75,9 +77,11 @@ Saksi
                         <td class="text-wrap small">{{ $saksi->alamat}}</td>
                         <td class="text-wrap small">{{ $saksi->nomor_wa }}</td>
                         <td class="text-wrap small">{{ $saksi->pekerjaan }}</td>
+                        @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                         @can('is_admin')
                         <td class="text-wrap small">{{ $saksi->lokasi }}</td>
                         @endcan
+                        @endif
                         <td class="text-wrap small">{{ $saksi->created_at->format('d-m-Y') }}</td>
 
                         <td>
@@ -132,6 +136,29 @@ Saksi
         <div class="modal-body">
           <form action="{{ route('saksi.store') }}" method="POST">
             @csrf
+
+            @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
+                    <label class="form-label">Tetapkan Lokasi</label>
+                    <div class="input-group input-group-outline @error('lokasi') is-invalid @enderror mb-1">
+                        <select id="lokasi" name="lokasi" style="width: 100%;" required class="form-control">
+                                    <option>-Pilih Lokasi-</option>
+                                    <option value="Kejati Sulteng">Kejati Sulteng</option>
+                                    <option value="Kejari Palu">Kejari Palu</option>
+                                    <option value="Kejari Poso">Kejari Poso</option>
+                                    <option value="Kejari Tolitoli">Kejari Tolitoli</option>
+                                    <option value="Kejari Banggai">Kejari Banggai</option>
+                                    <option value="Kejari Parigi">Kejari Parigi</option>
+                                    <option value="Kejari Donggala">Kejari Donggala</option>
+                                    <option value="Kejari Buol">Kejari Buol</option>
+                                    <option value="Kejari Morowali">Kejari Morowali</option>
+                        </select>
+                    </div>
+                    @error('lokasi')
+                        <p class="text-bold text-xs text-danger">{{ $message }}</p>
+                    @enderror
+
+            @endif
+
             <label for="nama">Nama Saksi</label>
             <div class="input-group input-group-outline @error('nama') is-invalid @enderror">
                 <input class="form-control" type="text" name="nama" id="nama" placeholder="Masukan Nama..">
