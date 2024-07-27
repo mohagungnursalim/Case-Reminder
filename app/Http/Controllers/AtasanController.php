@@ -12,24 +12,28 @@ class AtasanController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user(); // Mendapatkan pengguna yang sedang login
+        $loggedInUserId = $user->id;
 
-        if ($user->is_admin) {
+        if ($user->email === 'mohagungnursalim@gmail.com') {
             // Jika pengguna adalah admin, tampilkan semua data Atasan
             $atasans = Atasan::oldest();
-        } else {
+        } elseif ($user->is_admin) {
             // Jika bukan admin, tampilkan hanya data Jaksa yang terkait dengan user_id tersebut
-            $atasans = Atasan::where('user_id', $user->id)->oldest();
+            $atasans = Atasan::where('lokasi', $user->kejari_nama)->oldest();
+        } else {
+            $atasans = Atasan::where('user_id', $loggedInUserId)->oldest();
         }
 
         // Pencarian berdasarkan query 'search'
         $search = $request->query('search');    
             
-        if (Auth::user()->is_admin) {
+        if (Auth::user()->email === 'mohagungnursalim@gmail.com') {
             if ($search) {
                 $atasans = $atasans->where(function($query) use ($search) {
                     $query->where('nama', 'LIKE', "%{$search}%")
                     ->orWhere('nomor_wa', 'LIKE', "%{$search}%")
                     ->orWhere('pangkat', 'LIKE', "%{$search}%")
+                    ->orWhere('jabatan', 'LIKE', "%{$search}%")
                     ->orWhere('lokasi', 'LIKE', "%{$search}%");
                 });
             }
@@ -38,6 +42,7 @@ class AtasanController extends Controller
                 $atasans = $atasans->where(function($query) use ($search) {
                     $query->where('nama', 'LIKE', "%{$search}%")
                     ->orWhere('nomor_wa', 'LIKE', "%{$search}%")
+                    ->orWhere('jabatan', 'LIKE', "%{$search}%")
                     ->orWhere('pangkat', 'LIKE', "%{$search}%");
                 });
             }
@@ -62,6 +67,11 @@ class AtasanController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->email == 'mohagungnursalim@gmail.com') {
+            $lokasi = $request->input('lokasi'); 
+        } else {
+            $lokasi = Auth::user()->kejari_nama;
+        }
         // Validasi data yang diterima dari form
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string',
@@ -93,7 +103,7 @@ class AtasanController extends Controller
 
         $atasan = new Atasan();
         $atasan->user_id = Auth::user()->id;
-        $atasan->lokasi = Auth::user()->kejari_nama;
+        $atasan->lokasi = $lokasi;
         $atasan->nama = $request->input('nama');
         $atasan->nomor_wa = $this->formatNomorWA($request->nomor_wa); // Format nomor WhatsApp yang dimasukkan pengguna
         $atasan->jabatan = $request->input('jabatan');
