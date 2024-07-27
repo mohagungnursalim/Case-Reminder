@@ -16,13 +16,16 @@ class KasusController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user(); // Mendapatkan pengguna yang sedang login
+        $loggedInUserId = $user->id;
 
-        if ($user->is_admin) {
+        if ($user->email === 'mohagungnursalim@gmail.com') {
             // Jika pengguna adalah admin, tampilkan semua data Kasus
             $kasuss = Kasus::oldest();
-        } else {
+        } elseif ($user->is_admin) {
             // Jika bukan admin, tampilkan hanya data Kasus yang terkait dengan user_id tersebut
-            $kasuss = Kasus::where('user_id', $user->id)->oldest();
+            $kasuss = Kasus::where('lokasi', $user->kejari_nama)->oldest();
+        }else {
+            $kasuss = Kasus::where('user_id', $loggedInUserId)->oldest();
         }
 
         // Pencarian berdasarkan query 'search'
@@ -61,6 +64,12 @@ class KasusController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->email == 'mohagungnursalim@gmail.com') {
+            $lokasi = $request->input('lokasi'); 
+        } else {
+            $lokasi = Auth::user()->kejari_nama;
+        }
+
        // Validasi data yang diterima dari form
        $validator = Validator::make($request->all(), [
         'nama' => 'required|string',
@@ -77,7 +86,7 @@ class KasusController extends Controller
         $kasus = new Kasus();
         $kasus->user_id = Auth::user()->id;
         $kasus->nama = $request->input('nama');
-        $kasus->lokasi = Auth::user()->kejari_nama; // Tetapkan lokasi dari kejari_nama pengguna yang sedang login
+        $kasus->lokasi = $lokasi; // Tetapkan lokasi dari kejari_nama pengguna yang sedang login
         $kasus->save();
 
         return redirect()->route('kasus.index')->with('success', 'Kasus baru telah ditambahkan.');
