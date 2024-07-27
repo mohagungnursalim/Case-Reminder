@@ -17,19 +17,22 @@ class JaksaController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user(); // Mendapatkan pengguna yang sedang login
+        $loggedInUserId = $user->id;
 
-        if ($user->is_admin) {
+        if ($user->email === 'mohagungnursalim@gmail.com') {
             // Jika pengguna adalah admin, tampilkan semua data Jaksa
             $jaksas = Jaksa::oldest();
-        } else {
+        } elseif ($user->is_admin) {
             // Jika bukan admin, tampilkan hanya data Jaksa yang terkait dengan user_id tersebut
-            $jaksas = Jaksa::where('user_id', $user->id)->oldest();
+            $jaksas = Jaksa::where('lokasi', $user->kejari_nama)->oldest();
+        }else {
+            $jaksas = Jaksa::where('user_id', $loggedInUserId)->oldest();
         }
 
         // Pencarian berdasarkan query 'search'
         $search = $request->query('search');    
             
-        if (Auth::user()->is_admin) {
+        if (Auth::user()->email === 'mohagungnursalim@gmail.com') {
             if ($search) {
                 $jaksas = $jaksas->where(function($query) use ($search) {
                     $query->where('nama', 'LIKE', "%{$search}%")
@@ -44,7 +47,7 @@ class JaksaController extends Controller
                     $query->where('nama', 'LIKE', "%{$search}%")
                     ->orWhere('nomor_wa', 'LIKE', "%{$search}%")
                     ->orWhere('pangkat', 'LIKE', "%{$search}%");
-            });
+                });
             }
         }
     
@@ -82,6 +85,12 @@ class JaksaController extends Controller
      */
     public function store(Request $request)
     {
+        if (Auth::user()->email == 'mohagungnursalim@gmail.com') {
+            $lokasi = $request->input('lokasi'); 
+        } else {
+            $lokasi = Auth::user()->kejari_nama;
+        }
+
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string',
             'nomor_wa' => 'required|string',
@@ -97,7 +106,7 @@ class JaksaController extends Controller
 
         $jaksa = new Jaksa();
         $jaksa->user_id = Auth::user()->id;
-        $jaksa->lokasi = Auth::user()->kejari_nama;
+        $jaksa->lokasi = $lokasi;
         $jaksa->nama = $request->input('nama');
         $jaksa->nomor_wa = $this->formatNomorWA($request->nomor_wa); // Format nomor WhatsApp yang dimasukkan pengguna
         $jaksa->pangkat = $request->input('pangkat');

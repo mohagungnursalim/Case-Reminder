@@ -452,3 +452,18 @@ Agenda
         });
     });
 </script>
+
+<audio id="success-audio" src="{{ asset('assets/audio/send.mp3') }}" preload="auto"></audio>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Cek jika ada pesan sukses di session
+        @if(session('success'))
+        // Dapatkan elemen audio
+        var audio = document.getElementById('success-audio');
+        // Putar audio
+        audio.play();
+        @endif
+    });
+
+</script>
