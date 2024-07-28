@@ -106,7 +106,7 @@ class SaksiController extends Controller
         $saksi->lokasi = $lokasi; // Tetapkan lokasi dari kejari_nama pengguna yang sedang login
         $saksi->nama = $request->input('nama');
         $saksi->alamat = $request->input('alamat');
-        $saksi->nomor_wa = $request->input('nomor_wa');
+        $saksi->nomor_wa = $this->formatNomorWA($request->nomor_wa); // Format nomor WhatsApp yang dimasukkan pengguna
         $saksi->pekerjaan = $request->input('pekerjaan');
         $saksi->save();
 
@@ -163,7 +163,7 @@ class SaksiController extends Controller
         // Update data Saksi
         $saksi->nama = $request->input('nama');
         $saksi->alamat = $request->input('alamat');
-        $saksi->nomor_wa = $request->input('nomor_wa');
+        $saksi->nomor_wa = $this->formatNomorWA($request->nomor_wa); // Format nomor WhatsApp yang dimasukkan pengguna
         $saksi->pekerjaan = $request->input('pekerjaan');
         $saksi->save();
 
@@ -186,4 +186,31 @@ class SaksiController extends Controller
 
         return redirect()->route('saksi.index')->with('success', 'Data saksi telah dihapus.');
     }
+
+    private function formatNomorWA($nomor_wa)
+    {
+        // Jika nomor kosong atau null, kembalikan nilai kosong
+        if (empty($nomor_wa)) {
+            return '';
+        }
+
+        // Hapus tanda minus (-) dari nomor
+        $nomor_wa = str_replace('-', '', $nomor_wa);
+
+        // Hapus karakter non-digit lainnya dari nomor
+        $nomor_wa = preg_replace('/\D/', '', $nomor_wa);
+
+        // Jika nomor dimulai dengan 0, hapus 0 pertama dan tambahkan kode negara
+        if (substr($nomor_wa, 0, 1) == '0') {
+            $nomor_wa = '62' . substr($nomor_wa, 1);
+        }
+
+        // Jika nomor tidak dimulai dengan kode negara 62, tambahkan 62 di depan nomor
+        if (substr($nomor_wa, 0, 2) != '62') {
+            $nomor_wa = '62' . $nomor_wa;
+        }
+        
+        return $nomor_wa;
+    }
+
 }

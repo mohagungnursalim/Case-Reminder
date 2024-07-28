@@ -79,7 +79,12 @@ Saksi
                         <td class="text-wrap small">{{ $loop->iteration }}</td>
                         <td class="small">{{ $saksi->nama }}</td>
                         <td class="text-wrap small">{{ $saksi->alamat}}</td>
-                        <td class="text-wrap small">{{ $saksi->nomor_wa }}</td>
+                        <td class="text-wrap small">
+                            @empty($saksi->nomor_wa)
+                                -
+                            @endempty
+                            {{ $saksi->nomor_wa }}
+                        </td>
                         <td class="text-wrap small">{{ $saksi->pekerjaan }}</td>
                         @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                         @can('is_admin')
