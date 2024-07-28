@@ -183,7 +183,7 @@ Kasus
 
                     <label for="nama">Kasus</label>
                     <div class="input-group input-group-outline @error('nama') is-invalid @enderror">
-                        <input class="form-control" type="text" name="nama" id="nama">
+                        <input required class="form-control" type="text" name="nama" id="nama">
                     </div>
                     @error('nama')
                     <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -214,7 +214,7 @@ Kasus
                     @method('PUT')
                     <label for="nama">Kasus</label>
                     <div class="input-group input-group-outline @error('nama') is-invalid @enderror">
-                        <input class="form-control" type="text" name="nama" id="nama" required
+                        <input required class="form-control" type="text" name="nama" id="nama" required
                             value="{{ old('nama', $kasus->nama) }}">
                     </div>
                     @error('nama')

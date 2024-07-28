@@ -145,8 +145,8 @@ Jaksa
                     @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                     <label class="form-label">Tetapkan Lokasi</label>
                     <div class="input-group input-group-outline @error('lokasi') is-invalid @enderror mb-1">
-                        <select id="lokasi" name="lokasi" style="width: 100%;" required class="form-control">
-                            <option>-Pilih Lokasi-</option>
+                        <select required id="lokasi" name="lokasi" style="width: 100%;" required class="form-control">
+                            <option value="">-Pilih Lokasi-</option>
                             <option value="Kejati Sulteng">Kejati Sulteng</option>
                             <option value="Kejari Palu">Kejari Palu</option>
                             <option value="Kejari Poso">Kejari Poso</option>
@@ -168,7 +168,7 @@ Jaksa
 
                     <label for="nama">Nama Jaksa</label>
                     <div class="input-group input-group-outline @error('nama') is-invalid @enderror">
-                        <input class="form-control" type="text" name="nama" id="nama" placeholder="Masukan Nama..">
+                        <input required class="form-control" type="text" name="nama" id="nama" placeholder="Masukan Nama..">
                     </div>
                     @error('nama')
                     <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -176,7 +176,7 @@ Jaksa
 
                     <label for="nomor_wa">No Wa</label>
                     <div class="input-group input-group-outline @error('nomor_wa') is-invalid @enderror">
-                        <input class="form-control" type="text" name="nomor_wa" id="nomor_wa"
+                        <input required class="form-control" type="text" name="nomor_wa" id="nomor_wa"
                             placeholder="e.g.08575706xxxx">
                     </div>
                     @error('nomor_wa')
@@ -185,7 +185,7 @@ Jaksa
 
                     <label for="pangkat">Pangkat</label>
                     <div class="input-group input-group-outline @error('pangkat') is-invalid @enderror">
-                        <select class="form-control" name="pangkat" id="pangkat">
+                        <select required class="form-control" name="pangkat" id="pangkat">
                             <option value="">--Pilih Pangkat--</option>
                             <option value="Ajun Jaksa Madya">Ajun Jaksa Madya</option>
                             <option value="Ajun Jaksa">Ajun Jaksa</option>
@@ -227,7 +227,7 @@ Jaksa
                     @method('PUT')
                     <label for="nama">Nama Jaksa</label>
                     <div class="input-group input-group-outline @error('nama') is-invalid @enderror">
-                        <input class="form-control" type="text" name="nama" id="nama"
+                        <input required class="form-control" type="text" name="nama" id="nama"
                             value="{{ old('nama', $jaksa->nama) }}" placeholder="Masukan Nama.." required>
                     </div>
                     @error('nama')
@@ -237,7 +237,7 @@ Jaksa
 
                     <label for="nomor_wa">No Wa</label>
                     <div class="input-group input-group-outline @error('nomor_wa') is-invalid @enderror">
-                        <input class="form-control" type="number" inputmode="numeric" name="nomor_wa" id="nomor_wa"
+                        <input required class="form-control" type="number" inputmode="numeric" name="nomor_wa" id="nomor_wa"
                             value="{{ old('nomor_wa', $jaksa->nomor_wa) }}" placeholder="e.g.08575706xxxx" required>
                     </div>
                     @error('nomor_wa')

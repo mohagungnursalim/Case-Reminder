@@ -171,8 +171,8 @@ Atasan
                     @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                     <label class="form-label">Tetapkan Lokasi</label>
                     <div class="input-group input-group-outline @error('lokasi') is-invalid @enderror mb-1">
-                        <select id="lokasi" name="lokasi" style="width: 100%;" required class="form-control">
-                            <option>-Pilih Lokasi-</option>
+                        <select required id="lokasi" name="lokasi" style="width: 100%;" class="form-control">
+                            <option value="">-Pilih Lokasi-</option>
                             <option value="Kejati Sulteng">Kejati Sulteng</option>
                             <option value="Kejari Palu">Kejari Palu</option>
                             <option value="Kejari Poso">Kejari Poso</option>
@@ -194,7 +194,7 @@ Atasan
 
                     <label for="nama">Atasan</label>
                     <div class="input-group input-group-outline @error('nama') is-invalid @enderror">
-                        <input class="form-control" type="text" name="nama" id="nama" placeholder="Masukan Nama..">
+                        <input required class="form-control" type="text" name="nama" id="nama" placeholder="Masukan Nama..">
                     </div>
                     @error('nama')
                     <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -202,7 +202,7 @@ Atasan
 
                     <label for="nomor_wa">No WA</label>
                     <div class="input-group input-group-outline @error('nomor_wa') is-invalid @enderror">
-                        <input class="form-control" type="number" inputmode="numeric" name="nomor_wa" id="nomor_wa"
+                        <input required class="form-control" type="number" inputmode="numeric" name="nomor_wa" id="nomor_wa"
                             placeholder="e.g.08575706xxxx">
                     </div>
                     @error('nomor_wa')
@@ -210,7 +210,7 @@ Atasan
                     @enderror
                     <label for="jabatan">Jabatan</label>
                     <div class="input-group input-group-outline @error('jabatan') is-invalid @enderror">
-                        <input class="form-control" type="text" name="jabatan" id="jabatan"
+                        <input required class="form-control" type="text" name="jabatan" id="jabatan"
                             placeholder="Masukan Jabatan..">
                     </div>
                     @error('jabatan')
@@ -219,7 +219,7 @@ Atasan
 
                     <label for="pangkat">Pangkat</label>
                     <div class="input-group input-group-outline @error('pangkat') is-invalid @enderror">
-                        <select class="form-control" name="pangkat" id="pangkat">
+                        <select required class="form-control" name="pangkat" id="pangkat">
                             <option value="">--Pilih Pangkat--</option>
                             <option value="Ajun Jaksa Madya">Ajun Jaksa Madya</option>
                             <option value="Ajun Jaksa">Ajun Jaksa</option>
@@ -261,7 +261,7 @@ Atasan
 
                     <label for="nama">Atasan</label>
                     <div class="input-group input-group-outline @error('nama') is-invalid @enderror">
-                        <input class="form-control" type="text" name="nama" id="nama"
+                        <input required class="form-control" type="text" name="nama" id="nama"
                             value="{{ old('nama', $atasan->nama) }}" placeholder="Masukan Nama..">
                     </div>
                     @error('nama')
@@ -270,7 +270,7 @@ Atasan
 
                     <label for="nomor_wa">No WA</label>
                     <div class="input-group input-group-outline @error('nomor_wa') is-invalid @enderror">
-                        <input class="form-control" type="text" name="nomor_wa" id="nomor_wa"
+                        <input required class="form-control" type="text" name="nomor_wa" id="nomor_wa"
                             value="{{ old('nomor_wa', $atasan->nomor_wa) }}" placeholder="e.g.08575706xxxx">
                     </div>
                     @error('nomor_wa')
@@ -279,7 +279,7 @@ Atasan
 
                     <label for="jabatan">Jabatan</label>
                     <div class="input-group input-group-outline @error('jabatan') is-invalid @enderror">
-                        <input class="form-control" type="text" name="jabatan" id="jabatan"
+                        <input required class="form-control" type="text" name="jabatan" id="jabatan"
                             value="{{ old('jabatan', $atasan->jabatan) }}" placeholder="Masukan Jabatan..">
                     </div>
                     @error('jabatan')
@@ -288,7 +288,7 @@ Atasan
 
                     <label for="pangkat">Pangkat</label>
                     <div class="input-group input-group-outline @error('pangkat') is-invalid @enderror">
-                        <select class="form-control" name="pangkat" id="pangkat">
+                        <select required class="form-control" name="pangkat" id="pangkat">
                             <option value="">--Pilih Pangkat--</option>
                             <option value="Ajun Jaksa Madya"
                                 {{ old('pangkat', $atasan->pangkat) == 'Ajun Jaksa Madya' ? 'selected' : '' }}>Ajun
