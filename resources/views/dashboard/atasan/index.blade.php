@@ -202,7 +202,7 @@ Atasan
 
                     <label for="nomor_wa">No WA</label>
                     <div class="input-group input-group-outline @error('nomor_wa') is-invalid @enderror">
-                        <input class="form-control" type="text" name="nomor_wa" id="nomor_wa"
+                        <input class="form-control" type="number" inputmode="numeric" name="nomor_wa" id="nomor_wa"
                             placeholder="e.g.08575706xxxx">
                     </div>
                     @error('nomor_wa')
