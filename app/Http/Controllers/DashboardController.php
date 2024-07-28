@@ -21,19 +21,32 @@ class DashboardController extends Controller
     public function index(): View
     {
         $user = Auth::user(); // Mendapatkan pengguna yang sedang login
-    
-        $cacheKey = $user->is_admin ? 'dashboard_admin' : 'dashboard_user_' . $user->id;
-        $data = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($user) {
-            if ($user->is_admin) {
-                // Menghitung data untuk admin
+        
+        // Membuat cache key berdasarkan role pengguna
+        $cacheKey = $user->is_admin ? 'dashboard_admin_' . $user->id : 'dashboard_user_' . $user->id;
+        if ($user->email == 'mohagungnursalim@gmail.com') {
+            $cacheKey = 'dashboard_super_admin';
+        }
+        
+        $data = Cache::remember($cacheKey, now()->addMinutes(60), function () use ($user) {
+            if ($user->email == 'mohagungnursalim@gmail.com') {
+                // Menghitung data untuk super admin
                 return [
                     'agenda_belum_terkirim' => Reminder::where('is_sent', false)->count(),
                     'agenda_terkirim' => Reminder::where('is_sent', true)->count(),
                     'total_jaksa' => Jaksa::count(),
                     'total_saksi' => Saksi::count(),
                 ];
+            } elseif ($user->is_admin) {
+                // Menghitung data untuk admin
+                return [
+                    'agenda_belum_terkirim' => Reminder::where('lokasi', $user->kejari_nama)->where('is_sent', false)->count(),
+                    'agenda_terkirim' => Reminder::where('lokasi', $user->kejari_nama)->where('is_sent', true)->count(),
+                    'total_jaksa' => Jaksa::where('lokasi', $user->kejari_nama)->count(),
+                    'total_saksi' => Saksi::where('lokasi', $user->kejari_nama)->count(),
+                ];
             } else {
-                // Menghitung data untuk pengguna biasa
+                // Menghitung data untuk operator
                 return [
                     'agenda_belum_terkirim' => Reminder::where('user_id', $user->id)->where('is_sent', false)->count(),
                     'agenda_terkirim' => Reminder::where('user_id', $user->id)->where('is_sent', true)->count(),
@@ -42,61 +55,76 @@ class DashboardController extends Controller
                 ];
             }
         });
-    
+        
         return view('dashboard.dashboard.index', $data);
     }
+
     
 
     public function agendaTerkirimSesuaiJadwal()
     {
         $user = Auth::user(); // Mendapatkan pengguna yang sedang login
-    
-        $cacheKey = $user->is_admin ? 'agenda_terkirim_admin' : 'agenda_terkirim_user_' . $user->id;
-        $agendaTerkirimSesuaiJadwal = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($user) {
+        
+        $cacheKey = 'agenda_terkirim_' . ($user->email == 'mohagungnursalim@gmail.com' ? 'super_admin' : ($user->is_admin ? 'admin_' . $user->id : 'user_' . $user->id));
+        
+        $agendaTerkirimSesuaiJadwal = Cache::remember($cacheKey, now()->addMinutes(60), function () use ($user) {
             // Membuat query builder untuk agenda terkirim sesuai jadwal
             $query = Reminder::select('tanggal_waktu', DB::raw('count(id) as jumlah'))
                 ->where('is_sent', true)
                 ->groupBy('tanggal_waktu')
                 ->orderBy('tanggal_waktu');
-    
-            // Jika bukan admin, tambahkan kondisi user_id
-            if (!$user->is_admin) {
-                $query->where('user_id', $user->id);
+
+            // Jika bukan super admin, tambahkan kondisi berdasarkan peran
+            if ($user->email != 'mohagungnursalim@gmail.com') {
+                if ($user->is_admin) {
+                    $query->where('lokasi', $user->kejari_nama);
+                } else {
+                    $query->where('user_id', $user->id);
+                }
             }
-    
-            // Mendapatkan hasil query
-            return $query->get();
-        });
-    
-        return response()->json($agendaTerkirimSesuaiJadwal);
-    }
-    
-    public function agendaBelumTerkirimSesuaiJadwal()
-    {
-        $user = Auth::user(); // Mendapatkan pengguna yang sedang login
-    
-        $cacheKey = $user->is_admin ? 'agenda_belum_terkirim_admin' : 'agenda_belum_terkirim_user_' . $user->id;
-        $agendaBelumTerkirimSesuaiJadwal = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($user) {
-            // Membuat query builder untuk agenda belum terkirim sesuai jadwal
-            $query = Reminder::select('tanggal_waktu', DB::raw('count(id) as jumlah'))
-                ->where('is_sent', false)
-                ->groupBy('tanggal_waktu')
-                ->orderBy('tanggal_waktu');
-    
-            // Jika bukan admin, tambahkan kondisi user_id
-            if (!$user->is_admin) {
-                $query->where('user_id', $user->id);
-            }
-    
+
             // Mendapatkan hasil query dan mengubah format tanggal_waktu
             return $query->get()->map(function ($item) {
                 $item->tanggal_waktu = \Carbon\Carbon::parse($item->tanggal_waktu)->toDateTimeString();
                 return $item;
             });
         });
-    
+
+        return response()->json($agendaTerkirimSesuaiJadwal);
+    }
+
+    public function agendaBelumTerkirimSesuaiJadwal()
+    {
+        $user = Auth::user(); // Mendapatkan pengguna yang sedang login
+        
+        $cacheKey = 'agenda_belum_terkirim_' . ($user->email == 'mohagungnursalim@gmail.com' ? 'super_admin' : ($user->is_admin ? 'admin_' . $user->id : 'user_' . $user->id));
+        
+        $agendaBelumTerkirimSesuaiJadwal = Cache::remember($cacheKey, now()->addMinutes(60), function () use ($user) {
+            // Membuat query builder untuk agenda belum terkirim sesuai jadwal
+            $query = Reminder::select('tanggal_waktu', DB::raw('count(id) as jumlah'))
+                ->where('is_sent', false)
+                ->groupBy('tanggal_waktu')
+                ->orderBy('tanggal_waktu');
+
+            // Jika bukan super admin, tambahkan kondisi berdasarkan peran
+            if ($user->email != 'mohagungnursalim@gmail.com') {
+                if ($user->is_admin) {
+                    $query->where('lokasi', $user->kejari_nama);
+                } else {
+                    $query->where('user_id', $user->id);
+                }
+            }
+
+            // Mendapatkan hasil query dan mengubah format tanggal_waktu
+            return $query->get()->map(function ($item) {
+                $item->tanggal_waktu = \Carbon\Carbon::parse($item->tanggal_waktu)->toDateTimeString();
+                return $item;
+            });
+        });
+
         return response()->json($agendaBelumTerkirimSesuaiJadwal);
     }
+
 
 
     
