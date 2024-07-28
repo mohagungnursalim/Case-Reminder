@@ -146,8 +146,8 @@ Saksi
                     @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                     <label class="form-label">Tetapkan Lokasi</label>
                     <div class="input-group input-group-outline @error('lokasi') is-invalid @enderror mb-1">
-                        <select id="lokasi" name="lokasi" style="width: 100%;" required class="form-control">
-                            <option>-Pilih Lokasi-</option>
+                        <select required id="lokasi" name="lokasi" style="width: 100%;" required class="form-control">
+                            <option value="">-Pilih Lokasi-</option>
                             <option value="Kejati Sulteng">Kejati Sulteng</option>
                             <option value="Kejari Palu">Kejari Palu</option>
                             <option value="Kejari Poso">Kejari Poso</option>
@@ -170,7 +170,7 @@ Saksi
 
                     <label for="nama">Nama Saksi</label>
                     <div class="input-group input-group-outline @error('nama') is-invalid @enderror">
-                        <input class="form-control" type="text" name="nama" id="nama" placeholder="Masukan Nama..">
+                        <input required class="form-control" type="text" name="nama" id="nama" placeholder="Masukan Nama..">
                     </div>
                     @error('nama')
                     <p class="text-danger"><small>*{{ $message }}</small></p>
@@ -178,7 +178,7 @@ Saksi
 
                     <label class="alamat">Alamat</label>
                     <div class="input-group input-group-outline @error('alamat') is-invalid @enderror">
-                        <input class="form-control" type="text" name="alamat" id="alamat"
+                        <input required class="form-control" type="text" name="alamat" id="alamat"
                             placeholder="Masukan Alamat..">
                     </div>
                     @error('alamat')
@@ -196,7 +196,7 @@ Saksi
 
                     <label for="pekerjaan">Pekerjaan</label>
                     <div class="input-group input-group-outline @error('pekerjaan') is-invalid @enderror">
-                        <input class="form-control" type="text" name="pekerjaan" id="pekerjaan"
+                        <input required class="form-control" type="text" name="pekerjaan" id="pekerjaan"
                             placeholder="Masukan Pekerjaan..">
                     </div>
                     @error('pekerjaan')
@@ -229,7 +229,7 @@ Saksi
                     @method('PUT')
                     <label for="nama">Nama Saksi</label>
                     <div class="input-group input-group-outline @error('nama') is-invalid @enderror">
-                        <input class="form-control" type="text" name="nama" id="nama" required
+                        <input required class="form-control" type="text" name="nama" id="nama" required
                             value="{{ old('nama', $saksi->nama) }}" placeholder="Masukan Nama..">
                     </div>
                     @error('nama')
@@ -238,7 +238,7 @@ Saksi
 
                     <label for="alamat">Alamat</label>
                     <div class="input-group input-group-outline @error('alamat') is-invalid @enderror">
-                        <input class="form-control" type="text" name="alamat" id="alamat" required
+                        <input required class="form-control" type="text" name="alamat" id="alamat" required
                             value="{{ old('alamat', $saksi->alamat) }}" placeholder="Masukan Alamat..">
                     </div>
                     @error('alamat')
@@ -256,7 +256,7 @@ Saksi
 
                     <label for="jabatan">Pekerjaan</label>
                     <div class="input-group input-group-outline @error('pekerjaan') is-invalid @enderror">
-                        <input class="form-control" type="text" name="pekerjaan" id="pekerjaan" required
+                        <input required class="form-control" type="text" name="pekerjaan" id="pekerjaan" required
                             value="{{ old('pekerjaan', $saksi->pekerjaan) }}" placeholder="Masukan Pekerjaan..">
                     </div>
                     @error('pekerjaan')

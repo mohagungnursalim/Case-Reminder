@@ -22,8 +22,8 @@ Tambah
                     @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                     <label class="form-label">Tetapkan Lokasi</label>
                     <div class="input-group input-group-outline @error('lokasi') is-invalid @enderror mb-1">
-                        <select id="lokasi" name="lokasi" style="width: 100%;" required class="form-control">
-                                    <option>-Pilih Lokasi-</option>
+                        <select required id="lokasi" name="lokasi" style="width: 100%;" required class="form-control">
+                                    <option value="">-Pilih Lokasi-</option>
                                     <option value="Kejati Sulteng">Kejati Sulteng</option>
                                     <option value="Kejari Palu">Kejari Palu</option>
                                     <option value="Kejari Poso">Kejari Poso</option>
@@ -43,7 +43,7 @@ Tambah
 
                     <label class="form-label">Kasus</label>
                     <div class="input-group input-group-outline @error('nama_kasus') is-invalid @enderror mb-1">
-                        <select id="nama_kasus" name="nama_kasus" style="width: 100%;" class="form-control">
+                        <select required id="nama_kasus" name="nama_kasus" style="width: 100%;" class="form-control">
                             <option value="" disabled selected>---Pilih Kasus---</option>
                             @foreach($kasuss as $kasus)
                                 <option value="{{ $kasus->nama }}">{{ $kasus->nama }}</option>
@@ -56,7 +56,7 @@ Tambah
                     
                     <label class="form-label">Atasan</label>
                     <div class="input-group input-group-outline @error('nama_atasan') is-invalid @enderror mb-1">
-                        <select id="nama_atasan" name="nama_atasan[]" style="width: 100%;" multiple class="form-control">
+                        <select required id="nama_atasan" name="nama_atasan[]" style="width: 100%;" multiple class="form-control">
                             @foreach($atasans as $atasan)
                                 <option value="{{ $atasan->nama }}">{{ $atasan->nama }}</option>
                             @endforeach
@@ -68,7 +68,7 @@ Tambah
 
                     <label class="form-label">Nomor Atasan</label>
                     <div class="input-group input-group-outline @error('nomor_atasan') is-invalid @enderror mb-1">
-                        <select id="nomor_atasan" name="nomor_atasan[]" style="width: 100%;" multiple class="form-control">
+                        <select required id="nomor_atasan" name="nomor_atasan[]" style="width: 100%;" multiple class="form-control">
                             @foreach($atasans as $atasan)
                                 <option value="{{ $atasan->nomor_wa }}">{{ $atasan->nama }} ({{ $atasan->nomor_wa }})</option>
                             @endforeach
@@ -80,7 +80,7 @@ Tambah
 
                     <label class="form-label">Jaksa</label>
                     <div class="input-group input-group-outline @error('nama_jaksa') is-invalid @enderror mb-1">
-                        <select id="nama_jaksa" name="nama_jaksa[]" style="width: 100%;" multiple class="form-control">
+                        <select required id="nama_jaksa" name="nama_jaksa[]" style="width: 100%;" multiple class="form-control">
                             @foreach($jaksas as $jaksa)
                                 <option value="{{ $jaksa->nama }}">{{ $jaksa->nama }}</option>
                             @endforeach
@@ -92,7 +92,7 @@ Tambah
 
                     <label class="form-label">Nomor Jaksa</label>
                     <div class="input-group input-group-outline @error('nomor_jaksa') is-invalid @enderror mb-1">
-                        <select id="nomor_jaksa" name="nomor_jaksa[]" style="width: 100%;" multiple class="form-control">
+                        <select required id="nomor_jaksa" name="nomor_jaksa[]" style="width: 100%;" multiple class="form-control">
                             @foreach($jaksas as $jaksa)
                                 <option value="{{ $jaksa->nomor_wa }}">{{ $jaksa->nama }} ({{ $jaksa->nomor_wa }})</option>
                             @endforeach
@@ -104,7 +104,7 @@ Tambah
 
                     <label class="form-label">Saksi</label>
                     <div class="input-group input-group-outline @error('judul_buku') is-invalid @enderror mb-1">
-                        <select id="nama_saksi" name="nama_saksi[]" style="width: 100%;" multiple class="form-control">
+                        <select required id="nama_saksi" name="nama_saksi[]" style="width: 100%;" multiple class="form-control">
                             @foreach($saksis as $saksi)
                                 <option value="{{ $saksi->nama }}">{{ $saksi->nama }}</option>
                             @endforeach
@@ -116,7 +116,7 @@ Tambah
 
                     <label for="pesan">Pesan:</label>
                     <div class="input-group input-group-outline @error('pesan') is-invalid @enderror">
-                        <textarea class="form-control" rows="5" name="pesan" id="pesan" required></textarea>
+                        <textarea required class="form-control" rows="5" name="pesan" id="pesan"></textarea>
                     </div>
                     @error('pesan')
                         <p class="text-bold text-xs text-danger">{{ $message }}</p>
@@ -124,8 +124,7 @@ Tambah
 
                     <label for="tanggal_waktu">Tanggal & Waktu:</label>
                     <div class="input-group input-group-outline @error('tanggal_waktu') is-invalid @enderror">
-                        <input class="form-control" type="datetime-local" name="tanggal_waktu" id="tanggal_waktu"
-                            required>
+                        <input required class="form-control" type="datetime-local" name="tanggal_waktu" id="tanggal_waktu">
                     </div>
                     <p class="text-xs text-bold text-secondary mt-2">*PM Mulai dari 00.00 hingga 11.59 | AM Mulai dari 12.00 hingga 23.59</p>
                     @error('tanggal_waktu')

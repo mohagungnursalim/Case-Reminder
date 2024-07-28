@@ -239,7 +239,7 @@ Agenda
     @endphp
 
     <div class="modal fade" id="editModal{{ $reminder->id }}" tabindex="-1" aria-labelledby="reminderModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="jaksaModalLabel">Edit Data Agenda</h5>
@@ -252,7 +252,7 @@ Agenda
                         
                         <label class="form-label">Kasus</label>
                         <div class="input-group input-group-outline @error('nama_kasus') is-invalid @enderror mb-1">
-                            <select id="nama_kasus{{ $reminder->id }}" name="nama_kasus" style="width: 100%;" class="form-control">
+                            <select required id="nama_kasus{{ $reminder->id }}" name="nama_kasus" style="width: 100%;" class="form-control">
                                 <option value="" disabled>---Pilih Kasus---</option>
                                 @foreach($kasuss as $kasus)
                                     <option value="{{ $kasus->nama }}" {{ $reminder->nama_kasus == $kasus->nama ? 'selected' : '' }}>{{ $kasus->nama }}</option>
@@ -265,7 +265,7 @@ Agenda
 
                         <label class="form-label">Atasan</label>
                         <div class="input-group input-group-outline @error('nama_atasan') is-invalid @enderror mb-1">
-                            <select id="nama_atasan{{ $reminder->id }}" name="nama_atasan[]" style="width: 100%;" multiple class="form-control">
+                            <select required id="nama_atasan{{ $reminder->id }}" name="nama_atasan[]" style="width: 100%;" multiple class="form-control">
                                 @foreach($atasans as $atasan)
                                     <option value="{{ $atasan->nama }}" {{ in_array($atasan->nama, $selectedNamaAtasan) ? 'selected' : '' }}>{{ $atasan->nama }}</option>
                                 @endforeach
@@ -277,7 +277,7 @@ Agenda
 
                         <label class="form-label">Nomor Atasan</label>
                         <div class="input-group input-group-outline @error('nomor_atasan') is-invalid @enderror mb-1">
-                            <select id="nomor_atasan{{ $reminder->id }}" name="nomor_atasan[]" style="width: 100%;" multiple class="form-control">
+                            <select required id="nomor_atasan{{ $reminder->id }}" name="nomor_atasan[]" style="width: 100%;" multiple class="form-control">
                                 @foreach($atasans as $atasan)
                                     <option value="{{ $atasan->nomor_wa }}" {{ in_array($atasan->nomor_wa, $selectedNomorAtasan) ? 'selected' : '' }}>{{ $atasan->nama }} ({{ $atasan->nomor_wa }})</option>
                                 @endforeach
@@ -289,7 +289,7 @@ Agenda
 
                         <label class="form-label">Jaksa</label>
                         <div class="input-group input-group-outline @error('nama_jaksa') is-invalid @enderror mb-1">
-                            <select id="nama_jaksa{{ $reminder->id }}" name="nama_jaksa[]" style="width: 100%;" multiple class="form-control">
+                            <select required id="nama_jaksa{{ $reminder->id }}" name="nama_jaksa[]" style="width: 100%;" multiple class="form-control">
                                 @foreach($jaksas as $jaksa)
                                     <option value="{{ $jaksa->nama }}" {{ in_array($jaksa->nama, $selectedNamaJaksa) ? 'selected' : '' }}>{{ $jaksa->nama }}</option>
                                 @endforeach
@@ -301,7 +301,7 @@ Agenda
 
                         <label class="form-label">Nomor Jaksa</label>
                         <div class="input-group input-group-outline @error('nomor_jaksa') is-invalid @enderror mb-1">
-                            <select id="nomor_jaksa{{ $reminder->id }}" name="nomor_jaksa[]" style="width: 100%;" multiple class="form-control">
+                            <select required id="nomor_jaksa{{ $reminder->id }}" name="nomor_jaksa[]" style="width: 100%;" multiple class="form-control">
                                 @foreach($jaksas as $jaksa)
                                     <option value="{{ $jaksa->nomor_wa }}" {{ in_array($jaksa->nomor_wa, $selectedNomorJaksa) ? 'selected' : '' }}>{{ $jaksa->nama }} ({{ $jaksa->nomor_wa }})</option>
                                 @endforeach
@@ -313,7 +313,7 @@ Agenda
 
                         <label class="form-label">Saksi</label>
                         <div class="input-group input-group-outline @error('nama_saksi') is-invalid @enderror mb-1">
-                            <select id="nama_saksi{{ $reminder->id }}" name="nama_saksi[]" style="width: 100%;" multiple class="form-control">
+                            <select required id="nama_saksi{{ $reminder->id }}" name="nama_saksi[]" style="width: 100%;" multiple class="form-control">
                                 @foreach($saksis as $saksi)
                                     <option value="{{ $saksi->nama }}" {{ in_array($saksi->nama, $selectedNamaSaksi) ? 'selected' : '' }}>{{ $saksi->nama }}</option>
                                 @endforeach
@@ -325,7 +325,7 @@ Agenda
 
                         <label for="pesan">Pesan:</label>
                         <div class="input-group input-group-outline @error('pesan') is-invalid @enderror">
-                            <textarea class="form-control" rows="5" name="pesan" id="pesan" required>{{ old('pesan', $reminder->pesan) }}</textarea>
+                            <textarea required class="form-control" rows="5" name="pesan" id="pesan" required>{{ old('pesan', $reminder->pesan) }}</textarea>
                         </div>
                         @error('pesan')
                             <p class="text-bold text-xs text-danger">{{ $message }}</p>
@@ -333,7 +333,7 @@ Agenda
 
                         <label for="tanggal_waktu">Tanggal & Waktu:</label>
                         <div class="input-group input-group-outline @error('tanggal_waktu') is-invalid @enderror">
-                            <input class="form-control" type="datetime-local" name="tanggal_waktu" id="tanggal_waktu"
+                            <input required class="form-control" type="datetime-local" name="tanggal_waktu" id="tanggal_waktu"
                                 value="{{ old('tanggal_waktu', date('Y-m-d\TH:i', strtotime($reminder->tanggal_waktu))) }}" required>
                         </div>
                         <p class="text-xs text-bold text-secondary mt-2">*PM Mulai dari 00.00 hingga 11.59 | AM Mulai dari 12.00 hingga 23.59</p>

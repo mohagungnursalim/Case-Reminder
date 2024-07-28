@@ -89,7 +89,7 @@ Kelola User
                                 <label for="kejari_nama" class="sr-only">Lokasi Kejaksaan</label>
                                 <select id="kejari_nama" name="kejari_nama" style="width: 100%;" class="form-control"
                                     required>
-                                    <option>-Pilih Lokasi-</option>
+                                    <option value="">-Pilih Lokasi-</option>
                                     <option value="Kejati Sulteng">Kejati Sulteng</option>
                                     <option value="Kejari Palu">Kejari Palu</option>
                                     <option value="Kejari Poso">Kejari Poso</option>
