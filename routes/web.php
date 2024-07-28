@@ -4,15 +4,10 @@ use App\Http\Controllers\AtasanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JaksaController;
 use App\Http\Controllers\KasusController;
-use App\Http\Controllers\LogController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\SaksiController;
 use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Log;
-use App\Jobs\SendReminderMessage;
-use App\Models\Reminder;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,10 +28,6 @@ Route::get('/test-whatsapp', function () {
         dispatch(new \App\Jobs\SendReminderMessage($reminder));
     }
 });
-
-
-// Route::get('/dashboard/logs', [LogController::class, 'getAllStatus'])->name('get-all')->middleware('auth');
-// Route::delete('/dashboard/delete-all', [LogController::class, 'deleteAll'])->name('delete-all')->middleware('auth');
 
 // route agenda json
 Route::get('/agenda-terkirim-sesuai-jadwal', [DashboardController::class, 'agendaTerkirimSesuaiJadwal'])->middleware('auth');

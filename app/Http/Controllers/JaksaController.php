@@ -209,9 +209,6 @@ class JaksaController extends Controller
             $nomor_wa = '62' . $nomor_wa;
         }
 
-        // Tambahkan + di depan nomor
-        $nomor_wa = '+' . $nomor_wa;
-
         return $nomor_wa;
     }
 
