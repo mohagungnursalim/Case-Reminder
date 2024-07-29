@@ -160,8 +160,8 @@ Kasus
                     @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                     <label class="form-label">Tetapkan Lokasi</label>
                     <div class="input-group input-group-outline @error('lokasi') is-invalid @enderror mb-1">
-                        <select id="lokasi" name="lokasi" style="width: 100%;" required class="form-control">
-                            <option>-Pilih Lokasi-</option>
+                        <select required id="lokasi" name="lokasi" style="width: 100%;" required class="form-control">
+                            <option value="">-Pilih Lokasi-</option>
                             <option value="Kejati Sulteng">Kejati Sulteng</option>
                             <option value="Kejari Palu">Kejari Palu</option>
                             <option value="Kejari Poso">Kejari Poso</option>
