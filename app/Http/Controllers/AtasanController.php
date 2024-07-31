@@ -48,7 +48,7 @@ class AtasanController extends Controller
             }
         }
     
-        $atasans = $atasans->paginate(10);
+        $atasans = $atasans->paginate(10)->withQueryString();
     
 
         return view('dashboard.atasan.index', compact('atasans'));

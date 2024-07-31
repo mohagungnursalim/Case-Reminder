@@ -46,7 +46,7 @@ class KasusController extends Controller
             }
         }
     
-        $kasuss = $kasuss->paginate(10);
+        $kasuss = $kasuss->paginate(10)->withQueryString();
 
         return view('dashboard.kasus.index', compact('kasuss'));
     }

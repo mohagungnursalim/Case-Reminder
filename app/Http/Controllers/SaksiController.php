@@ -55,7 +55,7 @@ class SaksiController extends Controller
         }
     
 
-        $saksis = $saksis->paginate(10);
+        $saksis = $saksis->paginate(10)->withQueryString();
 
         return view('dashboard.saksi.index', compact('saksis'));
     }

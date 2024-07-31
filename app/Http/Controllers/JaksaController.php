@@ -51,7 +51,7 @@ class JaksaController extends Controller
             }
         }
     
-        $jaksas = $jaksas->paginate(10);
+        $jaksas = $jaksas->paginate(10)->withQueryString();
 
         return view('dashboard.jaksa.index', compact('jaksas'));
     }

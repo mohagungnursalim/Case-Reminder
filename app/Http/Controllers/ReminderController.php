@@ -71,7 +71,7 @@ class ReminderController extends Controller
     }
 
     // Ambil data reminder berdasarkan query yang telah dibuat lalu paginasi perbaris (10)
-    $reminders = $query->paginate(10);
+    $reminders = $query->paginate(10)->withQueryString();
         // Mengirim data ke view
         return view('dashboard.agenda.index', compact('reminders', 'jaksas', 'saksis', 'kasuss', 'atasans'));
     }
