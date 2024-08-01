@@ -163,7 +163,7 @@ class AtasanController extends Controller
         // Update data Atasan
         $atasan->nama = $request->input('nama');
         $atasan->nomor_wa = $this->formatNomorWA($request->nomor_wa);
-        $atasan->pangkat = $request->input('jabatan');
+        $atasan->jabatan = $request->input('jabatan');
         $atasan->pangkat = $request->input('pangkat');
         $atasan->save();
 
