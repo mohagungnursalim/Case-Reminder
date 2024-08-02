@@ -4,10 +4,13 @@ use App\Http\Controllers\AtasanController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JaksaController;
 use App\Http\Controllers\KasusController;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\File;
 use App\Http\Controllers\ReminderController;
 use App\Http\Controllers\SaksiController;
 use App\Http\Controllers\UserController;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,6 +23,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('/dashboard/login-logs', [LogController::class, 'index'])->name('logs.index');
 
 // testing wablas
 Route::get('/test-whatsapp', function () {

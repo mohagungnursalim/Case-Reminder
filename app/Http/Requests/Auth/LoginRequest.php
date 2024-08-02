@@ -5,6 +5,7 @@ namespace App\Http\Requests\Auth;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -49,6 +50,12 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+              // Log the successful login
+              Log::channel('login')->info('User Login', [
+                'Nama' => Auth::user()->name,
+                'email' => Auth::user()->email,
+
+            ]);
         RateLimiter::clear($this->throttleKey());
     }
 
