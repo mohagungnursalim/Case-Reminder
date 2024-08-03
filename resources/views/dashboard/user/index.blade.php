@@ -182,9 +182,9 @@ Kelola User
                             @if ($user->is_online)
                             <span class="badge btn-sm text-success success">Online</span>
                             @elseif (is_null($user->last_seen))
-                            <a class="text-muted">Non Aktif</a>
+                            <a class="text-muted">Inactive</a>
                             @else
-                            <a class="text-muted">Terakhir dilihat {{ $user->last_seen->diffForHumans() }}</a>
+                            <a class="text-muted">Last seen {{ $user->last_seen->diffForHumans() }}</a>
                             @endif
                         </td>
 
