@@ -76,7 +76,7 @@ Saksi
                     @if ($saksis->count())
                     @foreach ($saksis as $saksi )
                     <tr>
-                        <td class="text-wrap small">{{ $loop->iteration }}</td>
+                        <td class="text-wrap small">{{ ($saksis->currentPage() - 1) * $saksis->perPage() + $loop->iteration }}</td>
                         <td class="small">{{ $saksi->nama }}</td>
                         <td class="text-wrap small">{{ $saksi->alamat}}</td>
                         <td class="text-wrap small">

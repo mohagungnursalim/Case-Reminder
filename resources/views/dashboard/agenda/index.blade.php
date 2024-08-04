@@ -113,7 +113,7 @@ Agenda
                     @if ($reminders->count())
                     @foreach ($reminders as $reminder )
                     <tr>
-                        <td class="text-wrap small">{{ $loop->iteration }}</td>
+                        <td class="text-wrap small">{{ ($reminders->currentPage() - 1) * $reminders->perPage() + $loop->iteration }}</td>
                         <td class="text-wrap small">{{ $reminder->nama_kasus }}</td>
                         <td class="text-wrap small">
                             @foreach(json_decode($reminder->nama_atasan) as $nama_atasan)

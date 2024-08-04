@@ -46,7 +46,8 @@ class UserController extends Controller
             });
         }
 
-        $users = $query->oldest()->cursorPaginate(10)->withQueryString();
+        // Gunakan paginate() alih-alih cursorPaginate()
+        $users = $query->oldest()->paginate(10)->withQueryString();
 
         foreach ($users as $user) {
             $user->is_online = Cache::has('user-is-online-' . $user->id);
@@ -54,6 +55,7 @@ class UserController extends Controller
 
         return view('dashboard.user.index', compact('users'));
     }
+
 
 
 
