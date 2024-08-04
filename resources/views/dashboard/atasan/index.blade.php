@@ -101,7 +101,7 @@ Atasan
                     @if ($atasans->count())
                     @foreach ($atasans as $atasan )
                     <tr>
-                        <td class="text-wrap small">{{ $loop->iteration }}</td>
+                        <td class="text-wrap small">{{ ($atasans->currentPage() - 1) * $atasans->perPage() + $loop->iteration }}</td>
                         <td class="small">{{ $atasan->nama }}</td>
                         <td class="small">{{ $atasan->nomor_wa }}</td>
                         <td class="small">{{ $atasan->jabatan }}</td>

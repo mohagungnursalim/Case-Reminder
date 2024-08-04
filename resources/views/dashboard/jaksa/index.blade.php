@@ -76,7 +76,7 @@ Jaksa
                     @if ($jaksas->count())
                     @foreach ($jaksas as $jaksa )
                     <tr>
-                        <td class="text-wrap small">{{ $loop->iteration }}</td>
+                        <td class="text-wrap small">{{ ($jaksas->currentPage() - 1) * $jaksas->perPage() + $loop->iteration }}</td>
                         <td class="small">{{ $jaksa->nama }}</td>
                         <td class="text-wrap small">{{ $jaksa->nomor_wa }}</td>
                         <td class="text-wrap small">{{ $jaksa->pangkat }}</td>

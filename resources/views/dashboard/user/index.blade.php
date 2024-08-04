@@ -177,7 +177,7 @@ Kelola User
                     @if ($users->count())
                     @foreach ($users as $user )
                     <tr>
-                        <td class="text-wrap small">{{ $loop->iteration }}</td>
+                        <td class="text-wrap small">{{ ($users->currentPage() - 1) * $users->perPage() + $loop->iteration }}</td>
                         <td class="text-wrap small">
                             @if ($user->is_online)
                             <span class="badge btn-sm text-success success">Online</span>
