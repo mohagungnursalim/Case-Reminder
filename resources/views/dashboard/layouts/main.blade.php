@@ -33,6 +33,9 @@
             {{-- Konten --}}
             @yield('konten')
             {{-- End konten --}}
+            <a href="https://wa.me/+6285756184587" class="whatsapp-float" target="_blank" title="Hubungi Admin">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Logo" class="whatsapp-icon">
+            </a>
             
             {{-- Footer --}}
             @includeIf('dashboard.partials.footer')
