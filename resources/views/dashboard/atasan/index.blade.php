@@ -258,6 +258,34 @@ Atasan
                 <form action="{{ route('atasan.update', $atasan->id) }}" method="POST">
                     @csrf
                     @method('PUT')
+                    <label for="lokasi">Lokasi</label>
+                    <div class="input-group input-group-outline @error('lokasi') is-invalid @enderror">
+                        <select required class="form-control" name="lokasi" id="lokasi">
+                            <option value="">--Pilih Lokasi--</option>
+                            <option value="Kejati Sulteng"
+                                {{ old('lokasi', $atasan->lokasi) == 'Kejati Sulteng' ? 'selected' : '' }}>Kejati Sulteng</option>
+                            <option value="Kejari Palu"
+                                {{ old('lokasi', $atasan->lokasi) == 'Kejari Palu' ? 'selected' : '' }}>Kejari Palu</option>
+                            <option value="Kejari Poso"
+                                {{ old('lokasi', $atasan->lokasi) == 'Kejari Poso' ? 'selected' : '' }}>Kejari Poso</option>
+                            <option value="Kejari Tolitoli"
+                                {{ old('lokasi', $atasan->lokasi) == 'Kejari Tolitoli' ? 'selected' : '' }}>Kejari Tolitoli</option>
+                            <option value="Kejari Banggai"
+                                {{ old('lokasi', $atasan->lokasi) == 'Kejari Banggai' ? 'selected' : '' }}>Kejari Banggai</option>
+                            <option value="Kejari Parigi"
+                                {{ old('lokasi', $atasan->lokasi) == 'Kejari Parigi' ? 'selected' : '' }}>Kejari Parigi</option>
+                            <option value="Kejari Donggala"
+                                {{ old('lokasi', $atasan->lokasi) == 'Kejari Donggala' ? 'selected' : '' }}>Kejari Donggala</option>
+                            <option value="Kejari Buol"
+                                {{ old('lokasi', $atasan->lokasi) == 'Kejari Buol' ? 'selected' : '' }}>Kejari Buol</option>
+                            <option value="Kejari Morowali"
+                                {{ old('lokasi', $atasan->lokasi) == 'Kejari Morowali' ? 'selected' : '' }}>Kejari Morowali</option>
+                        </select>
+                    </div>
+                    @error('lokasi')
+                    <p class="text-danger"><small>*{{ $message }}</small></p>
+                    @enderror
+
 
                     <label for="nama">Atasan</label>
                     <div class="input-group input-group-outline @error('nama') is-invalid @enderror">

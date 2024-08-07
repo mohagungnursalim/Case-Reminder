@@ -89,6 +89,13 @@ class KasusController extends Controller
         $kasus->lokasi = $lokasi; // Tetapkan lokasi dari kejari_nama pengguna yang sedang login
         $kasus->save();
 
+            // Log info ketika kasus baru berhasil disimpan
+            Log::channel('activity')->info('Menambahkan kasus baru!', [
+                'name' => Auth::user()->name,
+                'lokasi' => $kasus->lokasi,
+                'timestamp' => now()->toDateTimeString()
+            ]);
+
         return redirect()->route('kasus.index')->with('success', 'Kasus baru telah ditambahkan.');
     }
 
@@ -113,6 +120,12 @@ class KasusController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (Auth::user()->email == 'mohagungnursalim@gmail.com') {
+            $lokasi = $request->input('lokasi'); 
+        } else {
+            $lokasi = Auth::user()->kejari_nama;
+        }
+
         // Validasi data yang diterima dari form
         $validator = Validator::make($request->all(), [
             'nama' => 'required|string',
@@ -136,10 +149,17 @@ class KasusController extends Controller
             }
         }
 
-        // Update data Saksi
+        // Update data kasus
+        $kasus->lokasi = $lokasi;
         $kasus->nama = $request->input('nama');
         $kasus->save();
 
+         // Log info ketika kasus baru berhasil diperbarui
+         Log::channel('activity')->info('Memperbarui data kasus!', [
+            'name' => Auth::user()->name,
+            'lokasi' => $kasus->lokasi,
+            'timestamp' => now()->toDateTimeString()
+        ]);
 
         return redirect()->route('kasus.index')->with('success', 'Kasus telah diperbarui.');
     }
@@ -158,6 +178,12 @@ class KasusController extends Controller
 
         $kasus->delete();
 
+        // Log info hapus data kasus
+        Log::channel('activity')->info('Menghapus kasus!', [
+            'name' => Auth::user()->name,
+            'lokasi' => $kasus->lokasi,
+            'timestamp' => now()->toDateTimeString()
+        ]);
         return redirect()->route('kasus.index')->with('success', 'Kasus berhasil dihapus.');
     }
 }

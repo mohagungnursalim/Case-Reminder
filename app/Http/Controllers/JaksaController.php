@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Jaksa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class JaksaController extends Controller
@@ -112,6 +113,12 @@ class JaksaController extends Controller
         $jaksa->pangkat = $request->input('pangkat');
         $jaksa->save();
 
+        Log::channel('activity')->info('Menambahkan jaksa baru!', [
+            'name' => Auth::user()->name,
+            'lokasi' => $lokasi,
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
         return redirect()->route('jaksa.index')->with('success', 'Data jaksa baru telah ditambahkan.');
     }
 
@@ -136,6 +143,12 @@ class JaksaController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (Auth::user()->email == 'mohagungnursalim@gmail.com') {
+            $lokasi = $request->input('lokasi'); 
+        } else {
+            $lokasi = Auth::user()->kejari_nama;
+        }
+
         // Cari data Jaksa yang akan diupdate berdasarkan $id
         $jaksa = Jaksa::findOrFail($id);
         // Validasi data yang diterima dari form
@@ -161,10 +174,17 @@ class JaksaController extends Controller
         }
 
         // Update data Jaksa
+        $jaksa->lokasi = $lokasi;
         $jaksa->nama = $request->input('nama');
         $jaksa->nomor_wa = $this->formatNomorWA($request->nomor_wa);
         $jaksa->pangkat = $request->input('pangkat');
         $jaksa->save();
+
+        Log::channel('activity')->info('Memperbarui data jaksa!', [
+            'name' => Auth::user()->name,
+            'lokasi' => $lokasi,
+            'timestamp' => now()->toDateTimeString()
+        ]);
 
         return redirect()->route('jaksa.index')->with('success', 'Data jaksa berhasil diperbarui.');
     }
@@ -186,6 +206,12 @@ class JaksaController extends Controller
         }
 
         $jaksa->delete();
+
+        Log::channel('activity')->info('Menghapus jaksa!', [
+            'name' => Auth::user()->name,
+            'lokasi' => $jaksa->lokasi,
+            'timestamp' => now()->toDateTimeString()
+        ]);
 
         return redirect()->route('jaksa.index')->with('success', 'Data jaksa telah dihapus.');
     }

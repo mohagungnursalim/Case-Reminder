@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/dashboard/login-logs', [LogController::class, 'index'])->name('logs.index');
+Route::get('/dashboard/activity-logs', [LogController::class, 'index'])->middleware(['auth','is_admin'])->name('logs.index');
 
 // testing wablas
 Route::get('/test-whatsapp', function () {
