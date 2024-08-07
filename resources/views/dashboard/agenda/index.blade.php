@@ -28,6 +28,14 @@ Agenda
             /* Ganti dengan warna teks yang Anda inginkan */
         }
 
+        .danger {
+            border: none;
+            background-color: #f72f2f;
+            /* Ganti dengan warna latar belakang yang Anda inginkan */
+            color: #eeeeee;
+            /* Ganti dengan warna teks yang Anda inginkan */
+        }
+
         .success {
             border: none;
             background-color: #a3e4a9;
@@ -108,15 +116,16 @@ Agenda
                 <table id="myTable" class="table text-dark">
                     <tr>
                         <th class="text-wrap small">No</th>
+                        <th class="text-wrap small">Status</th>
                         <th class="text-wrap small">Kasus</th>
                         <th class="text-wrap small">Atasan</th>
                         <th class="text-wrap small">No Atasan</th>
                         <th class="text-wrap small">Jaksa</th>
                         <th class="text-wrap small">No Jaksa</th>
                         <th class="text-wrap small">Saksi</th>
+                        <th class="text-wrap small">No Saksi</th>
                         <th class="text-wrap small">Pesan</th>
                         <th class="text-wrap small">Tanggal & Waktu Pelaksanaan</th>
-                        <th class="text-wrap small">Status</th>
                         @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                         @can('is_admin')
                         <th class="text-wrap small">Lokasi</th>
@@ -132,10 +141,21 @@ Agenda
                     <tr>
                         <td class="text-wrap small">
                             {{ ($reminders->currentPage() - 1) * $reminders->perPage() + $loop->iteration }}</td>
+                        <td class="text-wrap small">
+                            @if ($reminder->is_sent == true)
+                            <button type="button" class="badge success mt-1" style="border:none">
+                                <span class="material-symbols-outlined status">check</span> Terkirim
+                            </button>
+                            @else
+                            <button type="button" class="badge secondary mt-1" style="border:none">
+                                <span class="material-symbols-outlined status">schedule</span> Dijadwalkan
+                            </button>
+                            @endif
+                        </td>
                         <td class="text-wrap small">{{ $reminder->nama_kasus }}</td>
                         <td class="text-wrap small">
                             @foreach(json_decode($reminder->nama_atasan) as $nama_atasan)
-                            <button type="button" class="badge mt-1 info">
+                            <button type="button" class="badge mt-1 danger">
                                 {{ $nama_atasan }}
                             </button>
                             @endforeach
@@ -169,6 +189,17 @@ Agenda
                             @endforeach
                         </td>
                         <td class="text-wrap small">
+                            @foreach(json_decode($reminder->nomor_saksi) as $nomor_saksi)
+                            <button type="button" class="badge bg-success mt-1" style="border:none">
+                                @if ($nomor_saksi)
+                                {{ $nomor_saksi }}
+                                @else
+                                Belum ada nomor
+                                @endif
+                            </button>
+                            @endforeach
+                        </td>
+                        <td class="text-wrap small">
                             <span class="short-text">
                                 {{ implode(' ', array_slice(explode(' ', $reminder->pesan), 0, 6)) }}
                                 @if (str_word_count($reminder->pesan) > 6)
@@ -189,17 +220,6 @@ Agenda
                                 <span class="font-weight-bold">Pukul:</span>
                                 <span>{{ $reminder->tanggal_waktu->format('H:i A') }}</span>
                             </div>
-                        </td>
-                        <td class="text-wrap small">
-                            @if ($reminder->is_sent == true)
-                            <button type="button" class="badge success mt-1" style="border:none">
-                                <span class="material-symbols-outlined status">check</span> Terkirim
-                            </button>
-                            @else
-                            <button type="button" class="badge secondary mt-1" style="border:none">
-                                <span class="material-symbols-outlined status">schedule</span> Dijadwalkan
-                            </button>
-                            @endif
                         </td>
                         @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                         @can('is_admin')
@@ -256,6 +276,7 @@ $selectedNomorAtasan = $reminder->nomor_atasan ? json_decode($reminder->nomor_at
 $selectedNamaJaksa = $reminder->nama_jaksa ? json_decode($reminder->nama_jaksa, true) : [];
 $selectedNomorJaksa = $reminder->nomor_jaksa ? json_decode($reminder->nomor_jaksa, true) : [];
 $selectedNamaSaksi = $reminder->nama_saksi ? json_decode($reminder->nama_saksi, true) : [];
+$selectedNomorSaksi = $reminder->nomor_saksi ? json_decode($reminder->nomor_saksi, true) : [];
 @endphp
 
 <div class="modal fade" id="editModal{{ $reminder->id }}" tabindex="-1" aria-labelledby="reminderModalLabel"
@@ -275,7 +296,8 @@ $selectedNamaSaksi = $reminder->nama_saksi ? json_decode($reminder->nama_saksi, 
                         <select required class="form-control" name="lokasi" id="lokasi">
                             <option value="">--Pilih Lokasi--</option>
                             <option value="Kejati Sulteng"
-                                {{ old('lokasi', $reminder->lokasi) == 'Kejati Sulteng' ? 'selected' : '' }}>Kejati Sulteng
+                                {{ old('lokasi', $reminder->lokasi) == 'Kejati Sulteng' ? 'selected' : '' }}>Kejati
+                                Sulteng
                             </option>
                             <option value="Kejari Palu"
                                 {{ old('lokasi', $reminder->lokasi) == 'Kejari Palu' ? 'selected' : '' }}>Kejari Palu
@@ -287,10 +309,12 @@ $selectedNamaSaksi = $reminder->nama_saksi ? json_decode($reminder->nama_saksi, 
                                 {{ old('lokasi', $reminder->lokasi) == 'Kejari Tolitoli' ? 'selected' : '' }}>Kejari
                                 Tolitoli</option>
                             <option value="Kejari Banggai"
-                                {{ old('lokasi', $reminder->lokasi) == 'Kejari Banggai' ? 'selected' : '' }}>Kejari Banggai
+                                {{ old('lokasi', $reminder->lokasi) == 'Kejari Banggai' ? 'selected' : '' }}>Kejari
+                                Banggai
                             </option>
                             <option value="Kejari Parigi"
-                                {{ old('lokasi', $reminder->lokasi) == 'Kejari Parigi' ? 'selected' : '' }}>Kejari Parigi
+                                {{ old('lokasi', $reminder->lokasi) == 'Kejari Parigi' ? 'selected' : '' }}>Kejari
+                                Parigi
                             </option>
                             <option value="Kejari Donggala"
                                 {{ old('lokasi', $reminder->lokasi) == 'Kejari Donggala' ? 'selected' : '' }}>Kejari
@@ -398,6 +422,21 @@ $selectedNamaSaksi = $reminder->nama_saksi ? json_decode($reminder->nama_saksi, 
                     <p class="text-bold text-xs text-danger">{{ $message }}</p>
                     @enderror
 
+                    <label class="form-label">Nomor Saksi</label>
+                    <div class="input-group input-group-outline @error('nomor_saksi') is-invalid @enderror mb-1">
+                        <select required id="nomor_saksi{{ $reminder->id }}" name="nomor_saksi[]" style="width: 100%;"
+                            multiple class="form-control">
+                            @foreach($saksis as $saksi)
+                            <option value="{{ $saksi->nomor_wa }}"
+                                {{ in_array($saksi->nomor_wa, $selectedNomorSaksi) ? 'selected' : '' }}>
+                                {{ $saksi->nama }} ({{ $saksi->nomor_wa }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('nomor_jaksa')
+                    <p class="text-bold text-xs text-danger">{{ $message }}</p>
+                    @enderror
+
                     <label for="pesan">Pesan:</label>
                     <div class="input-group input-group-outline @error('pesan') is-invalid @enderror">
                         <textarea required class="form-control" rows="5" name="pesan" id="pesan"
@@ -487,6 +526,10 @@ $selectedNamaSaksi = $reminder->nama_saksi ? json_decode($reminder->nama_saksi, 
         });
 
         $('#nama_saksi{{ $reminder->id }}').select2({
+            allowClear: true
+        });
+
+        $('#nomor_saksi{{ $reminder->id }}').select2({
             allowClear: true
         });
 

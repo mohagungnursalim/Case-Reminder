@@ -114,6 +114,18 @@ Tambah
                         <p class="text-bold text-xs text-danger">{{ $message }}</p>
                     @enderror
 
+                    <label class="form-label">Nomor Saksi</label>
+                    <div class="input-group input-group-outline @error('nomor_saksi') is-invalid @enderror mb-1">
+                        <select required id="nomor_saksi" name="nomor_saksi[]" style="width: 100%;" multiple class="form-control">
+                            @foreach($saksis as $saksi)
+                                <option value="{{ $saksi->nomor_wa }}">{{ $saksi->nama }} ({{ $saksi->nomor_wa }})</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    @error('nomor_saksi')
+                        <p class="text-bold text-xs text-danger">{{ $message }}</p>
+                    @enderror
+
                     <label for="pesan">Pesan:</label>
                     <div class="input-group input-group-outline @error('pesan') is-invalid @enderror">
                         <textarea required class="form-control" rows="5" name="pesan" id="pesan"></textarea>
@@ -176,6 +188,12 @@ Tambah
 
     $(document).ready(function() {
         $('#nama_saksi').select2({
+            allowClear: true
+        });
+    });
+
+    $(document).ready(function() {
+        $('#nomor_saksi').select2({
             allowClear: true
         });
     });
