@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Atasan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AtasanController extends Controller
@@ -110,6 +111,12 @@ class AtasanController extends Controller
         $atasan->pangkat = $request->input('pangkat');
         $atasan->save();
 
+        Log::channel('activity')->info('Menambahkan atasan baru!', [
+            'name' => Auth::user()->name,
+            'lokasi' => $lokasi,
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
         return redirect()->route('atasan.index')->with('success', 'Atasan telah ditambahkan.');
     }
 
@@ -134,6 +141,12 @@ class AtasanController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (Auth::user()->email == 'mohagungnursalim@gmail.com') {
+            $lokasi = $request->input('lokasi'); 
+        } else {
+            $lokasi = Auth::user()->kejari_nama;
+        }
+
         // Cari data Atasan yang akan diupdate berdasarkan $id
         $atasan = Atasan::findOrFail($id);
         // Validasi
@@ -161,11 +174,18 @@ class AtasanController extends Controller
         }
 
         // Update data Atasan
+        $atasan->lokasi = $lokasi;
         $atasan->nama = $request->input('nama');
         $atasan->nomor_wa = $this->formatNomorWA($request->nomor_wa);
         $atasan->jabatan = $request->input('jabatan');
         $atasan->pangkat = $request->input('pangkat');
         $atasan->save();
+
+        Log::channel('activity')->info('Memperbarui data atasan!', [
+            'name' => Auth::user()->name,
+            'lokasi' => $lokasi,
+            'timestamp' => now()->toDateTimeString()
+        ]);
 
         return redirect()->route('atasan.index')->with('success', 'Atasan telah diperbarui.');
     }
@@ -182,6 +202,12 @@ class AtasanController extends Controller
         }
 
         $atasan->delete();
+
+        Log::channel('activity')->info('Menghapus atasan!', [
+            'name' => Auth::user()->name,
+            'lokasi' => $atasan->lokasi,
+            'timestamp' => now()->toDateTimeString()
+        ]);
 
         return redirect()->route('atasan.index')->with('success', 'Atasan berhasil dihapus.');
     }

@@ -6,6 +6,8 @@ use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
@@ -35,6 +37,12 @@ class ProfileController extends Controller
 
         $user->save();
 
+        Log::channel('activity')->info('User memperbarui profil!', [
+            'name' => Auth::user()->name,
+            'lokasi' => Auth::user()->kejari_nama,
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
         return redirect('/dashboard/profile')->with('success_informasi', 'Profil telah diperbarui!');
     }
 
@@ -51,6 +59,11 @@ class ProfileController extends Controller
         request()->session()->invalidate();
         request()->session()->regenerateToken();
 
+        Log::channel('activity')->info('User menghapus akun', [
+            'name' => Auth::user()->name,
+            'lokasi' => Auth::user()->kejari_nama,
+            'timestamp' => now()->toDateTimeString()
+        ]);
         return redirect('/');
     }
 }

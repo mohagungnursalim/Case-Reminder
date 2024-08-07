@@ -232,6 +232,34 @@ Saksi
                 <form action="{{ route('saksi.update', $saksi->id) }}" method="POST">
                     @csrf
                     @method('PUT')
+                    <label for="lokasi">Lokasi</label>
+                    <div class="input-group input-group-outline @error('lokasi') is-invalid @enderror">
+                        <select required class="form-control" name="lokasi" id="lokasi">
+                            <option value="">--Pilih Lokasi--</option>
+                            <option value="Kejati Sulteng"
+                                {{ old('lokasi', $saksi->lokasi) == 'Kejati Sulteng' ? 'selected' : '' }}>Kejati Sulteng</option>
+                            <option value="Kejari Palu"
+                                {{ old('lokasi', $saksi->lokasi) == 'Kejari Palu' ? 'selected' : '' }}>Kejari Palu</option>
+                            <option value="Kejari Poso"
+                                {{ old('lokasi', $saksi->lokasi) == 'Kejari Poso' ? 'selected' : '' }}>Kejari Poso</option>
+                            <option value="Kejari Tolitoli"
+                                {{ old('lokasi', $saksi->lokasi) == 'Kejari Tolitoli' ? 'selected' : '' }}>Kejari Tolitoli</option>
+                            <option value="Kejari Banggai"
+                                {{ old('lokasi', $saksi->lokasi) == 'Kejari Banggai' ? 'selected' : '' }}>Kejari Banggai</option>
+                            <option value="Kejari Parigi"
+                                {{ old('lokasi', $saksi->lokasi) == 'Kejari Parigi' ? 'selected' : '' }}>Kejari Parigi</option>
+                            <option value="Kejari Donggala"
+                                {{ old('lokasi', $saksi->lokasi) == 'Kejari Donggala' ? 'selected' : '' }}>Kejari Donggala</option>
+                            <option value="Kejari Buol"
+                                {{ old('lokasi', $saksi->lokasi) == 'Kejari Buol' ? 'selected' : '' }}>Kejari Buol</option>
+                            <option value="Kejari Morowali"
+                                {{ old('lokasi', $saksi->lokasi) == 'Kejari Morowali' ? 'selected' : '' }}>Kejari Morowali</option>
+                        </select>
+                    </div>
+                    @error('lokasi')
+                    <p class="text-danger"><small>*{{ $message }}</small></p>
+                    @enderror
+
                     <label for="nama">Nama Saksi</label>
                     <div class="input-group input-group-outline @error('nama') is-invalid @enderror">
                         <input required class="form-control" type="text" name="nama" id="nama" required

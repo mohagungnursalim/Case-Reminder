@@ -1,13 +1,13 @@
 @extends('dashboard.layouts.main')
 @section('judul-halaman')
-Login Logs
+Activity Logs
 @endsection
 
 @section('konten')
 
 <div class="card shadow mt-4">
         <div class="card-header pb-0">
-            <h6>Login Logs 
+            <h6>User Activity Logs
                 <span class="material-symbols-outlined">
                 schedule
                 </span>
@@ -23,8 +23,17 @@ Login Logs
                 <div class="timeline-block mb-3">
                     
                     <div class="timeline-content">
-                        <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $log['Nama'] }} -> {{ $log['email'] }}</h6>
-                        <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">{{ $log['waktu_login'] ? \Carbon\Carbon::parse($log['waktu_login'])->format('d/m/Y - H:i') : '-' }}</p>
+                        <h6 class="text-dark text-sm font-weight-bold mb-0">By:{{ $log['name'] }} </h6>
+                        <p class="text-secondary text-xs font-weight-bold">"
+                             
+                            {{ $log['message'] ?? 'No message available' }} 
+                            @isset($log['email_user']) 
+                            => 
+                            @endisset 
+                            {{ $log['email_user'] ?? '' }} " 
+                            <a class="text-dark font-weight-bold text-xs mt-1 mb-0">&nbsp;&nbsp;{{ $log['created_at'] ? \Carbon\Carbon::parse($log['created_at'])->format('H:i - d/m/Y') : '-' }}</a>
+                        </p>
+                        <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">📍{{ $log['lokasi']}}</p>
                     </div>
                     <span class="timeline-step">
                         <!--<span class="material-symbols-outlined">-->
@@ -32,7 +41,7 @@ Login Logs
                         <!--</span>-->
                         
                         
-                        ⌛
+                        🕒
                     </span>
                 </div>
                 @endforeach

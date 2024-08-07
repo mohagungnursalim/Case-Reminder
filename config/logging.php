@@ -69,6 +69,12 @@ return [
             'path' => storage_path('logs/login.log'),
             'level' => 'info',
         ],
+         // Tambahkan channel activity
+        'activity' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/activity.log'),
+            'level' => 'info',
+         ],
 
         'daily' => [
             'driver' => 'daily',

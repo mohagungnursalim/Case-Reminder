@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Saksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 class SaksiController extends Controller
 {
@@ -110,6 +111,12 @@ class SaksiController extends Controller
         $saksi->pekerjaan = $request->input('pekerjaan');
         $saksi->save();
 
+        Log::channel('activity')->info('Menambahkan saksi baru!', [
+            'name' => Auth::user()->name,
+            'lokasi' => $lokasi,
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
         return redirect()->route('saksi.index')->with('success', 'Data saksi baru telah ditambahkan.');
     }
 
@@ -135,6 +142,12 @@ class SaksiController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (Auth::user()->email == 'mohagungnursalim@gmail.com') {
+            $lokasi = $request->input('lokasi'); 
+        } else {
+            $lokasi = Auth::user()->kejari_nama;
+        }
+
         // Cari data Saksi yang akan diupdate berdasarkan $id
         $saksi = Saksi::findOrFail($id);
         // Validasi data yang diterima dari form
@@ -161,12 +174,18 @@ class SaksiController extends Controller
         }
 
         // Update data Saksi
+        $saksi->lokasi = $lokasi;
         $saksi->nama = $request->input('nama');
         $saksi->alamat = $request->input('alamat');
         $saksi->nomor_wa = $this->formatNomorWA($request->nomor_wa); // Format nomor WhatsApp yang dimasukkan pengguna
         $saksi->pekerjaan = $request->input('pekerjaan');
         $saksi->save();
 
+        Log::channel('activity')->info('Memperbarui data saksi!', [
+            'name' => Auth::user()->name,
+            'lokasi' => $lokasi,
+            'timestamp' => now()->toDateTimeString()
+        ]);
         return redirect()->route('saksi.index')->with('success', 'Data saksi telah berhasil diupdate.');
     }
 
@@ -183,6 +202,12 @@ class SaksiController extends Controller
         }
 
         $saksi->delete();
+
+        Log::channel('activity')->info('Menghapus saksi!', [
+            'name' => Auth::user()->name,
+            'lokasi' => $saksi->lokasi,
+            'timestamp' => now()->toDateTimeString()
+        ]);
 
         return redirect()->route('saksi.index')->with('success', 'Data saksi telah dihapus.');
     }

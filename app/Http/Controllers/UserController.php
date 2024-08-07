@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -77,6 +79,12 @@ class UserController extends Controller
         $userData['password'] = Hash::make('12345678');
         User::create($userData);
 
+        Log::channel('activity')->info('Menambahkan akun baru', [
+            'name' => Auth::user()->name, //nama user yang melakukan penambahan akun
+            'email_user'=> $request->input('email'), //email akun yang ditambahkan
+            'lokasi' => $request->input('kejari_nama'), //lokasi akun yang ditambahkan
+            'timestamp' => now()->toDateTimeString() //waktu saat akun ditambahkan
+        ]);
         return redirect('/dashboard/user')->with('success', 'Akun baru berhasil ditambahkan!');
     }
 
@@ -90,6 +98,12 @@ class UserController extends Controller
             'password' => Hash::make('12345678')
         ]);
 
+        Log::channel('activity')->info('Mereset password akun', [
+            'name' => Auth::user()->name, //nama user yang melakukan reset password
+            'email_user'=> $user->email, //email akun yang direset passwordnya
+            'lokasi' => Auth::user()->kejari_nama, //lokasi user yang mereset password akun
+            'timestamp' => now()->toDateTimeString() //waktu saat dilakukan reset
+        ]);
         return redirect('/dashboard/user')->with('success', 'Password telah direset menjadi password default!');
     }
 
@@ -105,6 +119,12 @@ class UserController extends Controller
             'is_admin' => $request->input('is_admin')
         ]);
 
+        Log::channel('activity')->info('Memperbarui peran akun', [
+            'name' => Auth::user()->name, //nama user yang melakukan pembaruan
+            'email_user'=> $user->email, //email akun yang diperbarui perannya
+            'lokasi' => Auth::user()->kejari_nama, //lokasi user yang memperbarui peran akun
+            'timestamp' => now()->toDateTimeString() //waktu saat dilakukan pembaruan
+        ]);
         return redirect('/dashboard/user')->with('success', 'Peran berhasil diubah!');
     }
 
@@ -116,6 +136,12 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
+        Log::channel('activity')->info('Menghapus akun', [
+            'name' => Auth::user()->name, //nama user yang melakukan penghapusan
+            'email_user'=> $user->email, //email akun yang dihapus
+            'lokasi' => Auth::user()->kejari_nama, //lokasi user yang menghapus akun
+            'timestamp' => now()->toDateTimeString() //waktu saat dilakukan penghapusan
+        ]);
         return redirect('/dashboard/user')->with('success', 'Akun berhasil dihapus!');
     }
 }

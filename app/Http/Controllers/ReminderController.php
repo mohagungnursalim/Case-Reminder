@@ -9,7 +9,7 @@ use App\Models\Reminder;
 use App\Models\Saksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Log;
 
 class ReminderController extends Controller
 {
@@ -159,6 +159,11 @@ class ReminderController extends Controller
         // Create the reminder record
         Reminder::create($reminderData);
     
+        Log::channel('activity')->info('Menambahkan agenda baru!', [
+            'name' => Auth::user()->name,
+            'lokasi' => $lokasi,
+            'timestamp' => now()->toDateTimeString()
+        ]);
         return redirect('dashboard/agenda')->with('success', 'Agenda berhasil ditambahkan.');
     }
     
@@ -175,6 +180,12 @@ class ReminderController extends Controller
 
     public function update(Request $request, string $id)
     {
+        if (Auth::user()->email == 'mohagungnursalim@gmail.com') {
+            $lokasi = $request->input('lokasi'); 
+        } else {
+            $lokasi = Auth::user()->kejari_nama;
+        }
+
         $request->validate([
             'nama_atasan' => 'required|array',
             'nama_atasan.*' => 'string',
@@ -196,6 +207,7 @@ class ReminderController extends Controller
 
         // Map the request data to the database columns
         $reminderData = [
+            'lokasi' => $lokasi,
             'nama_kasus' => $request->input('nama_kasus'),
             'pesan' => $request->input('pesan'),
             'tanggal_waktu' => $request->input('tanggal_waktu'),
@@ -209,6 +221,11 @@ class ReminderController extends Controller
         // Update the reminder record
         $reminder->update($reminderData);
 
+        Log::channel('activity')->info('Memperbarui data agenda!', [
+            'name' => Auth::user()->name,
+            'lokasi' => $lokasi,
+            'timestamp' => now()->toDateTimeString()
+        ]);
         return redirect('dashboard/agenda')->with('success', 'Agenda berhasil diperbarui.');
     }
 
@@ -226,6 +243,11 @@ class ReminderController extends Controller
 
         $reminder->delete();
 
+        Log::channel('activity')->info('Menghapus agenda!', [
+            'name' => Auth::user()->name,
+            'lokasi' => $reminder->lokasi,
+            'timestamp' => now()->toDateTimeString()
+        ]);
         return redirect('dashboard/agenda')->with('success', 'Agenda berhasil dihapus.');
 
     }

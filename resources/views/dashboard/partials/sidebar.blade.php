@@ -128,14 +128,14 @@
             </li>
             @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
             <li class="nav-item">
-                <a class="nav-link text-white {{Request::is('dashboard/login-logs') ? 'active' : ''}}" 
-                href="/dashboard/login-logs">
+                <a class="nav-link text-white {{Request::is('dashboard/activity-logs') ? 'active' : ''}}" 
+                href="/dashboard/activity-logs">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <span class="material-symbols-outlined">
                             schedule
                         </span>
                     </div>
-                    <span class="nav-link-text ms-1">Login Logs </span>
+                    <span class="nav-link-text ms-1">Activity Logs </span>
                 </a>
             </li>
             @endif
