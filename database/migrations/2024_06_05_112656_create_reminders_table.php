@@ -22,6 +22,7 @@ return new class extends Migration
             $table->json('nama_jaksa');
             $table->json('nomor_jaksa');
             $table->json('nama_saksi');
+            $table->json('nomor_saksi');
             $table->boolean('is_sent')->default(0);
             $table->dateTime('tanggal_waktu');
             $table->timestamps();

@@ -23,16 +23,19 @@ Activity Logs
                 <div class="timeline-block mb-3">
                     
                     <div class="timeline-content">
-                        <h6 class="text-dark text-sm font-weight-bold mb-0">By:{{ $log['name'] }} </h6>
-                        <p class="text-secondary text-xs font-weight-bold">"
+                        <h6 class="text-dark text-sm font-weight-bold mb-0">
+                            {{ $log['name'] }} 
+                            <a class="text-secondary text-xs font-weight-bold">"
                              
-                            {{ $log['message'] ?? 'No message available' }} 
-                            @isset($log['email_user']) 
-                            => 
-                            @endisset 
-                            {{ $log['email_user'] ?? '' }} " 
-                            <a class="text-dark font-weight-bold text-xs mt-1 mb-0">&nbsp;&nbsp;{{ $log['created_at'] ? \Carbon\Carbon::parse($log['created_at'])->format('H:i - d/m/Y') : '-' }}</a>
-                        </p>
+                                {{ $log['message'] ?? 'No message available' }} 
+                                @isset($log['email_user']) 
+                                => 
+                                @endisset 
+                                {{ $log['email_user'] ?? '' }} " 
+                                <a class="text-dark font-weight-bold text-xs mt-1 mb-0">&nbsp;&nbsp;{{ $log['created_at'] ? \Carbon\Carbon::parse($log['created_at'])->format('H:i - d/m/Y') : '-' }}</a>
+                            </a>
+                        </h6>
+                        
                         <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">📍{{ $log['lokasi']}}</p>
                     </div>
                     <span class="timeline-step">

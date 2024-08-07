@@ -56,14 +56,14 @@ class SendReminderMessage implements ShouldQueue
         \n*Menghadap:* $nama_atasan_str
         \n*Nama Jaksa:* $nama_jaksa_str
         \n*Nama Saksi:* $nama_saksi_str
-        \n*Nama Kasus:* {$this->reminder->nama_kasus}
+        \n*Kasus:* {$this->reminder->nama_kasus}
         \n*Tanggal/Waktu:* {$this->reminder->tanggal_waktu->format('d-m-Y H:i A')}";
 
         $nomor_jaksa = is_string($this->reminder->nomor_jaksa) ? json_decode($this->reminder->nomor_jaksa, true) : $this->reminder->nomor_jaksa;
         $nomor_atasan = is_string($this->reminder->nomor_atasan) ? json_decode($this->reminder->nomor_atasan, true) : $this->reminder->nomor_atasan;
-
-        // Menggabungkan nomor_jaksa dan nomor_atasan ke dalam satu array
-        $nomor_penerima = array_merge((array)$nomor_jaksa, (array)$nomor_atasan);
+        $nomor_saksi = is_string($this->reminder->nomor_saksi) ? json_decode($this->reminder->nomor_saksi, true) : $this->reminder->nomor_saksi;
+        // Menggabungkan nomor_jaksa,nomor_atasan,nomor_saksi ke dalam satu array
+        $nomor_penerima = array_merge((array)$nomor_jaksa, (array)$nomor_atasan, (array)$nomor_saksi);
 
         Log::debug('Nomor Penerima: ' . json_encode($nomor_penerima));
 

@@ -28,19 +28,19 @@ class ReminderController extends Controller
             // Super Admin: tampilkan semua data
             $atasans = Atasan::select('nama', 'nomor_wa')->oldest()->get();
             $jaksas = Jaksa::select('nama', 'nomor_wa')->oldest()->get();
-            $saksis = Saksi::select('nama')->oldest()->get();
+            $saksis = Saksi::select('nama', 'nomor_wa')->oldest()->get();
             $kasuss = Kasus::select('nama')->oldest()->get();
         } elseif ($user->is_admin) {
             // Admin: tampilkan semua data pada lokasi Kejari tertentu
             $atasans = Atasan::select('nama', 'nomor_wa')->where('lokasi', $user->kejari_nama)->oldest()->get();
             $jaksas = Jaksa::select('nama', 'nomor_wa')->where('lokasi', $user->kejari_nama)->oldest()->get();
-            $saksis = Saksi::select('nama')->where('lokasi', $user->kejari_nama)->oldest()->get();
+            $saksis = Saksi::select('nama', 'nomor_wa')->where('lokasi', $user->kejari_nama)->oldest()->get();
             $kasuss = Kasus::select('nama')->where('lokasi', $user->kejari_nama)->oldest()->get();
         } else {
             // Operator: tampilkan hanya data mereka sendiri
             $atasans = Atasan::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
             $jaksas = Jaksa::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
-            $saksis = Saksi::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
+            $saksis = Saksi::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
             $kasuss = Kasus::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
         }
 
@@ -92,19 +92,19 @@ class ReminderController extends Controller
             // Super Admin: tampilkan semua data
             $atasans = Atasan::select('nama', 'nomor_wa')->oldest()->get();
             $jaksas = Jaksa::select('nama', 'nomor_wa')->oldest()->get();
-            $saksis = Saksi::select('nama')->oldest()->get();
+            $saksis = Saksi::select('nama', 'nomor_wa')->oldest()->get();
             $kasuss = Kasus::select('nama')->oldest()->get();
         } elseif ($user->is_admin) {
             // Admin: tampilkan semua data pada lokasi Kejari tertentu
             $atasans = Atasan::select('nama', 'nomor_wa')->where('lokasi', $user->kejari_nama)->oldest()->get();
             $jaksas = Jaksa::select('nama', 'nomor_wa')->where('lokasi', $user->kejari_nama)->oldest()->get();
-            $saksis = Saksi::select('nama')->where('lokasi', $user->kejari_nama)->oldest()->get();
+            $saksis = Saksi::select('nama', 'nomor_wa')->where('lokasi', $user->kejari_nama)->oldest()->get();
             $kasuss = Kasus::select('nama')->where('lokasi', $user->kejari_nama)->oldest()->get();
         } else {
             // Operator: tampilkan hanya data mereka sendiri
             $atasans = Atasan::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
             $jaksas = Jaksa::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
-            $saksis = Saksi::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
+            $saksis = Saksi::select('nama', 'nomor_wa')->where('user_id', $loggedInUserId)->oldest()->get();
             $kasuss = Kasus::select('nama')->where('user_id', $loggedInUserId)->oldest()->get();
         }
 
@@ -137,6 +137,8 @@ class ReminderController extends Controller
             'nama_kasus.*' => 'string',
             'nama_saksi' => 'required|array',
             'nama_saksi.*' => 'string',
+            'nomor_jaksa' => 'required|array',
+            'nomor_jaksa.*' => 'string',
             'pesan' => 'required|string',
             'tanggal_waktu' => 'required|date',
             'lokasi' => 'nullable|string'
@@ -154,6 +156,7 @@ class ReminderController extends Controller
             'nama_jaksa' => json_encode($request->input('nama_jaksa')),
             'nomor_jaksa' => json_encode($request->input('nomor_jaksa')),
             'nama_saksi' => json_encode($request->input('nama_saksi')),
+            'nomor_saksi' => json_encode($request->input('nomor_saksi')),
         ];
     
         // Create the reminder record
@@ -198,6 +201,8 @@ class ReminderController extends Controller
             'nama_kasus' => 'required|string',
             'nama_saksi' => 'required|array',
             'nama_saksi.*' => 'string',
+            'nomor_jaksa' => 'required|array',
+            'nomor_jaksa.*' => 'string',
             'pesan' => 'required|string',
             'tanggal_waktu' => 'required|date',
         ]);
@@ -215,6 +220,7 @@ class ReminderController extends Controller
             'nomor_atasan' => json_encode($request->input('nomor_atasan')),
             'nama_jaksa' => json_encode($request->input('nama_jaksa')),
             'nomor_jaksa' => json_encode($request->input('nomor_jaksa')),
+            'nomor_saksi' => json_encode($request->input('nomor_saksi')),
             'nama_saksi' => json_encode($request->input('nama_saksi')),
         ];
 
