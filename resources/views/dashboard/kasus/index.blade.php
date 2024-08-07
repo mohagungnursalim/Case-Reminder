@@ -98,7 +98,7 @@ Kasus
                     @foreach ($kasuss as $kasus )
                     <tr>
                         <td class="text-wrap small">{{ ($kasuss->currentPage() - 1) * $kasuss->perPage() + $loop->iteration }}</td>
-                        <td class="small">{{ $kasus->nama }}</td>
+                        <td class="text-wrap small">{{ $kasus->nama }}</td>
                         @if (Auth::user()->email === 'mohagungnursalim@gmail.com')
                         @can('is_admin')
                         <td class="small">{{ $kasus->lokasi }}</td>
