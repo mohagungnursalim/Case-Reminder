@@ -97,116 +97,140 @@
     </div>
 
     <div class="row mt-4">
-<!-- Chart container -->
-<div style="position: relative; height: 50vh; width: 100%;">
-    <canvas id="agendaChart"></canvas>
-</div>
+        <!-- Chart container -->
+        <div style="position: relative; height: 50vh; width: 100%;">
+            <canvas id="agendaChart"></canvas>
+        </div>
 
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        drawAgendaChart();
-    });
-
-    function drawAgendaChart() {
-        $.when(
-            $.ajax({ url: "{{ url('/agenda-terkirim-sesuai-jadwal') }}", dataType: "json" }),
-            $.ajax({ url: "{{ url('/agenda-belum-terkirim-sesuai-jadwal') }}", dataType: "json" })
-        ).done(function(terkirimResponse, belumTerkirimResponse) {
-            var terkirimData = terkirimResponse[0];
-            var belumTerkirimData = belumTerkirimResponse[0];
-
-            var labels = [];
-            var terkirimValues = [];
-            var belumTerkirimValues = [];
-
-            var totalTerkirimCount = 0;
-            var totalBelumTerkirimCount = 0;
-
-            var dataMap = {};
-
-            // Process Terkirim Data
-            $.each(terkirimData, function(index, row) {
-                var date = new Date(row.tanggal_waktu).toLocaleString();
-                var value = parseFloat(row.jumlah);
-                dataMap[date] = dataMap[date] || { terkirim: 0, belumTerkirim: 0 };
-                dataMap[date].terkirim += value;
-                totalTerkirimCount += value;
+        <script type="text/javascript">
+            $(document).ready(function () {
+                drawAgendaChart();
             });
 
-            // Process Belum Terkirim Data
-            $.each(belumTerkirimData, function(index, row) {
-                var date = new Date(row.tanggal_waktu).toLocaleString();
-                var value = parseFloat(row.jumlah);
-                dataMap[date] = dataMap[date] || { terkirim: 0, belumTerkirim: 0 };
-                dataMap[date].belumTerkirim += value;
-                totalBelumTerkirimCount += value;
-            });
+            function drawAgendaChart() {
+                $.when(
+                    $.ajax({
+                        url: "{{ url('/agenda-terkirim-sesuai-jadwal') }}",
+                        dataType: "json"
+                    }),
+                    $.ajax({
+                        url: "{{ url('/agenda-belum-terkirim-sesuai-jadwal') }}",
+                        dataType: "json"
+                    })
+                ).done(function (terkirimResponse, belumTerkirimResponse) {
+                    var terkirimData = terkirimResponse[0];
+                    var belumTerkirimData = belumTerkirimResponse[0];
 
-            // Populate labels and dataset arrays
-            for (var date in dataMap) {
-                labels.push(date);
-                terkirimValues.push(dataMap[date].terkirim);
-                belumTerkirimValues.push(dataMap[date].belumTerkirim);
-            }
+                    var labels = [];
+                    var terkirimValues = [];
+                    var belumTerkirimValues = [];
 
-            // Ensure the labels array is sorted
-            labels.sort((a, b) => new Date(a) - new Date(b));
+                    var totalTerkirimCount = 0;
+                    var totalBelumTerkirimCount = 0;
 
-            var ctx = document.getElementById('agendaChart').getContext('2d');
-            var chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Terkirim',
-                            data: terkirimValues,
-                            fill: false,
-                            borderColor: 'rgb(75, 192, 192)',
-                            tension: 0.1
+                    var dataMap = {};
+
+                    // Process Terkirim Data
+                    $.each(terkirimData, function (index, row) {
+                        var date = new Date(row.tanggal_waktu);
+                        var formattedDate = ('0' + date.getDate()).slice(-2) + '/' +
+                            ('0' + (date.getMonth() + 1)).slice(-2) + '/' +
+                            date.getFullYear();
+                        var value = parseFloat(row.jumlah);
+                        dataMap[formattedDate] = dataMap[formattedDate] || {
+                            terkirim: 0,
+                            belumTerkirim: 0
+                        };
+                        dataMap[formattedDate].terkirim += value;
+                        totalTerkirimCount += value;
+                    });
+
+                    // Process Belum Terkirim Data
+                    $.each(belumTerkirimData, function (index, row) {
+                        var date = new Date(row.tanggal_waktu);
+                        var formattedDate = ('0' + date.getDate()).slice(-2) + '/' +
+                            ('0' + (date.getMonth() + 1)).slice(-2) + '/' +
+                            date.getFullYear();
+                        var value = parseFloat(row.jumlah);
+                        dataMap[formattedDate] = dataMap[formattedDate] || {
+                            terkirim: 0,
+                            belumTerkirim: 0
+                        };
+                        dataMap[formattedDate].belumTerkirim += value;
+                        totalBelumTerkirimCount += value;
+                    });
+
+                    // Populate labels and dataset arrays
+                    for (var date in dataMap) {
+                        labels.push(date);
+                        terkirimValues.push(dataMap[date].terkirim);
+                        belumTerkirimValues.push(dataMap[date].belumTerkirim);
+                    }
+
+                    // Ensure the labels array is sorted
+                    labels.sort((a, b) => {
+                        var dateA = a.split('/').reverse().join('/');
+                        var dateB = b.split('/').reverse().join('/');
+                        return new Date(dateA) - new Date(dateB);
+                    });
+
+                    var ctx = document.getElementById('agendaChart').getContext('2d');
+                    var chart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                    label: 'Terkirim',
+                                    data: terkirimValues,
+                                    fill: false,
+                                    borderColor: 'rgb(75, 192, 192)',
+                                    tension: 0.1
+                                },
+                                {
+                                    label: 'Dijadwalkan',
+                                    data: belumTerkirimValues,
+                                    fill: false,
+                                    borderColor: 'rgb(255, 99, 132)',
+                                    tension: 0.1
+                                }
+                            ]
                         },
-                        {
-                            label: 'Belum Terkirim',
-                            data: belumTerkirimValues,
-                            fill: false,
-                            borderColor: 'rgb(255, 99, 132)',
-                            tension: 0.1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Agenda Terkirim (' + totalTerkirimCount + ') & Belum Terkirim (' + totalBelumTerkirimCount + ')'
-                        },
-                        legend: {
-                            display: true,
-                            position: 'bottom'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Agenda Terkirim (' + totalTerkirimCount +
+                                        ') & Dijadwalkan (' + totalBelumTerkirimCount + ')'
+                                },
+                                legend: {
+                                    display: true,
+                                    position: 'bottom'
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                }
                             }
                         }
-                    }
-                }
-            });
-        });
-    }
-</script>
+                    });
+                });
+            }
 
-        
-           
- 
+        </script>
+
+
+
+
+
 
     </div>
 
