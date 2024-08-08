@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Buku;
 use App\Models\Anggota;
+use App\Models\Atasan;
 use App\Models\Jaksa;
-use App\Models\Peminjaman;
+use App\Models\Kasus;
 use App\Models\Reminder;
 use App\Models\Saksi;
 use Illuminate\Support\Facades\Auth;
@@ -32,31 +32,31 @@ class DashboardController extends Controller
             if ($user->email == 'mohagungnursalim@gmail.com') {
                 // Menghitung data untuk super admin
                 return [
-                    'agenda_belum_terkirim' => Reminder::where('is_sent', false)->count(),
-                    'agenda_terkirim' => Reminder::where('is_sent', true)->count(),
+                    'total_kasus' => Kasus::count(),
+                    'total_atasan' => Atasan::count(),
                     'total_jaksa' => Jaksa::count(),
                     'total_saksi' => Saksi::count(),
                 ];
             } elseif ($user->is_admin) {
                 // Menghitung data untuk admin
                 return [
-                    'agenda_belum_terkirim' => Reminder::where('lokasi', $user->kejari_nama)->where('is_sent', false)->count(),
-                    'agenda_terkirim' => Reminder::where('lokasi', $user->kejari_nama)->where('is_sent', true)->count(),
+                    'total_kasus' => Kasus::where('lokasi', $user->kejari_nama)->count(),
+                    'total_atasan' => Atasan::where('lokasi', $user->kejari_nama)->count(),
                     'total_jaksa' => Jaksa::where('lokasi', $user->kejari_nama)->count(),
                     'total_saksi' => Saksi::where('lokasi', $user->kejari_nama)->count(),
                 ];
             } else {
                 // Menghitung data untuk operator
                 return [
-                    'agenda_belum_terkirim' => Reminder::where('user_id', $user->id)->where('is_sent', false)->count(),
-                    'agenda_terkirim' => Reminder::where('user_id', $user->id)->where('is_sent', true)->count(),
+                    'total_kasus' => Kasus::where('user_id', $user->id)->count(),
+                    'total_atasan' => Atasan::where('user_id', $user->id)->count(),
                     'total_jaksa' => Jaksa::where('user_id', $user->id)->count(),
                     'total_saksi' => Saksi::where('user_id', $user->id)->count(),
                 ];
             }
         });
         
-        return view('dashboard.dashboard.index', $data);
+        return view('dashboard.dashboard.index', compact('data'));
     }
 
     
