@@ -97,100 +97,117 @@
     </div>
 
     <div class="row mt-4">
-        <!-- Chart container -->
-        <div id="chart_terkirim_div"></div>
-        <div id="chart_belum_terkirim_div"></div>
-        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Chart container -->
+<div style="position: relative; height: 50vh; width: 100%;">
+    <canvas id="agendaChart"></canvas>
+</div>
 
-        <script type="text/javascript">
-            // Load Google Charts
-            google.charts.load('current', {'packages':['corechart']});
-        
-            // Draw the charts when Google Charts is loaded
-            google.charts.setOnLoadCallback(initCharts);
-        
-            function initCharts() {
-                drawTerkirimChart();
-                drawBelumTerkirimChart();
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        drawAgendaChart();
+    });
+
+    function drawAgendaChart() {
+        $.when(
+            $.ajax({ url: "{{ url('/agenda-terkirim-sesuai-jadwal') }}", dataType: "json" }),
+            $.ajax({ url: "{{ url('/agenda-belum-terkirim-sesuai-jadwal') }}", dataType: "json" })
+        ).done(function(terkirimResponse, belumTerkirimResponse) {
+            var terkirimData = terkirimResponse[0];
+            var belumTerkirimData = belumTerkirimResponse[0];
+
+            var labels = [];
+            var terkirimValues = [];
+            var belumTerkirimValues = [];
+
+            var totalTerkirimCount = 0;
+            var totalBelumTerkirimCount = 0;
+
+            var dataMap = {};
+
+            // Process Terkirim Data
+            $.each(terkirimData, function(index, row) {
+                var date = new Date(row.tanggal_waktu).toLocaleString();
+                var value = parseFloat(row.jumlah);
+                dataMap[date] = dataMap[date] || { terkirim: 0, belumTerkirim: 0 };
+                dataMap[date].terkirim += value;
+                totalTerkirimCount += value;
+            });
+
+            // Process Belum Terkirim Data
+            $.each(belumTerkirimData, function(index, row) {
+                var date = new Date(row.tanggal_waktu).toLocaleString();
+                var value = parseFloat(row.jumlah);
+                dataMap[date] = dataMap[date] || { terkirim: 0, belumTerkirim: 0 };
+                dataMap[date].belumTerkirim += value;
+                totalBelumTerkirimCount += value;
+            });
+
+            // Populate labels and dataset arrays
+            for (var date in dataMap) {
+                labels.push(date);
+                terkirimValues.push(dataMap[date].terkirim);
+                belumTerkirimValues.push(dataMap[date].belumTerkirim);
             }
-        
-            function drawTerkirimChart() {
-                $.ajax({
-                    url: "{{ url('/agenda-terkirim-sesuai-jadwal') }}", // jika menggunakan HTTPS => tambahkan "[], true"
-                    dataType: "json",
-                    success: function(data) {
-                        var dataTable = new google.visualization.DataTable();
-                        dataTable.addColumn('datetime', 'Tanggal Waktu');
-                        dataTable.addColumn('number', 'Jumlah');
-        
-                        var maxValue = 0;
-                        var totalCount = 0;
-        
-                        $.each(data, function(index, row) {
-                            var value = parseFloat(row.jumlah);
-                            dataTable.addRow([new Date(row.tanggal_waktu), value]);
-                            totalCount += value; // Sum the values for total count
-                            if (value > maxValue) {
-                                maxValue = value;
+
+            // Ensure the labels array is sorted
+            labels.sort((a, b) => new Date(a) - new Date(b));
+
+            var ctx = document.getElementById('agendaChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Terkirim',
+                            data: terkirimValues,
+                            fill: false,
+                            borderColor: 'rgb(75, 192, 192)',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Belum Terkirim',
+                            data: belumTerkirimValues,
+                            fill: false,
+                            borderColor: 'rgb(255, 99, 132)',
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Agenda Terkirim (' + totalTerkirimCount + ') & Belum Terkirim (' + totalBelumTerkirimCount + ')'
+                        },
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
                             }
-                        });
-        
-                        var options = {
-                            title: 'Agenda Terkirim (' + totalCount + ')', // Display total count in the title
-                            curveType: 'function',
-                            legend: { position: 'bottom' },
-                            vAxis: {
-                                viewWindow: {
-                                    max: maxValue + 2
-                                }
-                            }
-                        };
-        
-                        var chart = new google.visualization.AreaChart(document.getElementById('chart_terkirim_div'));
-                        chart.draw(dataTable, options);
+                        }
                     }
-                });
-            }
+                }
+            });
+        });
+    }
+</script>
+
         
-            function drawBelumTerkirimChart() {
-                $.ajax({
-                    url: "{{ url('/agenda-belum-terkirim-sesuai-jadwal') }}", // jika menggunakan HTTPS => tambahkan "[], true"
-                    dataType: "json",
-                    success: function(data) {
-                        var dataTable = new google.visualization.DataTable();
-                        dataTable.addColumn('datetime', 'Tanggal Waktu');
-                        dataTable.addColumn('number', 'Jumlah');
-        
-                        var maxValue = 0;
-                        var totalCount = 0;
-        
-                        $.each(data, function(index, row) {
-                            var value = parseFloat(row.jumlah);
-                            dataTable.addRow([new Date(row.tanggal_waktu), value]);
-                            totalCount += value; // Sum the values for total count
-                            if (value > maxValue) {
-                                maxValue = value;
-                            }
-                        });
-        
-                        var options = {
-                            title: 'Agenda Belum Terkirim (' + totalCount + ')', // Display total count in the title
-                            curveType: 'function',
-                            legend: { position: 'bottom' },
-                            vAxis: {
-                                viewWindow: {
-                                    max: maxValue + 2
-                                }
-                            }
-                        };
-        
-                        var chart = new google.visualization.AreaChart(document.getElementById('chart_belum_terkirim_div'));
-                        chart.draw(dataTable, options);
-                    }
-                });
-            }
-        </script>
+           
+ 
+
     </div>
 
     @endsection
