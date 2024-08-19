@@ -76,6 +76,12 @@ return [
             'level' => 'info',
          ],
 
+         'send_reminder' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/send_reminder.log'),
+            'level' => 'info',
+         ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
