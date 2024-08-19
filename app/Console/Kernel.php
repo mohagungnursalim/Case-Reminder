@@ -35,22 +35,22 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->call(function () {
-            Log::info('Scheduler running at ' . now());
-    
-            Reminder::where('is_sent', false)
-                ->where('tanggal_waktu', '<=', Carbon::now()->addDay()) // Kondisi untuk 1 hari sebelum tanggal_waktu
-                ->chunk(100, function ($reminders) {
-                    foreach ($reminders as $reminder) {
-                        dispatch(new SendReminderMessage($reminder));
-                        Log::info('Job Berhasil dijalankan! Reminder ID: ' . $reminder->id);
-                    }
-                });
-    
-            // Retry all failed jobs
-            Artisan::call('queue:retry all');
-            Log::info('Mencoba kembali semua job yang gagal!');
+            try {
+                Reminder::where('is_sent', false)
+                    ->where('tanggal_waktu', '<=', Carbon::now()->addDays(3))
+                    ->chunk(100, function ($reminders) {
+                        foreach ($reminders as $reminder) {
+                            dispatch(new SendReminderMessage($reminder));
+                        }
+                    });
+
+            } catch (\Exception $e) {
+                // Jalankan queue:retry all jika terjadi kesalahan
+                Artisan::call('queue:retry all');
+            }
         })->everyThirtyMinutes();
     }
+
 
 
 

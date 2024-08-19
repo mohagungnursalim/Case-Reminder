@@ -67,7 +67,7 @@ class DashboardController extends Controller
         
         $cacheKey = 'agenda_terkirim_' . ($user->email == 'mohagungnursalim@gmail.com' ? 'super_admin' : ($user->is_admin ? 'admin_' . $user->id : 'user_' . $user->id));
         
-        $agendaTerkirimSesuaiJadwal = Cache::remember($cacheKey, now()->addMinutes(1), function () use ($user) {
+        $agendaTerkirimSesuaiJadwal = Cache::remember($cacheKey, now()->addMinutes(60), function () use ($user) {
             // Membuat query builder untuk agenda terkirim sesuai jadwal
             $query = Reminder::select('tanggal_waktu', DB::raw('count(id) as jumlah'))
                 ->where('is_sent', true)
@@ -99,7 +99,7 @@ class DashboardController extends Controller
         
         $cacheKey = 'agenda_belum_terkirim_' . ($user->email == 'mohagungnursalim@gmail.com' ? 'super_admin' : ($user->is_admin ? 'admin_' . $user->id : 'user_' . $user->id));
         
-        $agendaBelumTerkirimSesuaiJadwal = Cache::remember($cacheKey, now()->addMinutes(1), function () use ($user) {
+        $agendaBelumTerkirimSesuaiJadwal = Cache::remember($cacheKey, now()->addMinutes(60), function () use ($user) {
             // Membuat query builder untuk agenda belum terkirim sesuai jadwal
             $query = Reminder::select('tanggal_waktu', DB::raw('count(id) as jumlah'))
                 ->where('is_sent', false)
