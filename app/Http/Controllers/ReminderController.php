@@ -167,6 +167,9 @@ class ReminderController extends Controller
             'lokasi' => $lokasi,
             'timestamp' => now()->toDateTimeString()
         ]);
+        Log::channel('activity')->error('',[
+            
+        ]);
         return redirect('dashboard/agenda')->with('success', 'Agenda berhasil ditambahkan.');
     }
     
