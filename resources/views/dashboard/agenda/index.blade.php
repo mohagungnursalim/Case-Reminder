@@ -275,8 +275,8 @@ $selectedNamaAtasan = $reminder->nama_atasan ? json_decode($reminder->nama_atasa
 $selectedNomorAtasan = $reminder->nomor_atasan ? json_decode($reminder->nomor_atasan, true) : [];
 $selectedNamaJaksa = $reminder->nama_jaksa ? json_decode($reminder->nama_jaksa, true) : [];
 $selectedNomorJaksa = $reminder->nomor_jaksa ? json_decode($reminder->nomor_jaksa, true) : [];
-$selectedNamaSaksi = $reminder->nama_saksi ? json_decode($reminder->nama_saksi, true) : [];
-$selectedNomorSaksi = $reminder->nomor_saksi ? json_decode($reminder->nomor_saksi, true) : [];
+$selectedNamaSaksi = $reminder->nama_saksi ? array_filter(json_decode($reminder->nama_saksi, true)) : [];
+$selectedNomorSaksi = $reminder->nomor_saksi ? array_filter(json_decode($reminder->nomor_saksi, true)) : [];
 @endphp
 
 <div class="modal fade" id="editModal{{ $reminder->id }}" tabindex="-1" aria-labelledby="reminderModalLabel"
