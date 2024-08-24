@@ -1,2 +1,2 @@
 ## About Case Reminder
-<p>Case Reminder adalah aplikasi pengingat agenda sidang pada Kejaksaan Tinggi Sulawesi Tengah.</p>
+<p>Case Reminder adalah aplikasi pengingat agenda pemeriksaan saksi.</p>
