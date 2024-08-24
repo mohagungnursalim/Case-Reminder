@@ -95,7 +95,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $user->update([
-            'password' => Hash::make('12345678')
+            'password' => Hash::make($user->name)
         ]);
 
         Log::channel('activity')->info('Mereset password akun', [
