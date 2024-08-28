@@ -226,7 +226,7 @@ Agenda
                         <td class="small">{{ $reminder->lokasi }}</td>
                         @endcan
                         @endif
-                        <td class="small">{{ ($reminder->created_at)->format('d-m-Y') }}</td>
+                        <td class="small">{{ ($reminder->created_at)->format('d-m-Y') }}<br>{{ ($reminder->created_at)->format('H:i A') }}</td>
 
                         <td>
                             <button type="button" class="btn btn-sm bg-warning" data-bs-toggle="modal"
