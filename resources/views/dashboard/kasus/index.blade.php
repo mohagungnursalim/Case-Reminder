@@ -74,22 +74,23 @@ Kasus
             </div>
             @endif
 
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inputModal">
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#inputModal">
                 Tambah Kasus
             </button>
-            <a href="/dashboard/kasus" class="btn btn-dark"><span class="material-symbols-outlined"
+            <a href="/dashboard/kasus" class="btn btn-dark btn-sm"><span class="material-symbols-outlined"
                     id="refresh">refresh</span>Refresh</a>
             <div class="overflow-auto">
                 <table id="myTable" class="table text-dark">
                     <tr>
                         <th class="text-wrap small">No</th>
                         <th class="text-wrap small">Kasus</th>
-                        @if (Auth::user()->email === 'mohagungnursalim@gmail.com')
                         @can('is_admin')
+                        <th class="text-wrap small">Ditambahkan Oleh</th>
+                        @if (Auth::user()->email === 'mohagungnursalim@gmail.com')
                         <th class="text-wrap small">Lokasi</th>
-                        @endcan
                         @endif
-                        <th class="text-wrap small">Ditambahkan</th>
+                        @endcan
+                        <th class="text-wrap small">Dibuat</th>
                         <th class="text-wrap small">Aksi</th>
 
                     </tr>
@@ -99,11 +100,12 @@ Kasus
                     <tr>
                         <td class="text-wrap small">{{ ($kasuss->currentPage() - 1) * $kasuss->perPage() + $loop->iteration }}</td>
                         <td class="text-wrap small">{{ $kasus->nama }}</td>
-                        @if (Auth::user()->email === 'mohagungnursalim@gmail.com')
                         @can('is_admin')
-                        <td class="small">{{ $kasus->lokasi }}</td>
-                        @endcan
+                        <td class="small">{{ optional(optional($kasus)->user)->name }}</td>
+                        @if (Auth::user()->email === 'mohagungnursalim@gmail.com')
+                        <td class="small">{{ $kasus->lokasi }}</td>      
                         @endif
+                        @endcan
                         <td class="text-wrap small">{{ $kasus->created_at->format('d-m-Y') }}</td>
                         <td>
                             <button type="button" class="btn btn-sm bg-warning" data-bs-toggle="modal"

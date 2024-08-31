@@ -13,7 +13,7 @@ Tambah
 {{-- Card Table --}}
 <div class="card shadow mt-4">
     <div class="card-body">
-        <a href="/dashboard/agenda" class="btn btn-outline-secondary">
+        <a href="/dashboard/agenda" class="btn btn-outline-secondary btn-sm">
             <-Kembali</a> 
     <div class="container">
                 <form action="{{ route('agenda.store') }}" method="POST">

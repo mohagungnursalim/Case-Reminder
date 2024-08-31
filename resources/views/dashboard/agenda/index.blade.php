@@ -109,8 +109,8 @@ Agenda
             @endif
 
             {{-- Tombol ke halaman form --}}
-            <a href="/dashboard/agenda/create" class="btn btn-primary">Tambah Agenda+</a>
-            <a href="/dashboard/agenda" class="btn btn-dark"><span class="material-symbols-outlined"
+            <a href="/dashboard/agenda/create" class="btn btn-primary btn-sm">Tambah Agenda+</a>
+            <a href="/dashboard/agenda" class="btn btn-dark btn-sm"><span class="material-symbols-outlined"
                     id="refresh">refresh</span>Refresh</a>
             <div class="overflow-auto">
                 <table id="myTable" class="table text-dark">
@@ -126,11 +126,12 @@ Agenda
                         <th class="text-wrap small">No Saksi</th>
                         <th class="text-wrap small">Pesan</th>
                         <th class="text-wrap small">Tanggal & Waktu Pelaksanaan</th>
-                        @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                         @can('is_admin')
+                        <th class="text-wrap small">Ditambahkan Oleh</th>
+                        @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                         <th class="text-wrap small">Lokasi</th>
-                        @endcan
                         @endif
+                        @endcan
                         <th class="text-wrap small">Dibuat</th>
                         <th class="text-wrap small">Aksi</th>
 
@@ -221,11 +222,12 @@ Agenda
                                 <span>{{ $reminder->tanggal_waktu->format('H:i A') }}</span>
                             </div>
                         </td>
-                        @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                         @can('is_admin')
+                        <td class="small">{{ optional(optional($reminder)->user)->name }}</td>
+                        @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                         <td class="small">{{ $reminder->lokasi }}</td>
-                        @endcan
                         @endif
+                        @endcan
                         <td class="small">{{ ($reminder->created_at)->format('d-m-Y') }}<br>{{ ($reminder->created_at)->format('H:i A') }}</td>
 
                         <td>

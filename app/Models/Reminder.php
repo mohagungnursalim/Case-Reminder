@@ -12,4 +12,9 @@ class Reminder extends Model
     protected $casts = [
         'tanggal_waktu' => 'datetime',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

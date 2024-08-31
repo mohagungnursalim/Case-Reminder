@@ -51,10 +51,10 @@ Jaksa
             @endif
 
             {{-- Tombol Modal Input --}}
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inputModal">
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#inputModal">
                 Tambah Jaksa
             </button>
-            <a href="/dashboard/jaksa" class="btn btn-dark"><span class="material-symbols-outlined"
+            <a href="/dashboard/jaksa" class="btn btn-dark btn-sm"><span class="material-symbols-outlined"
                     id="refresh">refresh</span>Refresh</a>
             <div class="overflow-auto">
                 <table id="myTable" class="table text-dark">
@@ -63,12 +63,13 @@ Jaksa
                         <th class="text-wrap small">Nama Jaksa</th>
                         <th class="text-wrap small">No Wa</th>
                         <th class="text-wrap small">Pangkat</th>
-                        @if (Auth::user()->email === 'mohagungnursalim@gmail.com')
                         @can('is_admin')
-                        <th class="text-wrap small">Lokasi</th>
-                        @endcan
+                        <th class="text-wrap small">Ditambahkan Oleh</th> 
+                        @if (Auth::user()->email === 'mohagungnursalim@gmail.com')
+                        <th class="text-wrap small">Lokasi</th>                
                         @endif
-                        <th class="text-wrap small">Ditambahkan</th>
+                        @endcan
+                        <th class="text-wrap small">Dibuat</th>
                         <th class="text-wrap small">Aksi</th>
 
                     </tr>
@@ -80,11 +81,12 @@ Jaksa
                         <td class="small">{{ $jaksa->nama }}</td>
                         <td class="text-wrap small">{{ $jaksa->nomor_wa }}</td>
                         <td class="text-wrap small">{{ $jaksa->pangkat }}</td>
-                        @if (Auth::user()->email === 'mohagungnursalim@gmail.com')
                         @can('is_admin')
+                        <td class="small">{{ optional(optional($jaksa)->user)->name }}</td>
+                        @if (Auth::user()->email === 'mohagungnursalim@gmail.com')
                         <td class="small">{{ $jaksa->lokasi }}</td>
-                        @endcan
                         @endif
+                        @endcan
                         <td class="text-wrap small">{{ $jaksa->created_at->format('d-m-Y') }}</td>
 
                         <td>

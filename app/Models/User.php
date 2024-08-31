@@ -45,4 +45,30 @@ class User extends Authenticatable
         'last_seen' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function reminders()
+    {
+        return $this->hasMany(Reminder::class);
+    }
+
+    public function saksis()
+    {
+        return $this->hasMany(Saksi::class);
+    }
+
+    public function kasuss()
+    {
+        return $this->hasMany(Kasus::class);
+    }
+
+    public function jaksas()
+    {
+        return $this->hasMany(Jaksa::class);
+    }
+
+    public function atasans()
+    {
+        return $this->hasMany(Atasan::class);
+    }
+
 }

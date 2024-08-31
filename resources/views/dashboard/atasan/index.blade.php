@@ -76,10 +76,10 @@ Atasan
             </div>
             @endif
 
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inputModal">
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#inputModal">
                 Tambah Atasan
             </button>
-            <a href="/dashboard/atasan" class="btn btn-dark"><span class="material-symbols-outlined"
+            <a href="/dashboard/atasan" class="btn btn-dark btn-sm"><span class="material-symbols-outlined"
                     id="refresh">refresh</span>Refresh</a>
             <div class="overflow-auto">
                 <table id="myTable" class="table text-dark">
@@ -89,12 +89,13 @@ Atasan
                         <th class="text-wrap small">No WA</th>
                         <th class="text-wrap small">Jabatan</th>
                         <th class="text-wrap small">Pangkat</th>
-                        @if (Auth::user()->email === 'mohagungnursalim@gmail.com')
                         @can('is_admin')
+                        <th class="text-wrap small">Ditambahkan Oleh</th>
+                        @if (Auth::user()->email === 'mohagungnursalim@gmail.com')
                         <th class="text-wrap small">Lokasi</th>
-                        @endcan
                         @endif
-                        <th class="text-wrap small">Ditambahkan</th>
+                        @endcan
+                        <th class="text-wrap small">Dibuat</th>
                         <th class="text-wrap small">Aksi</th>
                     </tr>
 
@@ -106,11 +107,12 @@ Atasan
                         <td class="small">{{ $atasan->nomor_wa }}</td>
                         <td class="small">{{ $atasan->jabatan }}</td>
                         <td class="small">{{ $atasan->pangkat }}</td>
-                        @if (Auth::user()->email === 'mohagungnursalim@gmail.com')
                         @can('is_admin')
+                        <td class="small">{{ optional(optional($atasan)->user)->name }}</td>
+                        @if (Auth::user()->email === 'mohagungnursalim@gmail.com')
                         <td class="small">{{ $atasan->lokasi }}</td>
-                        @endcan
                         @endif
+                        @endcan
                         <td class="text-wrap small">{{ $atasan->created_at->format('d-m-Y') }}</td>
 
                         <td>

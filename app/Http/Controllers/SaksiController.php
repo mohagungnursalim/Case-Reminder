@@ -20,13 +20,13 @@ class SaksiController extends Controller
 
         if ($user->email === 'mohagungnursalim@gmail.com') {
             // Super Admin: tampilkan semua data
-            $saksis = Saksi::oldest();
+            $saksis = Saksi::with('user')->oldest();
         } elseif ($user->is_admin) {
             // Admin: tampilkan semua data pada lokasi Kejari tertentu
-            $saksis = Saksi::where('lokasi', $user->kejari_nama)->oldest();
+            $saksis = Saksi::with('user')->where('lokasi', $user->kejari_nama)->oldest();
         } else {
             // Operator: tampilkan hanya data mereka sendiri
-            $saksis = Saksi::where('user_id', $loggedInUserId)->oldest();
+            $saksis = Saksi::with('user')->where('user_id', $loggedInUserId)->oldest();
         }
 
         // Pencarian berdasarkan query 'search'

@@ -50,10 +50,10 @@ Saksi
             </div>
             @endif
 
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inputModal">
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#inputModal">
                 Tambah Saksi
             </button>
-            <a href="/dashboard/saksi" class="btn btn-dark"><span class="material-symbols-outlined"
+            <a href="/dashboard/saksi" class="btn btn-dark btn-sm"><span class="material-symbols-outlined"
                     id="refresh">refresh</span>Refresh</a>
             <div class="overflow-auto">
                 <table id="myTable" class="table text-dark">
@@ -63,12 +63,13 @@ Saksi
                         <th class="text-wrap small">Alamat</th>
                         <th class="text-wrap small">No Wa</th>
                         <th class="text-wrap small">Pekerjaan</th>
-                        @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                         @can('is_admin')
+                        <th class="text-wrap small">Ditambahkan Oleh</th>
+                        @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                         <th class="text-wrap small">Lokasi</th>
-                        @endcan
                         @endif
-                        <th class="text-wrap small">Ditambahkan</th>
+                        @endcan
+                        <th class="text-wrap small">Dibuat</th>
                         <th class="text-wrap small">Aksi</th>
 
                     </tr>
@@ -86,11 +87,12 @@ Saksi
                             {{ $saksi->nomor_wa }}
                         </td>
                         <td class="text-wrap small">{{ $saksi->pekerjaan }}</td>
-                        @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                         @can('is_admin')
+                        <td class="text-wrap small">{{ optional(optional($saksi)->user)->name }}</td>
+                        @if (Auth::user()->email == 'mohagungnursalim@gmail.com')
                         <td class="text-wrap small">{{ $saksi->lokasi }}</td>
-                        @endcan
                         @endif
+                        @endcan
                         <td class="text-wrap small">{{ $saksi->created_at->format('d-m-Y') }}</td>
 
                         <td>

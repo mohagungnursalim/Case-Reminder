@@ -20,12 +20,12 @@ class KasusController extends Controller
 
         if ($user->email === 'mohagungnursalim@gmail.com') {
             // Jika pengguna adalah admin, tampilkan semua data Kasus
-            $kasuss = Kasus::oldest();
+            $kasuss = Kasus::with('user')->oldest();
         } elseif ($user->is_admin) {
             // Jika bukan admin, tampilkan hanya data Kasus yang terkait dengan user_id tersebut
-            $kasuss = Kasus::where('lokasi', $user->kejari_nama)->oldest();
+            $kasuss = Kasus::with('user')->where('lokasi', $user->kejari_nama)->oldest();
         }else {
-            $kasuss = Kasus::where('user_id', $loggedInUserId)->oldest();
+            $kasuss = Kasus::with('user')->where('user_id', $loggedInUserId)->oldest();
         }
 
         // Pencarian berdasarkan query 'search'

@@ -45,7 +45,7 @@ class ReminderController extends Controller
         }
 
         // Membuat query builder untuk mengambil data reminder
-    $query = Reminder::latest();
+    $query = Reminder::with('user')->latest();
 
     // Logika berdasarkan peran pengguna untuk data reminder
     if ($user->email === 'mohagungnursalim@gmail.com') {

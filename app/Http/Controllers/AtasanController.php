@@ -17,12 +17,12 @@ class AtasanController extends Controller
 
         if ($user->email === 'mohagungnursalim@gmail.com') {
             // Jika pengguna adalah admin, tampilkan semua data Atasan
-            $atasans = Atasan::oldest();
+            $atasans = Atasan::with('user')->oldest();
         } elseif ($user->is_admin) {
             // Jika bukan admin, tampilkan hanya data Jaksa yang terkait dengan user_id tersebut
-            $atasans = Atasan::where('lokasi', $user->kejari_nama)->oldest();
+            $atasans = Atasan::with('user')->where('lokasi', $user->kejari_nama)->oldest();
         } else {
-            $atasans = Atasan::where('user_id', $loggedInUserId)->oldest();
+            $atasans = Atasan::with('user')->where('user_id', $loggedInUserId)->oldest();
         }
 
         // Pencarian berdasarkan query 'search'

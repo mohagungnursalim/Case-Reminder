@@ -11,4 +11,9 @@ class Saksi extends Model
     protected $table = 'saksi'; // Nama tabel sesuai dengan yang Anda definisikan
     protected $guarded = ['id']; // Menjaga kolom 'id' agar tidak diisi secara massal
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }
