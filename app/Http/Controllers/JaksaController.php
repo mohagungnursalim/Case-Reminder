@@ -22,12 +22,12 @@ class JaksaController extends Controller
 
         if ($user->email === 'mohagungnursalim@gmail.com') {
             // Jika pengguna adalah admin, tampilkan semua data Jaksa
-            $jaksas = Jaksa::with('user')->oldest();
+            $jaksas = Jaksa::with('user')->latest();
         } elseif ($user->is_admin) {
             // Jika bukan admin, tampilkan hanya data Jaksa yang terkait dengan user_id tersebut
-            $jaksas = Jaksa::with('user')->where('lokasi', $user->kejari_nama)->oldest();
+            $jaksas = Jaksa::with('user')->where('lokasi', $user->kejari_nama)->latest();
         }else {
-            $jaksas = Jaksa::with('user')->where('user_id', $loggedInUserId)->oldest();
+            $jaksas = Jaksa::with('user')->where('user_id', $loggedInUserId)->latest();
         }
 
         // Pencarian berdasarkan query 'search'
